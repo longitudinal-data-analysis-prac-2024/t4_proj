@@ -1,0 +1,14 @@
+# the data
+
+Rice, F., Riglin, L., Ng-Knight, T., Frederickson, N., Shelton, K., & Chris, M. I. (2017). A longitudinal multi-informant study of psychological adjustment and academic attainment over the transition from primary school to secondary school. [data collection]. UK Data Service. SN: 852714 <https://doi.org/10.5255/UKDA-SN-852714>
+
+
+# the publications
+
+Ng-Knight, T., Katherine Helen Shelton, Riglin, L., McManus, I. C., Frederickson, N., & Rice, F. (2016). A longitudinal study of self‐control at the transition to secondary school: Considering the role of pubertal status and parenting. *Journal of Adolescence*, 50(1), 44–55. <https://doi.org/10.1016/j.adolescence.2016.04.006>
+
+Neal, S., Rice, F., T. Ng-Knight, Riglin, L., & Frederickson, N. (2016). Exploring the longitudinal association between interventions to support the transition to secondary school and child anxiety. *Journal of Adolescence*, 50(1), 31–43. <https://doi.org/10.1016/j.adolescence.2016.04.003>
+
+Keay, A., Lang, J., & Frederickson, N. (2015). Comprehensive support for peer relationships at secondary transition. *Educational Psychology in Practice*, 31(3), 279–292. <https://doi.org/10.1080/02667363.2015.1052046>
+
+Riglin, L., Collishaw, S., Katherine Helen Shelton, McManus, I. C., Ng-Knight, T., Sellers, R., Ajay Kumar Thapar, Frederickson, N., & Rice, F. (2015). Higher cognitive ability buffers stress-related depressive symptoms in adolescent girls. *Development and Psychopathology*, 28(1), 97–109. <https://doi.org/10.1017/s0954579415000310>
