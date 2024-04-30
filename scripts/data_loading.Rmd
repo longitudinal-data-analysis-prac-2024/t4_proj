@@ -1,0 +1,17 @@
+Authors: Tat and Chrysie
+Date: 30/4/2024
+Purpose: crying
+Version: 1
+Notes: it worked when andrea pointed out the obvious
+
+# loading the script
+
+``` {r}
+#install.packages("foreign")
+library(foreign)
+#OR
+#library(haven)
+
+st_data <- foreign::read.spss('../data/SchoolTransitionData.sav', to.data.frame = T)
+
+```
