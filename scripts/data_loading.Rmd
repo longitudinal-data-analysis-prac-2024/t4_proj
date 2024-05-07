@@ -14,4 +14,8 @@ library(foreign)
 
 st_data <- foreign::read.spss('../data/SchoolTransitionData.sav', to.data.frame = T)
 
+# saving the spss dataframe as a csv because excel supremacy
+output_path <- "../data/st_data.csv"  
+write.csv(st_data, file = output_path, row.names = TRUE)
+
 ```
