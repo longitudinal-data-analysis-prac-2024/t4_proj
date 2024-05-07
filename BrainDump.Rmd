@@ -12,3 +12,14 @@ Neal, S., Rice, F., T. Ng-Knight, Riglin, L., & Frederickson, N. (2016). Explori
 Keay, A., Lang, J., & Frederickson, N. (2015). Comprehensive support for peer relationships at secondary transition. *Educational Psychology in Practice*, 31(3), 279–292. <https://doi.org/10.1080/02667363.2015.1052046>
 
 Riglin, L., Collishaw, S., Katherine Helen Shelton, McManus, I. C., Ng-Knight, T., Sellers, R., Ajay Kumar Thapar, Frederickson, N., & Rice, F. (2015). Higher cognitive ability buffers stress-related depressive symptoms in adolescent girls. *Development and Psychopathology*, 28(1), 97–109. <https://doi.org/10.1017/s0954579415000310>
+
+# research question
+
+To investigate the role of our IVs on psychological adjustment from primary to secondary school
+IVs: personal characteristics, attitudes to school, relationships & academic attainment 
+
+Psychological adjustment: SDQ & its impact
+Personal characteristics: Wentzel's, demographics
+Attitudes to school: SCQ, CDPQ
+Social factors: LICS
+Academic attainment: KS2/3 results
