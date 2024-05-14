@@ -25,8 +25,8 @@ Zoya
 -   SDQ: Strengths and Difficulties Questionnaire
 
     -   Child
-    - Wave 1: Need to turn upside down (2=0, 1=1, 0=2): C1_B7, C1_B11, C1_B14, C1_B21, C1_B25
-    - Questions - C1_B3, C1_B8, C1_B13, C1_B16, C1_B24, C1_B5, C1_B7r, C1_B12, C1_B18, C1_B22, C1_B2, C1_B10, C1_B15, C1_B21r, C1_B25r, C1_B6, C1_B11r, C1_B14r, C1_B19, C1_B23, C1_B1, C1_B4, C1_B9, C1_B17, C1_B20
+    -   Wave 1: Need to turn upside down (2=0, 1=1, 0=2): C1_B7, C1_B11, C1_B14, C1_B21, C1_B25
+    -   Questions - C1_B3, C1_B8, C1_B13, C1_B16, C1_B24, C1_B5, C1_B7r, C1_B12, C1_B18, C1_B22, C1_B2, C1_B10, C1_B15, C1_B21r, C1_B25r, C1_B6, C1_B11r, C1_B14r, C1_B19, C1_B23, C1_B1, C1_B4, C1_B9, C1_B17, C1_B20
 
 
 
@@ -45,7 +45,9 @@ Tat
 
 -   Wentzel's Learning Goal Pursuit - learning motivation
 
-    -   Child (1, 2, 3)
+    -   Child Wave 1: C1_AG1, C1_AG2, C1_AG3, C1_AG4
+    -   Child Wave 2: C2_AG1, C2_AG2, C2_AG3, C2_AG4
+    -   Child Wave 3: C3_AG1, C3_AG2, C3_AG3, C4_AG4
 
 -   Demographics - Free School Meals
 
