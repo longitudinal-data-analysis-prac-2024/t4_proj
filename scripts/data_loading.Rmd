@@ -20,3 +20,17 @@ write.csv(st_data, file = output_path, row.names = TRUE)
 
 ```
 
+# getting our columns
+
+``` {r}
+st_data <- read.csv("../data/st_data.csv")
+
+library(tidyverse)
+
+our_data <- st_data %>%
+  select ()
+
+output_path <- "../data/our_data.csv"
+write.csv(our_data, file = output_path, row.names = TRUE)
+
+```

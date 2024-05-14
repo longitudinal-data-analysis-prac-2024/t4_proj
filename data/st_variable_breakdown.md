@@ -20,14 +20,13 @@ England, with a predicted intake of around 2000 pupils in September
 ### Outcome Variable
 
 ***Psychological adjustment***
+Zoya
 
 -   SDQ: Strengths and Difficulties Questionnaire
 
-```         
--   Child (1, 2, 3)
+    -   Child (1, 2, 3)
 
--   Teacher (1, 2, 3)
-```
+    -   Teacher (1, 2, 3)
 
 -   SDQ Impact Section
 
@@ -38,6 +37,7 @@ England, with a predicted intake of around 2000 pupils in September
 # Dependent Variables
 
 ***Personal characteristics***
+Tat
 
 -   Wentzel's Learning Goal Pursuit - learning motivation
 
@@ -48,6 +48,7 @@ England, with a predicted intake of around 2000 pupils in September
     -   School records
 
 ***Attitudes to school***
+Chrysie
 
 -   SCQ: School Concerns Questionnaire
 
@@ -57,18 +58,22 @@ England, with a predicted intake of around 2000 pupils in September
 
     -   Child (1, 3)
 
+        *Note: if there is anything to cut this will probs be it*
+
 -   CDPQ: Child Development Project Questionnaire - *trust and respect
     for teachers*
 
     -   Child (1, 2, 3)
 
 ***Social factors***
+Chrysie
 
 -   LiCs: School-oriented version fo the Loneliness in Children scale
 
     -   Child (1, 2, 3)
 
 ***Academic attainment***
+
 
 -   KS2: English, Maths, Science
 
