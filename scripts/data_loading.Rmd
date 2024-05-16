@@ -127,11 +127,24 @@ col_names <- colnames(st_data)
 -   "Sci7"
 }
 
-# making our df
-library(tidyverse)
+# getting all the columns for each measure
+cols_sdq <- grep("^C[123]_B[1-25]", names(st_data), value = TRUE)
+cols_wen <- grep("^C[123]_AG[1-4]$", names(st_data), value = TRUE)
+cols_sqc <- grep("^C[123]_SConcern([1-9]|1[0-9]|20)$", names(st_data), value = TRUE)
+cols_sl <- grep("^C[123]_SL[1-5]", names(st_data), value = TRUE)
+cols_lt <- grep("^C[123]_LT[1-9]|^C[123]_LT10$", names(st_data), value = TRUE)
+cols_lon <- grep("^C[123]_L([1-9]|1[0-5]|15)$", names(st_data), value = TRUE)
+cols_ks2 <- grep("^KS2", names(st_data), value = TRUE)
+#cols_ks3 <- NA
+
+# making a variable that has all of the above
+chosen_vars <- c("x", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2)
+
+# making our df using the chosen variable columns - theis bit dont yet work
+library(dplyr)
 
 our_data <- st_data %>%
-  select ()
+  select(all_of(chosen_vars)
 
 output_path <- "../data/our_data.csv"
 write.csv(our_data, file = output_path, row.names = TRUE)
