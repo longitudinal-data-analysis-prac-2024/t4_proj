@@ -1,0 +1,773 @@
+*****School Variables*****
+
+***School Concerns: Parent Wave 1.  – total score
+
+COMPUTE P1_SchoolConcernsIMP = RND(MEAN.7(P1_CSS8a, P1_CSS8b, P1_CSS8c, P1_CSS8d, P1_CSS8e, P1_CSS8f, P1_CSS8g, P1_CSS8h, P1_CSS8i, P1_CSS8j, P1_CSS8k)*11).
+execute.
+
+***School Concerns: Child Wave 1.  – total score.12.
+COMPUTE C1_SchoolConcernsIMP = RND(MEAN.12(C1_SConcern1, C1_SConcern2,C1_SConcern3, 
+C1_SConcern4, C1_SConcern5, C1_SConcern6, C1_SConcern7, C1_SConcern8, C1_SConcern9, 
+C1_SConcern10, C1_SConcern11, C1_SConcern12, C1_SConcern13, C1_SConcern14, C1_SConcern15, C1_SConcern16, C1_SConcern17, C1_SConcern18, C1_SConcern19, C1_SConcern20) *20).
+EXECUTE.
+
+***School Concerns: Child Wave 2.  – total score.12.
+COMPUTE C2_SchoolConcernsIMP = RND(MEAN.12(C2_SConcern1, C2_SConcern2,C2_SConcern3,
+ C2_SConcern4, C2_SConcern5, C2_SConcern6, C2_SConcern7, C2_SConcern8, C2_SConcern9, 
+C2_SConcern10, C2_SConcern11, C2_SConcern12, C2_SConcern13, C2_SConcern14, C2_SConcern15, C2_SConcern16, C2_SConcern17, C2_SConcern18, C2_SConcern19, C2_SConcern20) *20).
+EXECUTE.
+
+***School Concerns: Child Wave 3.
+COMPUTE C3_SchoolConcernsIMP = RND(MEAN.12(C3_SConcern1, C3_SConcern2, C3_SConcern3, 
+C3_SConcern4, C3_SConcern5, C3_SConcern6, C3_SConcern7, C3_SConcern8, C3_SConcern9, 
+C3_SConcern10, C3_SConcern11, C3_SConcern12, C3_SConcern13, C3_SConcern14, C3_SConcern15, C3_SConcern16, C3_SConcern17, C3_SConcern18, C3_SConcern19, C3_SConcern20) *20).
+EXECUTE.
+
+***School Connectedness: Child Wave 1.  – mean.4.
+COMPUTE C1_SchoolConnectednessIMP = RND(MEAN.4 (C1_SConnect1, C1_SConnect2, C1_SConnect3, C1_SConnect4, C1_SConnect5, C1_SConnect6)*6).
+EXECUTE.
+
+***School Connectedness: Child Wave 2.  – mean.4.
+COMPUTE C2_SchoolConnectednessIMP = RND(MEAN.4 (C2_SConnect1, C2_SConnect2, C2_SConnect3, C2_SConnect4, C2_SConnect5, C2_SConnect6)*6).
+EXECUTE.
+
+***School Connectedness: Child Wave 3.
+COMPUTE C3_SchoolConnectednessIMP = RND(MEAN.4 (C3_SConnect1, C3_SConnect2, C3_SConnect3, C3_SConnect4, C3_SConnect5, C3_SConnect6)*6).
+EXECUTE.
+
+***School Liking: Child Wave 2.
+RECODE
+C2_SL1 C2_SL4
+(1=4) (2=3) (3=2) (4=1)
+INTO C2_SL1r C2_SL4r.
+VARIABLE LABELS C2_SL1r 'C2_SL1 recoded' C2_SL4r 'C2_SL4 recoded'.
+EXECUTE.
+*run above as required.
+COMPUTE C2_SchoolLikingIMP = RND(MEAN.3 (C2_SL1r, C2_SL2, C2_SL3, C2_SL4r, C2_SL5)*5).
+EXECUTE.
+
+***School Liking: Child Wave 3.
+RECODE
+C3_SL2 C3_SL3 C3_SL5 
+(1=4) (2=3) (3=2) (4=1)
+INTO C3_SL2r C3_SL3r C3_SL5r.
+VARIABLE LABELS C3_SL2r 'C3_SL2 recoded' C3_SL3r 'C3_SL3 recoded' C3_SL5r 'C3_SL5 recoded'.
+EXECUTE.
+*run above as required.
+COMPUTE C3_SchoolLikingIMP = RND(MEAN.3 (C3_SL1, C3_SL2r, C3_SL3r, C3_SL4, C3_SL5r)*5).
+EXECUTE.
+
+***Loneliness: Child Wave 1.  – total score.10.
+RECODE
+C1_L1 C1_L3 C1_L5 C1_L7 C1_L10 C1_L15
+(1=5) (2=4) (3=3) (4=2) (5=1)
+INTO C1_L1r C1_L3r C1_L5r C1_L7r C1_L10r C1_L15r.
+VARIABLE LABELS C1_L1r ‘C1_L1 recoded’ C1_L3r ‘C3_L1 recoded’ C1_L5r ‘C1_L5 recoded’ C1_L7r ‘C1_L7 recoded’ C1_L10r ‘C1_L10 recoded’ C1_L15r ‘C1_L15 recoded’.
+EXECUTE.
+*run above as required
+***w1-all variables.
+COMPUTE C1_LonelinessIMP = RND (MEAN.10 (C1_L1r, C1_L2, C1_L3r, C1_L4, C1_L5r, C1_L6, C1_L7r, C1_L8, C1_L9, C1_L10r, C1_L11, C1_L12, C1_L13, C1_L14, C1_L15r, C1_L16)*16).
+EXECUTE.
+***w1-to match w2.
+COMPUTE C1_LonelinessIMP =RND(MEAN.5 (C1_L1r, C1_L2, C1_L6, C1_L7r, C1_L11, C1_L14, C1_L15r)*7).
+EXECUTE.
+
+***Loneliness: Child Wave 2.
+*RECODE
+*C2_L1 C2_L7 C2_L15
+*(1=5) (2=4) (3=3) (4=2) (5=1)
+*INTO C2_L1r C2_L7r C2_L15r.
+*VARIABLE LABELS C2_L1r 'C2_L1 recoded' C2_L7r 'C2_L7 recoded' C2_L15r 'C2_L15 recoded'.
+*EXECUTE.
+*run above as required.
+COMPUTE C2_LonelinessIMP = RND(MEAN.5 (C2_L1r, C2_L2, C2_L6, C2_L7r, C2_L11, C2_L14, C2_L15r)*7).
+EXECUTE.
+
+***Loneliness: Child Wave 3.
+RECODE
+C3_L1 C3_L7 C3_L15
+(1=5) (2=4) (3=3) (4=2) (5=1) INTO C3_L1r C3_L7r C3_L15r.
+*VARIABLE LABELS C3_L1r 'C3_L1 recoded' C3_L7r 'C3_L7 recoded' C3_L15r 'C3_L15 recoded'.
+EXECUTE.
+*run above as required.
+COMPUTE C3_LonelinessIMP = RND(MEAN.5(C3_L1r, C3_L2, C3_L6, C3_L7r, C3_L11, C3_L14, C3_L15r)*7).
+EXECUTE.
+
+*** Academic Goals - Learning Goal Pursuit: Child Wave 1.  – mean.3.
+COMPUTE C1_LearningGoalPursuitIMP  = RND(MEAN.3 (C1_AG1, C1_AG2, C1_AG3, C1_AG4)*4).
+EXECUTE.
+
+*** Academic Goals - Performance Goal Pursuit: Child Wave 1.  – mean.4.
+COMPUTE C1_PerformanceGoalPursuitIMP = RND(MEAN.4 (C1_AG5, C1_AG6, C1_AG7, C1_AG8, C1_AG9, C1_AG10)*6).
+EXECUTE.
+
+*** Academic Goals - Learning Goal Pursuit: Parent Wave 1.  – mean.3.
+COMPUTE P1_LearningGoalPursuitIMP = RND(MEAN.3 (P1_AG1, P1_AG2, P1_AG3, P1_AG4)*4).
+EXECUTE.
+
+*** Academic Goals - Performance Goal Pursuit: Parent Wave 1. - mean.4.
+COMPUTE P1_PerformanceGoalPursuitIMP = RND(MEAN.4 (P1_AG5, P1_AG6, P1_AG7, P1_AG8, P1_AG9, P1_AG10)*6).
+EXECUTE.
+
+*** Academic Goals - Learning Goal Pursuit: Child Wave 2.  – mean.3.
+COMPUTE C2_LearningGoalPursuitIMP  = RND(MEAN.3 (C2_AG1, C2_AG2, C2_AG3, C2_AG4)*4).
+EXECUTE.
+
+*** Academic Goals - Performance Goal Pursuit: Child Wave 2.  – mean.4.
+COMPUTE C2_PerformanceGoalPursuitIMP = RND(MEAN.4 (C2_AG5, C2_AG6, C2_AG7, C2_AG8, C2_AG9, C2_AG10)*6).
+EXECUTE.
+
+*** Academic Goals - Learning Goal Pursuit: Parent Wave 2.  – mean.3.
+COMPUTE P2_LearningGoalPursuitIMP = RND(MEAN.3 (P2_AG1, P2_AG2, P2_AG3, P2_AG4)*4).
+EXECUTE.
+
+*** Academic Goals - Performance Goal Pursuit: Parent Wave 2. - mean.4.
+COMPUTE P2_PerformanceGoalPursuitIMP = RND(MEAN.4 (P2_AG5, P2_AG6, P2_AG7, P2_AG8, P2_AG9, P2_AG10)*6).
+EXECUTE.
+
+*** Academic Goals - Learning Goal Pursuit: Child Wave 3.
+COMPUTE C3_LearningGoalPursuitIMP = RND(MEAN.3 (C3_AG1, C3_AG2, C3_AG3, C3_AG4)*4).
+EXECUTE.
+
+*** Academic Goals - Performance Goal Pursuit: Child Wave 3.
+COMPUTE C3_PerformanceGoalPursuitIMP = RND(MEAN.5 (C3_AG5, C3_AG6, C3_AG7, C3_AG8, C3_AG9, C3_AG10)*6).
+EXECUTE.
+
+*** Academic Goals - Learning Goal Pursuit: Parent Wave 3.  – mean.3.
+COMPUTE P3_LearningGoalPursuitIMP = RND(MEAN.3 (P3_AG1, P3_AG2, P3_AG3, P3_AG4)*4).
+EXECUTE.
+
+*** Academic Goals - Performance Goal Pursuit: Parent Wave 3. - mean.4.
+COMPUTE P3_PerformanceGoalPursuitIMP = RND(MEAN.4 (P3_AG5, P3_AG6, P3_AG7, P3_AG8, P3_AG9, P3_AG10)*6).
+EXECUTE.
+
+***Liking Teachers: Child Wave 1 – mean.6.
+*RECODE
+*C1_LT1 C1_LT3 C1_LT5 C1_LT7 C1_LT9 C1_LT10
+*(1=4)  (2=3)  (3=2)  (4=1) 
+*INTO C1_LT1r C1_LT3r C1_LT5r C1_LT7r C1_LT9r C1_LT10r.
+*VARIABLE LABELS C1_LT1r 'C1_LT1 recoded' C1_LT3r 'C1_LT3 recoded' C1_LT5r 'C1_LT5 recoded' C1_LT7r 'C1_LT7 recoded' C1_LT9r 'C1_LT9 recoded' C1_LT10r 'C1_LT10 recoded'.
+*EXECUTE.
+*use above as required.
+COMPUTE C1_LikingTeachersIMP = RND(MEAN.6 (C1_LT1r, C1_LT2, C1_LT3r, C1_LT4, C1_LT5r, C1_LT6, C1_LT7r, C1_LT8, C1_LT9r, C1_LT10r)*10).
+EXECUTE.
+
+***Liking Teachers: Child Wave 2.
+*RECODE
+*C2_LT1 C2_LT3 C2_LT5 C2_LT7 C2_LT9 C2_LT10
+*(1=4)  (2=3)  (3=2)  (4=1) 
+*INTO C2_LT1r C2_LT3r C2_LT5r C2_LT7r C2_LT9r C2_LT10r.
+*VARIABLE LABELS C2_LT1r 'C2_LT1 recoded' C2_LT3r 'C2_LT3 recoded' C2_LT5r 'C2_LT5 recoded' C2_LT7r 'C2_LT7 recoded' C2_LT9r 'C2_LT9 recoded' C2_LT10r 'C2_LT10 recoded'.
+*EXECUTE.
+*use above as required.
+COMPUTE C2_LikingTeachersIMP = RND(MEAN.6 (C2_LT1r, C2_LT2, C2_LT3r, C2_LT4, C2_LT5r, C2_LT6, C2_LT7r, C2_LT8, C2_LT9r, C2_LT10r)*10).
+EXECUTE.
+
+***Liking Teachers: Child Wave 3.
+*RECODE
+*C3_LT2 C3_LT4 C3_LT6 C3_LT8
+*(1=4)  (2=3)  (3=2)  (4=1) 
+*INTO C3_LT2r C3_LT4r C3_LT6r C3_LT8r.
+*VARIABLE LABELS C3_LT2r 'C3_LT2 recoded' C3_LT4r 'C2_LT4 recoded' C3_LT6r 'C2_LT6 recoded' C3_LT8r 'C3_LT8 recoded'.
+*EXECUTE.
+*use above as required.
+COMPUTE C3_LikingTeachersIMP = RND(MEAN.6 (C3_LT1, C3_LT2r, C3_LT3, C3_LT4r, C3_LT5, C3_LT6r, C3_LT7, C3_LT8r, C3_LT9, C3_LT10)*10).
+EXECUTE.
+
+
+***Parental Warmth and Hostility: Child Wave 1. – toal score.various.
+RECODE C1_PWHA1 C1_PWHA3 C1_PWHA4 C1_PWHA8 C1_PWHA2 C1_PWHA5 C1_PWHA6 C1_PWHA7 C1_PWHA9 C1_PWHA10 C1_PWHB1 C1_PWHB3 
+C1_PWHB4 C1_PWHB8 C1_PWHB2 C1_PWHB5 C1_PWHB6 C1_PWH7 C1_PWHB9 C1_PWHB10 (7=1) (6=2) (5=3) (4=4) (3=5) (2=6) (1=7) INTO C1_PWHA1r C1_PWHA3r C1_PWHA4r C1_PWHA8r C1_PWHA2r 
+C1_PWHA5r C1_PWHA6r C1_PWHA7r C1_PWHA9r C1_PWHA10r C1_PWHB1r C1_PWHB3r C1_PWHB4r C1_PWHB8r C1_PWHB2r C1_PWHB5r C1_PWHB6r C1_PWH7r C1_PWHB9r C1_PWHB10r.	
+EXECUTE.
+*use above as required.
+COMPUTE C1_MotherHostilityIMP = RND(MEAN.3(C1_PWHA1r, C1_PWHA3r, C1_PWHA4r, C1_PWHA8r)*4).	
+EXECUTE.
+COMPUTE C1_MotherWarmthIMP = RND(MEAN.4(C1_PWHA2r, C1_PWHA5r, C1_PWHA6r, C1_PWHA7r, C1_PWHA9r, C1_PWHA10r)*6).	
+EXECUTE.
+COMPUTE C1_FatherHostilityIMP = RND(MEAN.3(C1_PWHB1r, C1_PWHB3r, C1_PWHB4r, C1_PWHB8r)*4).	
+EXECUTE.
+COMPUTE C1_FatherWarmthIMP = RND(MEAN.4(C1_PWHB2r, C1_PWHB5r, C1_PWHB6r, C1_PWH7r, C1_PWHB9r, C1_PWHB10r)*6).	
+EXECUTE.
+
+***Parental Warmth and Hostility: Child Wave 2. – toal score.various.
+RECODE C2_PWHA1 C2_PWHA3 C2_PWHA4 C2_PWHA8 C2_PWHA2 C2_PWHA5 C2_PWHA6 C2_PWHA7 C2_PWHA9 C2_PWHA10 C2_PWHB1 C2_PWHB3 
+C2_PWHB4 C2_PWHB8 C2_PWHB2 C2_PWHB5 C2_PWHB6 C2_PWHB7 C2_PWHB9 C2_PWHB10 (7=1) (6=2) (5=3) (4=4) (3=5) (2=6) (1=7) INTO C2_PWHA1r C2_PWHA3r C2_PWHA4r C2_PWHA8r C2_PWHA2r 
+C2_PWHA5r C2_PWHA6r C2_PWHA7r C2_PWHA9r C2_PWHA10r C2_PWHB1r C2_PWHB3r C2_PWHB4r C2_PWHB8r C2_PWHB2r C2_PWHB5r C2_PWHB6r C2_PWHB7r C2_PWHB9r C2_PWHB10r.	
+EXECUTE.
+*use above as required.
+COMPUTE C2_MotherHostilityIMP = RND(MEAN.3(C2_PWHA1r, C2_PWHA3r, C2_PWHA4r, C2_PWHA8r)*4).	
+EXECUTE.
+COMPUTE C2_MotherWarmthIMP = RND(MEAN.4(C2_PWHA2r, C2_PWHA5r, C2_PWHA6r, C2_PWHA7r, C2_PWHA9r, C2_PWHA10r)*6).	
+EXECUTE.
+COMPUTE C2_FatherHostilityIMP = RND(MEAN.3(C2_PWHB1r, C2_PWHB3r, C2_PWHB4r, C2_PWHB8r)*4).	
+EXECUTE.
+COMPUTE C2_FatherWarmthIMP = RND(MEAN.4(C2_PWHB2r, C2_PWHB5r, C2_PWHB6r, C2_PWHB7r, C2_PWHB9r, C2_PWHB10r)*6).	
+EXECUTE.
+
+***Parental Warmth: Child Wave 3.
+COMPUTE C3_MotherWarmthIMP = RND(MEAN.4(C3_PWHA2, C3_PWHA5, C3_PWHA6, C3_PWHA7, C3_PWHA9, C3_PWHA10)*6).	
+EXECUTE.
+COMPUTE C3_FatherWarmthIMP = RND(MEAN.4(C3_PWHB2, C3_PWHB5, C3_PWHB6, C3_PWHB7, C3_PWHB9, C3_PWHB10)*6).	
+EXECUTE.
+
+*Terry's extra warmth variables - splitting into affection and support.
+COMPUTE C1_MumWsupIMP = RND(MEAN.2( C1_PWHA6r, C1_PWHA7r, C1_PWHA9r)*3).	
+EXECUTE.
+COMPUTE C1_MumWaffIMP = RND(MEAN.2(C1_PWHA2r, C1_PWHA5r, C1_PWHA10r)*3).	
+EXECUTE.
+COMPUTE C1_DadWsupIMP = RND(MEAN.2( C1_PWHB6r, C1_PWH7r, C1_PWHB9r)*3).	
+EXECUTE.
+COMPUTE C1_DadWaffIMP = RND(MEAN.2(C1_PWHB2r, C1_PWHB5r, C1_PWHB10r)*3).	
+EXECUTE.
+COMPUTE C2_MumWsupIMP = RND(MEAN.2( C2_PWHA6r, C2_PWHA7r, C2_PWHA9r)*3).	
+EXECUTE.
+COMPUTE C2_MumWaffIMP = RND(MEAN.2(C2_PWHA2r, C2_PWHA5r, C2_PWHA10r)*3).	
+EXECUTE.
+COMPUTE C2_DadWsupIMP = RND(MEAN.2( C2_PWHB6r, C2_PWHB7r, C2_PWHB9r)*3).	
+EXECUTE.
+COMPUTE C2_DadWaffIMP = RND(MEAN.2(C2_PWHB2r, C2_PWHB5r, C2_PWHB10r)*3).	
+EXECUTE.
+COMPUTE C3_MumWsupIMP = RND(MEAN.2(C3_PWHA6, C3_PWHA7, C3_PWHA9)*3).	
+EXECUTE.
+COMPUTE C3_MumWaffIMP = RND(MEAN.2(C3_PWHA2, C3_PWHA5, C3_PWHA10)*3).	
+EXECUTE.
+COMPUTE C3_DadWsupIMP = RND(MEAN.2(C3_PWHB6, C3_PWHB7, C3_PWHB9)*3).	
+EXECUTE.
+COMPUTE C3_DadWaffIMP = RND(MEAN.2(C3_PWHB2, C3_PWHB5, C3_PWHB10)*3).	
+EXECUTE.
+
+***SQD-W1***
+
+***Behaviour: Child Wave 1.
+RECODE
+C1_B7 C1_B11 C1_B14 C1_B21 C1_B25
+(2=0) (1=1) (0=2) 
+INTO C1_B7r C1_B11r C1_B14r C1_B21r C1_B25r.
+*VARIABLE LABELS C1_B7r ‘C1_B7 recoded’ C1_B11r ‘C1_B11 recoded’ C1_B14r ‘C1_B14 recoded’ C1_B21r ‘C1_B21 recoded’ *C1_B25r ‘C1_B25 recoded’.
+EXECUTE.
+*run above as needed
+
+**Emotional Symptoms: Child Wave 1.
+COMPUTE C1_EmotionalSymptomsIMP = RND(MEAN.3(C1_B3, C1_B8, C1_B13, C1_B16, C1_B24)*5).
+EXECUTE.
+
+**Conduct Problems: Child Wave 1.
+COMPUTE C1_ConductProblemsIMP = RND(MEAN.3(C1_B5, C1_B7r, C1_B12, C1_B18, C1_B22)*5).
+EXECUTE.
+
+**Hyperactivity: Child Wave 1.
+COMPUTE C1_HyperactivityIMP = RND(MEAN.3(C1_B2, C1_B10, C1_B15, C1_B21r, C1_B25r)*5).
+EXECUTE.
+
+**Peer Problems: Child Wave 1.
+COMPUTE C1_PeerProblemsIMP = RND(MEAN.3(C1_B6, C1_B11r, C1_B14r, C1_B19, C1_B23)*5).
+EXECUTE.
+
+**Prosocial: Child Wave 1.
+COMPUTE C1_ProsocialIMP = RND(MEAN.3(C1_B1, C1_B4, C1_B9, C1_B17, C1_B20)*5).
+EXECUTE.
+
+**Total Difficulties: Child Wave 1.
+COMPUTE C1_TotalDifficultiesIMP = RND(MEAN.3(C1_EmotionalSymptomsIMP, C1_ConductProblemsIMP, C1_HyperactivityIMP, C1_PeerProblemsIMP)*4).
+EXECUTE.
+
+***Behaviour: Parent Wave 1.
+RECODE
+P1_B7 P1_B11 P1_B14 P1_B21 P1_B25
+(2=0) (1=1) (0=2) 
+INTO P1_B7r P1_B11r P1_B14r P1_B21r P1_B25r.
+*VARIABLE LABELS P1_B7r ‘P1_B7 recoded’ P1_B11r ‘P1_B11 recoded’ P1_B14r ‘P1_B14 recoded’ P1_B21r ‘P1_B21 recoded’ *P1_B25r ‘P1_B25 recoded’.
+EXECUTE.
+*use above as required
+
+**Emotional Symptoms: Parent Wave 1.
+COMPUTE P1_EmotionalSymptomsIMP = RND(MEAN.3(P1_B3, P1_B8, P1_B13, P1_B16, P1_B24)*5).
+EXECUTE.
+
+**Conduct Problems: Parent Wave 1.
+COMPUTE P1_ConductProblemsIMP = RND(MEAN.3(P1_B5, P1_B7r, P1_B12, P1_B18, P1_B22)*5).
+EXECUTE.
+
+**Hyperactivity: Parent Wave 1.
+COMPUTE P1_HyperactivityIMP = RND(MEAN.3(P1_B2, P1_B10, P1_B15, P1_B21r, P1_B25r)*5).
+EXECUTE.
+
+**Peer Problems: Parent Wave 1.
+COMPUTE P1_PeerProblemsIMP = RND(MEAN.3(P1_B6, P1_B11r, P1_B14r, P1_B19, P1_B23)*5).
+EXECUTE.
+
+**Prosocial: Parent Wave 1.
+COMPUTE P1_ProsocialIMP = RND(MEAN.3(P1_B1, P1_B4, P1_B9, P1_B17, P1_B20)*5).
+EXECUTE.
+
+**Total Difficulties: Parent Wave 1.
+COMPUTE P1_TotalDifficultiesIMP = RND(MEAN.3(P1_EmotionalSymptomsIMP, P1_ConductProblemsIMP, P1_HyperactivityIMP, P1_PeerProblemsIMP)*4).
+EXECUTE.
+
+***Behaviour Impact: Parent Wave 1.
+RECODE
+P1_B28 P1_B29 P1_B30 P1_B31 P1_B32
+(1=0) (2=0) (3=1) (4=2)*INTO P1_B28r P1_B29r P1_B30r P1_B31r P1_B32r
+*VARIABLE LABELS P1_B28r ‘P1_B28 recoded’ P1_B29r ‘P1_B29 recoded’ P1_B30r ‘P1_B30 recoded’ P1_B31r ‘P1_B31 *recoded’ P1_B32r ‘P1_B32 recoded’.
+EXECUTE.
+*use above as required.
+DO IF (P1_B26 = 0).
+COMPUTE P1_BehaviourImpactContinuousIMP = 0.
+ELSE IF (P1_B26 = 1).
+COMPUTE P1_BehaviourImpactContinuousIMP = RND(MEAN.3(P1_B28r, P1_B29r, P1_B30r, P1_B31r, P1_B32r)*5).
+ELSE IF (P1_B26 = 2).
+COMPUTE P1_BehaviourImpactContinuousIMP = RND(MEAN.3(P1_B28r, P1_B29r, P1_B30r, P1_B31r, P1_B32r)*5).
+ELSE IF (P1_B26 = 3).
+COMPUTE P1_BehaviourImpactContinuousIMP = RND(MEAN.3(P1_B28r, P1_B29r, P1_B30r, P1_B31r, P1_B32r)*5).
+END IF.
+EXECUTE.
+RECODE
+P1_BehaviourImpactContinuousIMP 
+(0=0) (1=1) (2 thru 10 =2)
+INTO P1_BehaviourImpactStatusIMP.
+VARIABLE LABELS P1_BehaviourImpactStatusIMP 0 ‘normal’ 1 ‘borderline 2 ‘abnormal’.
+EXECUTE.
+
+***Behaviour: Teacher  Wave 1.
+RECODE
+T1_B7 T1_B11 T1_B14 T1_B21 T1_B25
+(2=0) (1=1) (0=2) 
+INTO T1_B7r T1_B11r T1_B14r T1_B21r T1_B25r.
+*VARIABLE LABELS T1_B7r ‘T1_B7 recoded’ T1_B11r ‘T1_B11 recoded’ T1_B14r ‘T1_B14 recoded’ T1_B21r ‘T1_B21 recoded’ *T1_B25r ‘T1_B25 recoded’.
+EXECUTE.
+*use above as required.
+
+**Emotional Symptoms: Teacher Wave 1.
+COMPUTE T1_EmotionalSymptomsIMP = RND(MEAN.3(T1_B3, T1_B8, T1_B13, T1_B16, T1_B24)*5).
+EXECUTE.
+
+**Conduct Problems: Teacher Wave 1.
+COMPUTE T1_ConductProblemsIMP = RND(MEAN.3(T1_B5, T1_B7r, T1_B12, T1_B18, T1_B22)*5).
+EXECUTE.
+
+**Hyperactivity: Teacher Wave 1.
+COMPUTE T1_HyperactivityIMP = RND(MEAN.3(T1_B2, T1_B10, T1_B15, T1_B21r, T1_B25r)*5).
+EXECUTE.
+
+**Peer Problems: Teacher Wave 1.
+COMPUTE T1_PeerProblemsIMP = RND(MEAN.3(T1_B6, T1_B11r, T1_B14r, T1_B19, T1_B23)*5).
+EXECUTE.
+
+**Prosocial: Teacher Wave 1.
+COMPUTE T1_ProsocialIMP = RND(MEAN.3(T1_B1, T1_B4, T1_B9, T1_B17, T1_B20)*5).
+EXECUTE.
+
+**Total Difficulties: Teacher Wave 1.
+COMPUTE T1_TotalDifficultiesIMP = RND(MEAN.3(T1_EmotionalSymptomsIMP,T1_ConductProblemsIMP, T1_HyperactivityIMP, T1_PeerProblemsIMP)*4).
+EXECUTE.
+
+***Behaviour Impact: Teacher Wave 1.
+RECODE
+T1_B27 T1_B28 T1_B29 
+(1=0) (2=0) (3=1) (4=2)
+INTO T1_B27r T1_B28r T1_B29r 
+VARIABLE LABELS T1_B27r ‘T1_B27 recoded’ T1_B28r ‘T1_B28 recoded’ T1_B29r ‘T1_B29 recoded’.
+EXECUTE.
+
+*use above as required.
+DO IF (T1_B26 = 0).
+COMPUTE T1_BehaviourImpactContinuousIMP = 0.
+ELSE IF (T1_B26 = 1).
+COMPUTE T1_BehaviourImpactContinuousIMP = RND(MEAN.2(T1_B27r, T1_B28r, T1_B29r)*3).
+ELSE IF (T1_B26 = 2).
+COMPUTE T1_BehaviourImpactContinuousIMP = RND(MEAN.2(T1_B27r, T1_B28r, T1_B29r)*3).
+ELSE IF (T1_B26 = 2).
+COMPUTE T1_BehaviourImpactContinuousIMP = RND(MEAN.2(T1_B27r, T1_B28r, T1_B29r)*3).
+END IF.
+EXECUTE.
+RECODE
+T1_BehaviourImpactContinuousIMP 
+(0=0) (1=1) (2 thru 6 =2)
+INTO T1_BehaviourImpactStatusIMP.
+VARIABLE LABELS T1_BehaviourImpactStatusIMP 0 ‘normal’ 1 ‘borderline 2 ‘abnormal’.
+EXECUTE.
+
+***SDQ-W2***
+
+***Behaviour: Child Wave 2.
+*RECODE
+*C2_B7 C2_B11 C2_B14 C2_B21 C2_B25
+*(2=0) (1=1) (0=2) 
+*INTO C2_B7r C2_B11r C2_B14r C2_B21r C2_B25r.
+*VARIABLE LABELS C2_B7r ‘C2_B7 recoded’ C2_B11r ‘C2_B11 recoded’ C2_B14r ‘C2_B14 recoded’ C2_B21r ‘C2_B21 recoded’ *C2_B25r ‘C2_B25 recoded’.
+*EXECUTE.
+*run above as needed
+
+**Emotional Symptoms: Child Wave 2.
+COMPUTE C2_EmotionalSymptomsIMP = RND(MEAN.3(C2_B3, C2_B8, C2_B13, C2_B16, C2_B24)*5).
+EXECUTE.
+
+**Conduct Problems: Child Wave 2.
+COMPUTE C2_ConductProblemsIMP = RND(MEAN.3(C2_B5, C2_B7r, C2_B12, C2_B18, C2_B22)*5).
+EXECUTE.
+
+**Hyperactivity: Child Wave 2.
+COMPUTE C2_HyperactivityIMP = RND(MEAN.3(C2_B2, C2_B10, C2_B15, C2_B21r, C2_B25r)*5).
+EXECUTE.
+
+**Peer Problems: Child Wave2.
+COMPUTE C2_PeerProblemsIMP = RND(MEAN.3(C2_B6, C2_B11r, C2_B14r, C2_B19, C2_B23)*5).
+EXECUTE.
+
+**Prosocial: Child Wave 2.
+COMPUTE C2_ProsocialIMP = RND(MEAN.3(C2_B1, C2_B4, C2_B9, C2_B17, C2_B20)*5).
+EXECUTE.
+
+**Total Difficulties: Child Wave 2.
+COMPUTE C2_TotalDifficultiesIMP = RND(MEAN.3(C2_EmotionalSymptomsIMP, C2_ConductProblemsIMP, C2_HyperactivityIMP, C2_PeerProblemsIMP)*4).
+EXECUTE.
+
+***Behaviour: Parent Wave 2.
+*RECODE
+*P2_B7 P2_B11 P2_B14 P2_B21 P2_B25
+*(2=0) (1=1) (0=2) 
+*INTO P2_B7r P2_B11r P2_B14r P2_B21r P2_B25r.
+*VARIABLE LABELS P2_B7r ‘P2_B7 recoded’ P2_B11r ‘P2_B11 recoded’ P2_B14r ‘P2_B14 recoded’ P2_B21r ‘P2_B21 recoded’ *P2_B25r ‘P2_B25 recoded’.
+*EXECUTE.
+*use above as required
+
+**Emotional Symptoms: Parent Wave 2.
+COMPUTE P2_EmotionalSymptomsIMP = RND(MEAN.3(P2_B3, P2_B8, P2_B13, P2_B16, P2_B24)*5).
+EXECUTE.
+
+**Conduct Problems: Parent Wave 2.
+COMPUTE P2_ConductProblemsIMP = RND(MEAN.3(P2_B5, P2_B7r, P2_B12, P2_B18, P2_B22)*5).
+EXECUTE.
+
+**Hyperactivity: Parent Wave 2.
+COMPUTE P2_HyperactivityIMP = RND(MEAN.3(P2_B2, P2_B10, P2_B15, P2_B21r, P2_B25r)*5).
+EXECUTE.
+
+**Peer Problems: Parent Wave 2.
+COMPUTE P2_PeerProblemsIMP = RND(MEAN.3(P2_B6, P2_B11r, P2_B14r, P2_B19, P2_B23)*5).
+EXECUTE.
+
+**Prosocial: Parent Wave 2.
+COMPUTE P2_ProsocialIMP = RND(MEAN.3(P2_B1, P2_B4, P2_B9, P2_B17, P2_B20)*5).
+EXECUTE.
+
+**Total Difficulties: Parent Wave 2.
+COMPUTE P2_TotalDifficultiesIMP = RND(MEAN.3(P2_EmotionalSymptomsIMP, P2_ConductProblemsIMP, P2_HyperactivityIMP, P2_PeerProblemsIMP)*4).
+EXECUTE.
+
+***Behaviour Impact: Parent Wave 2.
+*RECODE
+*P2_B28 P2_B29 P2_B30 P2_B31 P2_B32
+*(1=0) (2=0) (3=1) (4=2)
+*INTO P2_B28r P2_B29r P2_B30r P2_B31r P2_B32r
+*VARIABLE LABELS P2_B28r ‘P2_B28 recoded’ P2_B29r ‘P2_B29 recoded’ P2_B30r ‘P2_B30 recoded’ P2_B31r ‘P2_B31 *recoded’ P2_B32r ‘P2_B32 recoded’.
+*EXECUTE.
+*use above as required.
+DO IF (P2_B26 = 0).
+COMPUTE P2_BehaviourImpactContinuousIMP = 0.
+ELSE IF (P2_B26 = 1).
+COMPUTE P2_BehaviourImpactContinuousIMP = RND(MEAN.3(P2_B28r, P2_B29r, P2_B30r, P2_B31r, P2_B32r)*5).
+ELSE IF (P2_B26 = 2).
+COMPUTE P2_BehaviourImpactContinuousIMP = RND(MEAN.3(P2_B28r, P2_B29r, P2_B30r, P2_B31r, P2_B32r)*5).
+ELSE IF (P2_B26 = 3).
+COMPUTE P2_BehaviourImpactContinuousIMP = RND(MEAN.3(P2_B28r, P2_B29r, P2_B30r, P2_B31r, P2_B32r)*5).
+END IF.
+EXECUTE.
+RECODE
+P2_BehaviourImpactContinuousIMP 
+(0=0) (1=1) (2 thru 10 =2)
+INTO P2_BehaviourImpactStatusIMP.
+VARIABLE LABELS P2_BehaviourImpactStatusIMP 0 ‘normal’ 1 ‘borderline 2 ‘abnormal’.
+EXECUTE.
+
+***Behaviour: Teacher  Wave 2.
+*RECODE
+*T2_B7 T2_B11 T2_B14 T2_B21 T2_B25
+*(2=0) (1=1) (0=2) 
+*INTO T2_B7r T2_B11r T2_B14r T2_B21r T2_B25r.
+*VARIABLE LABELS T2_B7r ‘T2_B7 recoded’ T2_B11r ‘T2_B11 recoded’ T2_B14r ‘T2_B14 recoded’ T2_B21r ‘T2_B21 recoded’ *T2_B25r ‘T2_B25 recoded’.
+*EXECUTE.
+*use above as required.
+
+**Emotional Symptoms: Teacher Wave 2.
+COMPUTE T2_EmotionalSymptomsIMP = RND(MEAN.3(T2_B3, T2_B8, T2_B13, T2_B16, T2_B24)*5).
+EXECUTE.
+
+**Conduct Problems: Teacher Wave 2.
+COMPUTE T2_ConductProblemsIMP = RND(MEAN.3(T2_B5, T2_B7r, T2_B12, T2_B18, T2_B22)*5).
+EXECUTE.
+
+**Hyperactivity: Teacher Wave 2.
+COMPUTE T2_HyperactivityIMP = RND(MEAN.3(T2_B2, T2_B10, T2_B15, T2_B21r, T2_B25r)*5).
+EXECUTE.
+
+**Peer Problems: Teacher Wave 2.
+COMPUTE T2_PeerProblemsIMP = RND(MEAN.3(T2_B6, T2_B11r, T2_B14r, T2_B19, T2_B23)*5).
+EXECUTE.
+
+**Prosocial: Teacher Wave 2.
+COMPUTE T2_ProsocialIMP = RND(MEAN.3(T2_B1, T2_B4, T2_B9, T2_B17, T2_B20)*5).
+EXECUTE.
+
+**Total Difficulties: Teacher Wave 2.
+COMPUTE T2_TotalDifficultiesIMP = RND(MEAN.3(T2_EmotionalSymptomsIMP,T2_ConductProblemsIMP, T2_HyperactivityIMP, T2_PeerProblemsIMP)*4).
+EXECUTE.
+
+***Behaviour Impact: Teacher Wave 2.
+*RECODE
+*T2_B27 T2_B28 T2_B29 
+*(1=0) (2=0) (3=1) (4=2)
+*INTO T2_B27r T2_B28r T2_B29r 
+*VARIABLE LABELS T2_B27r ‘T2_B27 recoded’ T2_B28r ‘T2_B28 recoded’ T2_B29r ‘T2_B29 recoded’.
+*EXECUTE.
+*use above as required.
+DO IF (T2_B26 = 0).
+COMPUTE T2_BehaviourImpactContinuousIMP = 0.
+ELSE IF (T2_B26 = 1).
+COMPUTE T2_BehaviourImpactContinuousIMP = RND(MEAN.2(T2_B27r, T2_B28r, T2_B29r)*3).
+ELSE IF (T2_B26 = 2).
+COMPUTE T2_BehaviourImpactContinuousIMP = RND(MEAN.2(T2_B27r, T2_B28r, T2_B29r)*3).
+ELSE IF (T2_B26 = 3).
+COMPUTE T2_BehaviourImpactContinuousIMP = RND(MEAN.2(T2_B27r, T2_B28r, T2_B29r)*3).
+END IF.
+EXECUTE.
+RECODE
+T2_BehaviourImpactContinuousIMP 
+(0=0) (1=1) (2 thru 6 =2)
+INTO T2_BehaviourImpactStatusIMP.
+VARIABLE LABELS T2_BehaviourImpactStatusIMP 0 ‘normal’ 1 ‘borderline 2 ‘abnormal’.
+EXECUTE.
+
+***Behaviour: Child Wave 3.
+RECODE
+C3_B7 C3_B11 C3_B14 C3_B21 C3_B25
+(2=0) (1=1) (0=2) 
+INTO C3_B7r C3_B11r C3_B14r C3_B21r C3_B25r.
+*VARIABLE LABELS C3_B7r 'C3_B7 recoded' C3_B11r 'C3_B11 recoded' C3_B14r 'C3_B14 recoded' C3_B21r 'C3_B21 recoded' C3_B25r 'C3_B25 recoded'.
+EXECUTE.
+*use above as required.
+
+**Emotional Symptoms: Child Wave 1.
+COMPUTE C3_EmotionalSymptomsIMP = RND(MEAN.3(C3_B3, C3_B8, C3_B13, C3_B16, C3_B24)*5).
+EXECUTE.
+
+**Conduct Problems: Child Wave 1.
+COMPUTE C3_ConductProblemsIMP = RND(MEAN.3(C3_B5, C3_B7r, C3_B12, C3_B18, C3_B22)*5).
+EXECUTE.
+
+**Hyperactivity: Child Wave 1.
+COMPUTE C3_HyperactivityIMP = RND(MEAN.3(C3_B2, C3_B10, C3_B15, C3_B21r, C3_B25r)*5).
+EXECUTE.
+
+**Peer Problems: Child Wave 1.
+COMPUTE C3_PeerProblemsIMP = RND(MEAN.3(C3_B6, C3_B11r, C3_B14r, C3_B19, C3_B23)*5).
+EXECUTE.
+
+**Prosocial: Child Wave 1.
+COMPUTE C3_ProsocialIMP = RND(MEAN.3(C3_B1, C3_B4, C3_B9, C3_B17, C3_B20)*5).
+EXECUTE.
+
+**Total Difficulties: Child Wave 1.
+COMPUTE C3_TotalDifficultiesIMP = RND(MEAN.3(C3_EmotionalSymptomsIMP, C3_ConductProblemsIMP, C3_HyperactivityIMP, C3_PeerProblemsIMP)*4).
+EXECUTE.
+
+
+***Behaviour: Teacher  Wave 3.
+RECODE
+T3_B7 T3_B11 T3_B14 T3_B21 T3_B25
+(2=0) (1=1) (0=2) 
+INTO T3_B7r T3_B11r T3_B14r T3_B21r T3_B25r.
+*VARIABLE LABELS T3_B7r ‘T3_B7 recoded’ T3_B11r ‘T3_B11 recoded’ T3_B14r ‘T3_B14 recoded’ T3_B21r ‘T3_B21 recoded’ *T3_B25r ‘T3_B25 recoded’.
+EXECUTE.
+*use above as required.
+
+**Emotional Symptoms: Teacher Wave 3.
+COMPUTE T3_EmotionalSymptomsIMP = RND(MEAN.3(T3_B3, T3_B8, T3_B13, T3_B16, T3_B24)*5).
+EXECUTE.
+
+**Conduct Problems: Teacher Wave 3.
+COMPUTE T3_ConductProblemsIMP = RND(MEAN.3(T3_B5, T3_B7r, T3_B12, T3_B18, T3_B22)*5).
+EXECUTE.
+
+**Hyperactivity: Teacher Wave 3.
+COMPUTE T3_HyperactivityIMP = RND(MEAN.3(T3_B2, T3_B10, T3_B15, T3_B21r, T3_B25r)*5).
+EXECUTE.
+
+**Peer Problems: Teacher Wave 3.
+COMPUTE T3_PeerProblemsIMP = RND(MEAN.3(T3_B6, T3_B11r, T3_B14r, T3_B19, T3_B23)*5).
+EXECUTE.
+
+**Prosocial: Teacher Wave 3.
+COMPUTE T3_ProsocialIMP = RND(MEAN.3(T3_B1, T3_B4, T3_B9, T3_B17, T3_B20)*5).
+EXECUTE.
+
+**Total Difficulties: Teacher Wave 3.
+COMPUTE T3_TotalDifficultiesIMP = RND(MEAN.3(T3_EmotionalSymptomsIMP,T3_ConductProblemsIMP, T3_HyperactivityIMP, T3_PeerProblemsIMP)*4).
+EXECUTE.
+
+
+
+*****Self Control, Problem Solving and Personality*****
+
+***Self-control: Parent Wave 1.
+RECODE
+P1_SControl2 P1_SControl3 P1_SControl4 P1_SControl5 P1_SControl7 P1_SControl9 P1_SControl10 P1_SControl12 P1_SControl13
+(1=5) (2=4) (3=3) (4=2) (5=1)
+INTO P1_SControl2r P1_SControl3r P1_SControl4r P1_SControl5r P1_SControl7r P1_SControl9r P1_SControl10r P1_SControl12r P1_SControl13r.
+VARIABLE LABELS P1_SControl2r ‘P1_SControl2 recoded’ P1_SControl3r ‘P1_SControl3 recoded’ P1_SControl4r ‘P1_SControl4 recoded’ P1_SControl5r ‘P1_SControl5 recoded’ P1_SControl7r ‘P1_SControl7 recoded’ 
+P1_SControl9r ‘P1_SControl9 recoded’ P1_SControl10r ‘P1_SControl10 recoded’ P1_SControl12r ‘P1_SControl12 recoded’ P1_SControl13r ‘P1_SControl13 recoded’.
+EXECUTE.
+*use above as required.
+COMPUTE P1_SelfControlIMP = RND(MEAN.8(P1_SControl1, P1_SControl2r, P1_SControl3r, P1_SControl4r, P1_SControl5r, P1_SControl6, P1_SControl7r, P1_SControl8, P1_SControl9r, P1_SControl10r, P1_SControl11, P1_SControl12r, P1_SControl13r)).
+EXECUTE.
+
+***Self-control: Child Wave 1.
+RECODE
+C1_SControl2 C1_SControl3 C1_SControl4 C1_SControl5 C1_SControl7 C1_SControl9 C1_SControl10 C1_SControl12 C1_SControl13
+(1=5) (2=4) (3=3) (4=2) (5=1)
+INTO C1_SControl2r C1_SControl3r C1_SControl4r C1_SControl5r C1_SControl7r C1_SControl9r C1_SControl10r C1_SControl12r C1_SControl13r.
+VARIABLE LABELS C1_SControl2r ‘C1_SControl2 recoded’ C1_SControl3r ‘C1_SControl3 recoded’ 
+C1_SControl4r ‘C1_SControl4 recoded’ C1_SControl5r ‘C1_SControl5 recoded’ C1_SControl7r ‘C1_SControl7 recoded’ 
+C1_SControl9r ‘C1_SControl9 recoded’ C1_SControl10r ‘C1_SControl10 recoded’ C1_SControl12r ‘C1_SControl12 recoded’ C1_SControl13r ‘C1_SControl13 recoded’.
+EXECUTE.
+*use above as required.
+COMPUTE C1_SelfControlIMP = RND(MEAN.8(C1_SControl1, C1_SControl2r, C1_SControl3r, C1_SControl4r, C1_SControl5r, C1_SControl6, C1_SControl7r, C1_SControl8, C1_SControl9r, C1_SControl10r, C1_SControl11, C1_SControl12r, C1_SControl13r)).
+EXECUTE.
+
+***Self-control: Parent Wave 2.
+RECODE
+P2_SControl2 P2_SControl3 P2_SControl4 P2_SControl5 P2_SControl7 P2_SControl9 P2_SControl10 P2_SControl12 P2_SControl13
+(1=5) (2=4) (3=3) (4=2) (5=1)
+INTO P2_SControl2r P2_SControl3r P2_SControl4r P2_SControl5r P2_SControl7r P2_SControl9r P2_SControl10r P2_SControl12r P2_SControl13r.
+VARIABLE LABELS P2_SControl2r ‘P2_SControl2 recoded’ P2_SControl3r ‘P2_SControl3 recoded’ 
+P2_SControl4r ‘P2_SControl4 recoded’ P2_SControl5r ‘P2_SControl5 recoded’ P2_SControl7r ‘P2_SControl7 recoded’ 
+P2_SControl9r ‘P2_SControl9 recoded’ P2_SControl10r ‘P2_SControl10 recoded’ P2_SControl12r ‘P2_SControl12 recoded’ P2_SControl13r ‘P2_SControl13 recoded’.
+EXECUTE.
+*use above as required.
+COMPUTE P2_SelfControlIMP = RND(MEAN.8(P2_SControl1, P2_SControl2r, P2_SControl3r, P2_SControl4r, P2_SControl5r, P2_SControl6, P2_SControl7r, P2_SControl8, P2_SControl9r, P2_SControl10r, P2_SControl11, P2_SControl12r, P2_SControl13r)).
+EXECUTE.
+
+***Self-control: Child Wave 2.
+RECODE
+C2_SControl2 C2_SControl3 C2_SControl4 C2_SControl5 C2_SControl7 C2_SControl9 C2_SControl10 C2_SControl12 C2_SControl13
+(1=5) (2=4) (3=3) (4=2) (5=1)
+INTO C2_SControl2r C2_SControl3r C2_SControl4r C2_SControl5r C2_SControl7r C2_SControl9r C2_SControl10r C2_SControl12r C2_SControl13r.
+VARIABLE LABELS C2_SControl2r ‘C2_SControl2 recoded’ C2_SControl3r ‘C2_SControl3 recoded’ 
+C2_SControl4r ‘C2_SControl4 recoded’ C2_SControl5r ‘C2_SControl5 recoded’ C2_SControl7r ‘C2_SControl7 recoded’ 
+C2_SControl9r ‘C2_SControl9 recoded’ C2_SControl10r ‘C2_SControl10 recoded’ C2_SControl12r ‘C2_SControl12 recoded’ C2_SControl13r ‘C2_SControl13 recoded’.
+EXECUTE.
+*use above as required.
+COMPUTE C2_SelfControlIMP = RND(MEAN.8(C2_SControl1, C2_SControl2r, C2_SControl3r, C2_SControl4r, C2_SControl5r, C2_SControl6, C2_SControl7r, C2_SControl8, C2_SControl9r, C2_SControl10r, C2_SControl11, C2_SControl12r, C2_SControl13r)).
+EXECUTE.
+
+***Self-control: Child Wave 3.
+RECODE
+C3_SControl2 C3_SControl3 C3_SControl4 C3_SControl5 C3_SControl7 C3_SControl9 C3_SControl10 C3_SControl12 C3_SControl13
+(1=5) (2=4) (3=3) (4=2) (5=1)
+INTO C3_SControl2r C3_SControl3r C3_SControl4r C3_SControl5r C3_SControl7r C3_SControl9r C3_SControl10r C3_SControl12r C3_SControl13r.
+VARIABLE LABELS C3_SControl2r 'C3_SControl2 recoded' C3_SControl3r 'C3_SControl3 recoded' C3_SControl4r 'C3_SControl4 recoded' 
+C3_SControl5r 'C3_SControl5 recoded' C3_SControl7r 'C3_SControl7 recoded' C3_SControl9r 'C3_SControl9 recoded' C3_SControl10r 'C3_SControl10 recoded' C3_SControl12r 'C3_SControl12 recoded' C3_SControl13r 'C3_SControl13 recoded'.
+EXECUTE.
+*use above as required.
+COMPUTE C3_SelfControlIMP = RND(MEAN.8(C3_SControl1 , C3_SControl2r , C3_SControl3r , C3_SControl4r , C3_SControl5r , C3_SControl6 , C3_SControl7r , C3_SControl8 , C3_SControl9r , C3_SControl10r , C3_SControl11 , C3_SControl12r , C3_SControl13r)).
+EXECUTE.
+
+
+
+****Parenting Variables*****.
+
+***Child Rearing Practices: Parent Wave 1.
+*RECODE 
+*P1_CRP1 P1_CRP2 P1_CRP3 P1_CRP4 P1_CRP5 P1_CRP7 P1_CRP9 P1_CRP10 P1_CRP11 P1_CRP12 P1_CRP15 P1_CRP16 P1_CRP17 P1_CRP18 P1_CRP19 P1_CRP20 P1_CRP21 
+*(1=7) (2=6) (3=5) (4=4) (5=3) (6=2) (7=1)
+*INTO 
+*P1_CRP1r P1_CRP2r P1_CRP3r P1_CRP4r P1_CRP5r P1_CRP7r P1_CRP9r P1_CRP10r P1_CRP11r P1_CRP12r P1_CRP15r P1_CRP16r P1_CRP17r P1_CRP18r P1_CRP19r P1_CRP20r P1_CRP21r.
+*EXECUTE.
+*use above as required.
+COMPUTE P1_ChildRearingPracticesChildMonitoringIMP = RND(MEAN.4(P1_CRP1r, P1_CRP2r, P1_CRP3r, P1_CRP4r, P1_CRP5r, P1_CRP6)*6).
+EXECUTE.
+COMPUTE P1_ChildRearingPracticesInconsistentDisciplineIMP = RND(MEAN.3(P1_CRP7r, P1_CRP8, P1_CRP9r, P1_CRP10r, P1_CRP11r)*5).
+EXECUTE.
+COMPUTE P1_ChildRearingPracticesCommunicationIMP = RND(MEAN.3(P1_CRP13, P1_CRP14, P1_CRP15r, P1_CRP16r, P1_CRP17r)*5).
+EXECUTE.
+COMPUTE P1_ChildRearingPracticesInductiveReasoningIMP = RND(MEAN.3(P1_CRP18r, P1_CRP19r, P1_CRP20r, P1_CRP21r)*4).
+EXECUTE.
+
+***Child Rearing Practices: Parent Wave 2.
+*RECODE 
+*P2_CRP1 P2_CRP2 P2_CRP3 P2_CRP4 P2_CRP5 P2_CRP7 P2_CRP9 P2_CRP10 P2_CRP11 P2_CRP12 P2_CRP15 P2_CRP16 P2_CRP17 P2_CRP18 P2_CRP19 P2_CRP20 P2_CRP21 
+*(1=7) (2=6) (3=5) (4=4) (5=3) (6=2) (7=1)
+*INTO 
+*P2_CRP1r P2_CRP2r P2_CRP3r P2_CRP4r P2_CRP5r P2_CRP7r P2_CRP9r P2_CRP10r P2_CRP11r P2_CRP12r P2_CRP15r P2_CRP16r P2_CRP17r P2_CRP18r P2_CRP19r P2_CRP20r P2_CRP21r.
+*EXECUTE.
+*use above as required.
+COMPUTE P2_ChildRearingPracticesChildMonitoringIMP = RND(MEAN.4(P2_CRP1r + P2_CRP2r + P2_CRP3r + P2_CRP4r + P2_CRP5r + P2_CRP6)*6).
+EXECUTE.
+COMPUTE P2_ChildRearingPracticesCommunicationIMP = RND(MEAN.3(P2_CRP13 + P2_CRP14 + P2_CRP15r + P2_CRP16r + P2_CRP17r)*5).
+EXECUTE.
+COMPUTE P2_ChildRearingPracticesInductiveReasoningIMP = RND(MEAN.3(P2_CRP18r + P2_CRP19r + P2_CRP20r + P2_CRP21r)*4).
+EXECUTE.
+
+***Parental Warmth and Hostility: Parent Wave 1.
+*RECODE 
+*P1_PWH1 P1_PWH2 P1_PWH3 P1_PWH4 P1_PWH5 P1_PWH6 P1_PWH7 P1_PWH8 P1_PWH9 P1_PWH10
+*(7=1) (6=2) (5=3) (4=4) (3=5) (2=6) (1=7) INTO 
+*P1_PWH1r P1_PWH2r P1_PWH3r P1_PWH4r P1_PWH5r P1_PWH6r P1_PWH7r P1_PWH8r P1_PWH9r P1_PWH10r.	
+*EXECUTE.
+*use above as required.
+COMPUTE P1_ParentHostilityIMP = RND(MEAN.3(P1_PWH1r, P1_PWH3r, P1_PWH4r, P1_PWH8r)*4).	
+EXECUTE.
+COMPUTE P1_ParentWarmthIMP= RND(MEAN.4(P1_PWH2r, P1_PWH5r, P1_PWH6r, P1_PWH7r, P1_PWH9r, P1_PWH10r)*6).	
+EXECUTE.
+
+***Parental Warmth and Hostility: Parent Wave 2.
+*RECODE 
+*P2_PWH1 P2_PWH2 P2_PWH3 P2_PWH4 P2_PWH5 P2_PWH6 P2_PWH7 P2_PWH8 P2_PWH9 P2_PWH10
+*(7=1) (6=2) (5=3) (4=4) (3=5) (2=6) (1=7) INTO 
+*P2_PWH1r P2_PWH2r P2_PWH3r P2_PWH4r P2_PWH5r P2_PWH6r P2_PWH7r P2_PWH8r P2_PWH9r P2_PWH10r.	
+*EXECUTE.
+*use above as required.
+COMPUTE P2_ParentHostilityIMP = RND(MEAN.3(P2_PWH1r, P2_PWH3r, P2_PWH4r, P2_PWH8r)*4).	
+EXECUTE.
+COMPUTE P2_ParentWarmthIMP= RND(MEAN.4(P2_PWH2r, P2_PWH5r, P2_PWH6r, P2_PWH7r, P2_PWH9r, P2_PWH10r)*6).	
+EXECUTE.
+
+***Terry's warmth sub-groups.
+COMPUTE P1_PWarmAffIMP= RND(MEAN.2(P1_PWH2r, P1_PWH5r, P1_PWH10r)*3).	
+EXECUTE.
+COMPUTE P1_PWarmSupIMP= RND(MEAN.2(P1_PWH6r, P1_PWH7r, P1_PWH9r)*3).	
+EXECUTE.
+COMPUTE P2_PWarmAffIMP= RND(MEAN.2(P2_PWH2r, P2_PWH5r, P2_PWH10r)*3).	
+EXECUTE.
+COMPUTE P2_PWarmSupIMP= RND(MEAN.2(P2_PWH6r, P2_PWH7r, P2_PWH9r)*3).	
+EXECUTE.
+
+***Teacher settled in: Teacher Wave 2.
+RECODE 
+T2_SSS1 T2_SSS2 T2_SSS3 T2_SSS4
+(5=1) (4=2) (3=3) (2=4) (1=5) INTO 
+T2_SSS1R T2_SSS2R T2_SSS3R T2_SSS4R.	
+EXECUTE.
+
+*use above as required.
+COMPUTE T2_SSSTotalIMP = RND(MEAN.3(T2_SSS1r, T2_SSS2r, T2_SSS3r, T2_SSS4r)*4).	
+EXECUTE.
+
+***Teacher settled in: Teacher Wave 1.
+RECODE 
+T1_SSS1 T1_SSS2 T1_SSS3 T1_SSS4
+(5=1) (4=2) (3=3) (2=4) (1=5) INTO 
+T1_SSS1R T1_SSS2R T1_SSS3R T1_SSS4R.	
+EXECUTE.
+
+*use above as required.
+COMPUTE T1_SSSTotalIMP = RND(MEAN.3(T1_SSS1r, T1_SSS2r, T1_SSS3r, T1_SSS4r)*4).	
+EXECUTE.
+
+
+
+
+
+
+
