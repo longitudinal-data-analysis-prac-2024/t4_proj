@@ -1,4 +1,4 @@
----
+<!---
 title: "our_front_cover"
 author: "chrysie"
 date: "2024-05-16"
@@ -9,7 +9,7 @@ output:
     toc: true        # Table of contents
     toc_float: true  # Floating table of contents
     keep_md: false   # Hide the YAML header in the rendered HTML output
----
+--->
 
 Chrysie, Tat and Zoe's LDAP Project
 
