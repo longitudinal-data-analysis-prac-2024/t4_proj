@@ -60,10 +60,12 @@ col_names <- colnames(st_data)
 -   Child Wave 2: C2_AG1 to 4
 
 -   Child Wave 3: C3_AG1 to 4
+    
+    #Never = 1, Seldom = 2, Sometimes = 3, Often = 4, Always = 5, none to recode
 
 #### [**FSM**]{.underline}
 
--   "FSM"
+-   "FSM" #0 for no, 1 for yes
 
 #### [**SCQ: School Concerns Questionnaire**]{.underline}
 
@@ -72,6 +74,7 @@ col_names <- colnames(st_data)
 -   Child Wave 2: C2_SConcern1 to 20
 
 -   Child Wave 3: C3_SConcern1 to 20
+    # jsut add 1 and 10 bc the others are numbers
 
 #### [**CDPQ: Child Development Project Questionnaire (school liking)**]{.underline}
 
@@ -80,7 +83,9 @@ col_names <- colnames(st_data)
 -   Child Wave 2: C2_SL1 to 5 - recode 1, 4
 
 -   Child Wave 3: C3_SL1 to 5 - recode 3, 5
-
+#delete because no wave 1
+    
+    
 #### [**CDPQ: Child Development Project Questionnaire (trust and respect for teachers)**]{.underline}
 
 -   Child Wave 1: C1_LT1 to 10 - recode: 1,3,5,7,9,10
@@ -88,6 +93,8 @@ col_names <- colnames(st_data)
 -   Child Wave 2: C2_LT1 to 10 - recode: 1,3,5,7,9,10
 
 -   Child Wave 3: C3_LT1 to 10 - recode: 2,4,6,8
+    
+    #YES!! = 1, yes = 2, no = 3, NO!! = 4
 
 #### [**LiCs: School-oriented version fo the Loneliness in Children scale**]{.underline}
 
@@ -96,6 +103,8 @@ col_names <- colnames(st_data)
 -   Child Wave 2: C1_L1,2,6,7,11,14,15 - recode: 1,7,15
 
 -   Child Wave 3: C1_L1,2,6,7,11,14,15 - recode: 1,7,15
+    
+    #not true at all = 1, hardly ever true = 2, sometimes true = 3, true most of the time = 4, always true = 5
 
 #### [**KS2: English, Maths, Science**]{.underline}
 
@@ -129,8 +138,10 @@ col_names <- colnames(st_data)
 
 -   "Math7"
 
--   "Sci7"
+-   "Sci7" # no science
 }
+
+#english and maths are all numbers whatever the numbers mean
 
 # getting all the columns for each measure
 cols_sdq <- grep("^C[123]_B[1-25]", names(st_data), value = TRUE)
