@@ -10,7 +10,8 @@ Notes: it worked when andrea pointed out the obvious
 #install.packages("foreign")
 library(foreign)
 #OR
-#library(haven)
+install.packages("haven")
+library(haven)
 
 st_data <- foreign::read.spss('../data/SchoolTransitionData.sav', to.data.frame = T)
 
@@ -140,13 +141,14 @@ cols_ks2 <- grep("^KS2", names(st_data), value = TRUE)
 # making a variable that has all of the above
 chosen_vars <- c("x", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2)
 
-# making our df using the chosen variable columns - theis bit dont yet work
+# making our df using the chosen variable columns
 library(dplyr)
 
 our_data <- st_data %>%
   select(all_of(chosen_vars)
 
-output_path <- "../data/our_data.csv"
+output_path <- c(write.csv())
+
 write.csv(our_data, file = output_path, row.names = TRUE)
 
 ```
