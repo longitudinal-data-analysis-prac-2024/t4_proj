@@ -154,4 +154,10 @@ our_data <- st_data %>%
 write.csv(our_data, file = "our_data.csv", row.names = TRUE)
 read.csv(our_data, "our_data.csv")
 
+
+
+our_data <- our_data %>% 
+  mutate(
+    C1_B1=factor(C1_B1, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")))
+
 ```
