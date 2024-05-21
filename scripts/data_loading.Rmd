@@ -43,6 +43,10 @@ col_names <- colnames(st_data)
 -   Child Wave 2: C2_B1 to 25 - recode: 7, 11, 14, 21, 25
 
 -   Child Wave 3: C3_B1 to 25 - recode: 7, 11, 14, 21, 25
+  
+  # Not True = 0
+  # Sort of True = 1
+  # Certainly True = 2
 
 #### [**SDQ Impacts**]{.underline}
 
@@ -145,10 +149,9 @@ chosen_vars <- c("x", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_l
 library(dplyr)
 
 our_data <- st_data %>%
-  select(all_of(chosen_vars)
+  select("X", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2)
 
-output_path <- c(write.csv())
-
-write.csv(our_data, file = output_path, row.names = TRUE)
+write.csv(our_data, file = "our_data.csv", row.names = TRUE)
+read.csv(our_data, "our_data.csv")
 
 ```
