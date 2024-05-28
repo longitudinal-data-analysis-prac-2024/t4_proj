@@ -151,7 +151,11 @@ cols_ks2 <- c("KS2MathstestNUM", "KS2EnglishtestNUM")
 cols_ks3 <- c("Y7EnglishNC", "Y7MathsNC")
 
 # making a variable that has all of the above - this method didn't work though i wanna try finding out how to not hard code the select() line
+<<<<<<< HEAD
 chosen_vars <- c("X", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2)
+=======
+chosen_vars <- c("x", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2, cols_ks3)
+>>>>>>> 975982d42f213b4c2910eb8e708b9059a7f1c063
 
 # making our df using the chosen variable columns
 library(dplyr)
@@ -179,22 +183,33 @@ our_data <- our_data %>%
 ```
 
 ```{r}
-#### [**Wentzel's**]{.underline}
+# Wentzel's
+# Never = 1, Seldom = 2, Sometimes = 3, Often = 4, Always = 5, none to recode
 
-#-   Child Wave 1: C1_AG1 to 4
 
-#-   Child Wave 2: C2_AG1 to 4
+library(dplyr)
 
-#-   Child Wave 3: C3_AG1 to 4
-    
-    #Never = 1, Seldom = 2, Sometimes = 3, Often = 4, Always = 5, none to recode
+label_levels <- c("Never", "Seldom", "Sometimes", "Often", "Always")
+
+our_data <- our_data %>%
+  mutate(across(c(C1_AG1, C1_AG2, C1_AG3, C1_AG4,
+                  C2_AG1, C2_AG2, C2_AG3, C2_AG4,
+                  C3_AG1, C3_AG2, C3_AG3, C3_AG4),
+                ~ factor(.x, levels = c(1, 2, 3, 4, 5), labels = label_levels)))
+
+```
+
+``` {r}
+#### [**FSM**]{.underline}
+
+## "FSM" #0 for no, 1 for yes
 
 our_data <- our_data %>% 
   mutate(
-    C1_B1=factor(C1_B1, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")))
-
+    FSM=factor(FSM, levels = c(0, 1), labels = c("No", "Yes")))
 
 ```
+<<<<<<< HEAD
 >>>>>>> 8f5f03a3a13e31c596621abaa6a4b3feb3f5217f
 
  
@@ -230,3 +245,20 @@ our_data1 <- our_data %>%
 =======
 
  ```
+=======
+
+``` {r}
+#### [**SCQ: School Concerns Questionnaire**]{.underline}
+
+-   Child Wave 1: C1_SConcern1 to 20
+
+-   Child Wave 2: C2_SConcern1 to 20
+
+-   Child Wave 3: C3_SConcern1 to 20
+    # just add 1 and 10 bc the others are numbers
+
+our_data <- our_data %>% 
+  mutate(
+    C1_SConcern1=factor(FSM, levels = c(0, 1), labels = c("No", "Yes")))
+```
+>>>>>>> 975982d42f213b4c2910eb8e708b9059a7f1c063
