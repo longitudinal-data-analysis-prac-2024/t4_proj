@@ -27,10 +27,7 @@ write.csv(st_data, file = output_path, row.names = TRUE)
 # loading the data into my environment
 st_data <- read.csv("../data/st_data.csv")
 
-# getting a list of the column titles
-col_names <- colnames(st_data)
-
-# dataframe column codes
+# variable column codes
 {
 **X** = ppt number
 
@@ -74,7 +71,7 @@ col_names <- colnames(st_data)
 -   Child Wave 2: C2_SConcern1 to 20
 
 -   Child Wave 3: C3_SConcern1 to 20
-    # jsut add 1 and 10 bc the others are numbers
+    # just add 1 and 10 bc the others are numbers
 
 #### [**CDPQ: Child Development Project Questionnaire (school liking)**]{.underline}
 
@@ -108,9 +105,9 @@ col_names <- colnames(st_data)
 
 #### [**KS2: English, Maths, Science**]{.underline}
 
--   "KS2MathstestNUM"
+-   "KS2MathstestNUM" - THIS
 
--   "KS2EnglishtestNUM"
+-   "KS2EnglishtestNUM" - THIS
 
 -   "KS2EnglishTANUM"
 
@@ -118,17 +115,17 @@ col_names <- colnames(st_data)
 
 #### [**KS3: English, Maths, Science**]{.underline} 
 
--   "Y7EnglishNC"
+-   "Y7EnglishNC" - THIS
 
--   "Y7MathsNC"
+-   "Y7MathsNC" - THIS
 
 -   "Y7ScienceNC"
 
 -   "Y7NC"
 
--   "Y7EnglishIMYC"
+-   "Y7EnglishIMYC" 
 
--   "Y7MathsIMYC"
+-   "Y7MathsIMYC" 
 
 -   "Y7ScienceIMYC"
 
@@ -141,7 +138,7 @@ col_names <- colnames(st_data)
 -   "Sci7" # no science
 }
 
-#english and maths are all numbers whatever the numbers mean
+# NOTE: english and maths are all numbers whatever the numbers mean
 
 # getting all the columns for each measure
 cols_sdq <- grep("^C[123]_B[1-25]", names(st_data), value = TRUE)
@@ -150,25 +147,43 @@ cols_sqc <- grep("^C[123]_SConcern([1-9]|1[0-9]|20)$", names(st_data), value = T
 cols_sl <- grep("^C[123]_SL[1-5]", names(st_data), value = TRUE)
 cols_lt <- grep("^C[123]_LT[1-9]|^C[123]_LT10$", names(st_data), value = TRUE)
 cols_lon <- grep("^C[123]_L([1-9]|1[0-5]|15)$", names(st_data), value = TRUE)
-cols_ks2 <- grep("^KS2", names(st_data), value = TRUE)
-#cols_ks3 <- NA
+cols_ks2 <- c("KS2MathstestNUM", "KS2EnglishtestNUM")
+cols_ks3 <- c("Y7EnglishNC", "Y7MathsNC")
 
-# making a variable that has all of the above
+# making a variable that has all of the above - this method didn't work though i wanna try finding out how to not hard code the select() line
 chosen_vars <- c("x", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2)
 
 # making our df using the chosen variable columns
 library(dplyr)
 
 our_data <- st_data %>%
-  select("X", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2)
+  select("X", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2, cols_ks3)
 
 write.csv(our_data, file = "our_data.csv", row.names = TRUE)
-read.csv(our_data, "our_data.csv")
+```
 
+```{r}
+# relabeling the text value variables with numeric factors
+our_data <- our_data %>% 
+  mutate(
+    C1_B1=factor(C1_B1, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")))
 
+```
+
+```{r}
+#### [**Wentzel's**]{.underline}
+
+#-   Child Wave 1: C1_AG1 to 4
+
+#-   Child Wave 2: C2_AG1 to 4
+
+#-   Child Wave 3: C3_AG1 to 4
+    
+    #Never = 1, Seldom = 2, Sometimes = 3, Often = 4, Always = 5, none to recode
 
 our_data <- our_data %>% 
   mutate(
     C1_B1=factor(C1_B1, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")))
+
 
 ```
