@@ -84,7 +84,7 @@ England, with a predicted intake of around 2000 pupils in September
 
 **ID** = ppt ID
 
-#### [**SDQ**]{.underline} 
+#### [**SDQ**]{.underline}
 
 -   Child Wave 1: C1_B1 to 25 - recode: 7, 11, 14, 21, 25
 
@@ -151,7 +151,7 @@ England, with a predicted intake of around 2000 pupils in September
 
 -   "KS2EngComb"
 
-#### [**KS3: English, Maths, Science**]{.underline} 
+#### [**KS3: English, Maths, Science**]{.underline}
 
 -   "Y7EnglishNC"
 
