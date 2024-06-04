@@ -122,10 +122,10 @@ cols_ks3 <- c("Y7EnglishNC", "Y7MathsNC")
 # making our df using the chosen variable columns
 library(dplyr)
 
-our_data <- st_data %>%
+small_data <- st_data %>%
   select("X", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_lt, cols_lon, cols_ks2, cols_ks3)
 
-write.csv(our_data, file = "../data/our_data.csv", row.names = FALSE)
+our_data <- small_data
 
 ```
 
@@ -212,13 +212,23 @@ our_data <- our_data %>%
 
 library(dplyr)
 
+# Ensure label_levels is character
 label_levels <- c("Never", "Seldom", "Sometimes", "Often", "Always")
 
+# Convert selected columns to character if necessary
 our_data <- our_data %>%
   mutate(across(c(C1_AG1, C1_AG2, C1_AG3, C1_AG4,
                   C2_AG1, C2_AG2, C2_AG3, C2_AG4,
                   C3_AG1, C3_AG2, C3_AG3, C3_AG4),
-                ~ factor(.x, levels = c(1, 2, 3, 4, 5), labels = label_levels)))
+                as.character))
+
+# Apply factor transformation
+our_data <- our_data %>%
+  mutate(across(c(C1_AG1, C1_AG2, C1_AG3, C1_AG4,
+                  C2_AG1, C2_AG2, C2_AG3, C2_AG4,
+                  C3_AG1, C3_AG2, C3_AG3, C3_AG4),
+                ~ factor(.x, levels = label_levels, labels = c(1, 2, 3, 4, 5))))
+
 
 ```
 
@@ -227,9 +237,16 @@ our_data <- our_data %>%
 
 ## "FSM" #0 for no, 1 for yes
 
-our_data <- our_data %>% 
-  mutate(
-    FSM = factor(FSM, levels = c(0, 1), labels = c("No", "Yes")))
+library(dplyr)
+
+# Convert FSM column to character if necessary
+our_data <- our_data %>%
+  mutate(FSM = as.character(FSM))
+
+# Apply factor transformation
+our_data <- our_data %>%
+  mutate(FSM = factor(FSM, levels = c("No", "Yes"), labels = c(0, 1)))
+
 
 ```
 
@@ -258,7 +275,6 @@ columns_to_mutate <- c("C1_SConcern1", "C1_SConcern2", "C1_SConcern3", "C1_SConc
 
 our_data <- our_data %>%
   mutate_at(vars(columns_to_mutate), ~factor(., levels = levels_vec, labels = labels_vec))
-
 
 ```
 
@@ -315,6 +331,7 @@ columns_to_mutate <- c("C1_L1", "C1_L3","C1_L5","C1_L7","C1_L10","C1_L15", "C2_L
 
 our_data <- our_data %>%
   mutate_at(vars(columns_to_mutate), ~factor(., levels = levels_vec, labels = labels_vec)) 
+
 ```
 
 ```{r ks2}
@@ -361,6 +378,7 @@ our_data <- our_data %>%
 # checking
 unique(our_data$KS2MathstestNUM)  #"4" NA  "5" "3" "2" "6" "1"
 our_data$KS2MathstestNUM <- as.factor(our_data$KS2MathstestNUM)
+
 ```
 
 ```{r ks3}
@@ -406,6 +424,7 @@ our_data <- our_data %>%
 # checking
 unique(our_data$Y7MathsNC)  #"6" NA  "5" "4" "3" "2" "7" "8"
 our_data$Y7MathsNC <- as.factor(our_data$Y7MathsNC)
+
 ```
 
 
@@ -413,5 +432,11 @@ our_data$Y7MathsNC <- as.factor(our_data$Y7MathsNC)
 our_data <- our_data %>%
   rename(KS2Eng = KS2EnglishtestNUM, KS2Mat = KS2MathstestNUM, KS3Eng = Y7EnglishNC, KS3Mat = Y7MathsNC)
 
+write.csv(our_data, file = "../data/our_data.csv", row.names = FALSE)
+
+new_data <- read.csv("../data/our_data.csv")
+
+new_data <- new_data %>%
+  mutate_all(as.factor)
 ```
 
