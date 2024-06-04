@@ -320,3 +320,10 @@ unique(our_data$Y7MathsNC)  #"6" NA  "5" "4" "3" "2" "7" "8"
 our_data$Y7MathsNC <- as.factor(our_data$Y7MathsNC)
 ```
 
+```{r tidy up}
+our_data <- our_data %>%
+  rename(KS2Eng = KS2EnglishtestNUM, KS2Mat = KS2MathstestNUM, KS3Eng = Y7EnglishNC, KS3Mat = Y7MathsNC)
+
+```
+
+
