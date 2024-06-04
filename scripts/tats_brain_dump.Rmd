@@ -30,7 +30,7 @@ plot(pressure)
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 ```{r}
-our_data1 <- our_data %>% 
+our_data <- our_data %>% 
   mutate(
     C1_B1 = factor(C1_B1, levels = c("Not true", "Sort of true", "Certainly true")),
     C1_B2 = factor(C1_B2, levels = c("Not true", "Sort of true", "Certainly true")), 
@@ -52,5 +52,12 @@ our_data1 <- our_data %>%
     C1_B24 = factor(C1_B24, levels = c("Not true", "Sort of true", "Certainly true")),
     C1_B25 = factor(C1_B25, levels = c("Certainly true", "Sort of true", "Not true"))
   )
+
+SDQ1 <- c("C1_B1","C1_B2","C1_B5","C1_B10","C1_B11","C1_B12","C1_B13","C1_B14","C1_B15","C1_B16", "C1_B17", "C1_B18", "C1_B19", "C1_B20", "C1_B21", "C1_B22", "C1_B23", "C1_B24", "C1_B25")
+our_data <- our_data %>% 
+  rowwise() %>%
+  mutate(SDQ_T1 = sum(c_across(all_of(SDQ1) > 0) / length(SDQ1))
+accuracy$Combined_Proportion <- rowMeans(select(accuracy, Proportion))
+diabetes_use <- bind_cols(diabetes_use, accuracy$Combined_Proportion)
   
-```
+`
