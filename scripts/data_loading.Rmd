@@ -129,10 +129,7 @@ library(dplyr)
 our_data <- st_data %>%
   select("X", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2, cols_ks3)
 
-write.csv(our_data, file = "our_data.csv", row.names = TRUE)
-
-# double check
-read.csv(our_data, "our_data.csv")
+write.csv(our_data, file = "../data/our_data.csv", row.names = TRUE)
 
 ```
 
@@ -178,7 +175,7 @@ our_data1 <- our_data %>%
  #C1_B14, 4 should be 2
 ```
 
-```{r wWntzel's}
+```{r Wentzel's}
 # Wentzel's
 # Never = 1, Seldom = 2, Sometimes = 3, Often = 4, Always = 5, none to recode
 
