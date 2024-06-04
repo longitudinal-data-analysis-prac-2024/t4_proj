@@ -58,6 +58,7 @@ unique(our_data$KS2MathstestNUM)  #"4" NA  "5" "3" "2" "6" "1"
 our_data$KS2MathstestNUM <- as.factor(our_data$KS2MathstestNUM)
 ```
 
+
 ```{r ks3}
 unique(our_data$Y7EnglishNC)
 {
