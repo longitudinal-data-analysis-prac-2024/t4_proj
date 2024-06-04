@@ -43,7 +43,9 @@ our_data <- our_data %>%
     TRUE ~ KS2EnglishtestNUM  # this line ensures that all other values remain unchanged
   ))
 
+# checking
 unique(our_data$KS2EnglishtestNUM)  #"4" NA  "3" "5" "2" "1" "6"
+our_data$KS2EnglishtestNUM <- as.factor(our_data$KS2EnglishtestNUM)
 
 our_data <- our_data %>%
   mutate(KS2MathstestNUM = case_when(
@@ -51,8 +53,9 @@ our_data <- our_data %>%
     TRUE ~ KS2MathstestNUM  # this line ensures that all other values remain unchanged
   ))
 
+# checking
 unique(our_data$KS2MathstestNUM)  #"4" NA  "5" "3" "2" "6" "1"
-
+our_data$KS2MathstestNUM <- as.factor(our_data$KS2MathstestNUM)
 ```
 
 ```{r ks3}
@@ -79,7 +82,9 @@ our_data <- our_data %>%
     TRUE ~ Y7EnglishNC  # this line ensures that all other values remain unchanged
   ))
 
+# checking
 unique(our_data$Y7EnglishNC)  #"6" NA  "5" "4" "7" "3" "2"
+our_data$Y7EnglishNC <- as.factor(our_data$Y7EnglishNC)
 
 our_data <- our_data %>%
   mutate(Y7MathsNC = case_when(
@@ -93,7 +98,8 @@ our_data <- our_data %>%
     TRUE ~ Y7MathsNC  # this line ensures that all other values remain unchanged
   ))
 
+# checking
 unique(our_data$Y7MathsNC)  #"6" NA  "5" "4" "3" "2" "7" "8"
-
+our_data$Y7MathsNC <- as.factor(our_data$Y7MathsNC)
 ```
 
