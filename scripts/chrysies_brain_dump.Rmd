@@ -35,8 +35,24 @@ unique(our_data$KS2MathstestNUM)
 }
 
 # change only the text entries of each variable to be '1' and then ensure it's all read as numeric
+library(dplyr)
 
-our_data$KS2EnglishtestNUM <- rename("1" = our_data$KS2EnglishtestNUM["Level 1, N (below level 2 in test) or B (working below level of the test)"])
+our_data <- our_data %>%
+  mutate(KS2EnglishtestNUM = case_when(
+    KS2EnglishtestNUM == "Level 1, N (below level 2 in test) or B (working below level of the test)" ~ "1",
+    TRUE ~ KS2EnglishtestNUM  # this line ensures that all other values remain unchanged
+  ))
+
+unique(our_data$KS2EnglishtestNUM)  #"4" NA  "3" "5" "2" "1" "6"
+
+our_data <- our_data %>%
+  mutate(KS2MathstestNUM = case_when(
+    KS2MathstestNUM == "N (below level 2 in test) or B (working below level of the test)" ~ "1",
+    TRUE ~ KS2MathstestNUM  # this line ensures that all other values remain unchanged
+  ))
+
+unique(our_data$KS2MathstestNUM)  #"4" NA  "5" "3" "2" "6" "1"
+
 ```
 
 ```{r ks3}
@@ -52,6 +68,32 @@ unique(our_data$Y7MathsNC)
 }
 
 # collapse across sublevels of a level i.e., a, b, c so that there's only level 2, 3, 4, 5, etc
+our_data <- our_data %>%
+  mutate(Y7EnglishNC = case_when(
+    Y7EnglishNC %in% c("2a", "2b", "2c") ~ "2",
+    Y7EnglishNC %in% c("3a", "3b", "3c") ~ "3",
+    Y7EnglishNC %in% c("4a", "4b", "4c") ~ "4",
+    Y7EnglishNC %in% c("5a", "5b", "5c") ~ "5",
+    Y7EnglishNC %in% c("6a", "6b", "6c") ~ "6",
+    Y7EnglishNC %in% c("7a", "7b", "7c") ~ "7",
+    TRUE ~ Y7EnglishNC  # this line ensures that all other values remain unchanged
+  ))
+
+unique(our_data$Y7EnglishNC)  #"6" NA  "5" "4" "7" "3" "2"
+
+our_data <- our_data %>%
+  mutate(Y7MathsNC = case_when(
+    Y7MathsNC %in% c("2a", "2b", "2c") ~ "2",
+    Y7MathsNC %in% c("3a", "3b", "3c") ~ "3",
+    Y7MathsNC %in% c("4a", "4b", "4c") ~ "4",
+    Y7MathsNC %in% c("5a", "5b", "5c") ~ "5",
+    Y7MathsNC %in% c("6a", "6b", "6c") ~ "6",
+    Y7MathsNC %in% c("7a", "7b", "7c") ~ "7",
+    Y7MathsNC %in% c("8a", "8b", "8c") ~ "8",
+    TRUE ~ Y7MathsNC  # this line ensures that all other values remain unchanged
+  ))
+
+unique(our_data$Y7MathsNC)  #"6" NA  "5" "4" "3" "2" "7" "8"
 
 ```
 
