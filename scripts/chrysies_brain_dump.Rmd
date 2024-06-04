@@ -5,26 +5,53 @@ date: "2024-06-04"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+our_data <- read.csv("../data/our_data.csv")
+
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# recoding the variables so they're numeric
+```{r ks2}
+unique(our_data$KS2EnglishtestNUM)
+{
+# [1] "4"                                                                        
+# [2] NA                                                                         
+# [3] "3"                                                                        
+# [4] "5"                                                                        
+# [5] "2"                                                                        
+# [6] "Level 1, N (below level 2 in test) or B (working below level of the test)"
+# [7] "6"
+}
+unique(our_data$KS2MathstestNUM)
+{
+# [1] "4"                                                               
+# [2] NA                                                                
+# [3] "5"                                                               
+# [4] "3"                                                               
+# [5] "2"                                                               
+# [6] "6"                                                               
+# [7] "N (below level 2 in test) or B (working below level of the test)"
+}
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# change only the text entries of each variable to be '1' and then ensure it's all read as numeric
 
-```{r cars}
-summary(cars)
+our_data$KS2EnglishtestNUM <- rename("1" = our_data$KS2EnglishtestNUM["Level 1, N (below level 2 in test) or B (working below level of the test)"])
 ```
 
-## Including Plots
+```{r ks3}
+unique(our_data$Y7EnglishNC)
+{
+#[1] "6b" NA   "5b" "5c" "4a" "5a" "6c" "7b" "6a" "4b" "4c" "3b" "2a" "3c" "2b" "3a" "2c"
+#[18] "7c"
+}
+unique(our_data$Y7MathsNC)
+{
+#[1] "6b" NA   "6c" "5c" "4a" "4c" "5a" "6a" "5b" "4b" "3a" "2a" "2b" "3b" "3c" "7b" "7a"
+#[18] "8b" "7c" "8c" "2c"
+}
 
-You can also embed plots, for example:
+# collapse across sublevels of a level i.e., a, b, c so that there's only level 2, 3, 4, 5, etc
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
