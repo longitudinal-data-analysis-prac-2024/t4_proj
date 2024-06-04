@@ -132,38 +132,78 @@ write.csv(our_data, file = "../data/our_data.csv", row.names = FALSE)
 # recoding the data to have numeric values
 ```{r SDQ}
 # SDQ
-# relabeling the text value variables with numeric factors
+
 our_data <- our_data %>% 
   mutate(
-    C1_B1=factor(C1_B1, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")))
-
-# SDQ cont.
-
-our_data1 <- our_data %>% 
-  mutate(
-    C1_B1 = factor(C1_B1, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B2 = factor(C1_B2, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B5 = factor(C1_B5, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B10 = factor(C1_B10, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B11 = factor(C1_B11, levels = c(0, 1, 2), labels = c("Certainly true", "Sort of true", "Not true")),
-    C1_B12 = factor(C1_B12, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B13 = factor(C1_B13, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B14 = factor(C1_B14, levels = c(0, 1, 2), labels = c("Certainly true", "Sort of true", "Not true")),
-    C1_B15 = factor(C1_B15, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B16 = factor(C1_B16, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B17 = factor(C1_B17, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B18 = factor(C1_B18, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B19 = factor(C1_B19, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B20 = factor(C1_B20, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B21 = factor(C1_B21, levels = c(0, 1, 2), labels = c("Certainly true", "Sort of true", "Not true")),
-    C1_B22 = factor(C1_B22, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B23 = factor(C1_B23, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B24 = factor(C1_B24, levels = c(0, 1, 2), labels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B25 = factor(C1_B25, levels = c(0, 1, 2), labels = c("Certainly true", "Sort of true", "Not true"))
+    C1_B1 = factor(C1_B1, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B2 = factor(C1_B2, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C1_B5 = factor(C1_B5, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C1_B10 = factor(C1_B10, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C1_B11 = factor(C1_B11, levels = c("Certainly true", "Sort of true", "Not true")),
+    C1_B12 = factor(C1_B12, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B13 = factor(C1_B13, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B14 = factor(C1_B14, levels = c("Certainly true", "Sort of true", "Not true")),
+    C1_B15 = factor(C1_B15, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B16 = factor(C1_B16, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B17 = factor(C1_B17, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B18 = factor(C1_B18, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B19 = factor(C1_B19, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B20 = factor(C1_B20, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B21 = factor(C1_B21, levels = c("Certainly true", "Sort of true", "Not true")),
+    C1_B22 = factor(C1_B22, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B23 = factor(C1_B23, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B24 = factor(C1_B24, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B25 = factor(C1_B25, levels = c("Certainly true", "Sort of true", "Not true"))
   )
 
- ##C1_B5 4 should be 1
- #C1_B14, 4 should be 2
+##2
+our_data <- our_data %>% 
+  mutate(
+    C2_B1 = factor(C2_B1, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B2 = factor(C2_B2, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C2_B5 = factor(C2_B5, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C2_B10 = factor(C2_B10, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C2_B11 = factor(C2_B11, levels = c("Certainly true", "Sort of true", "Not true")),
+    C2_B12 = factor(C2_B12, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B13 = factor(C2_B13, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B14 = factor(C2_B14, levels = c("Certainly true", "Sort of true", "Not true")),
+    C2_B15 = factor(C2_B15, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B16 = factor(C2_B16, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B17 = factor(C2_B17, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B18 = factor(C2_B18, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B19 = factor(C2_B19, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B20 = factor(C2_B20, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B21 = factor(C2_B21, levels = c("Certainly true", "Sort of true", "Not true")),
+    C2_B22 = factor(C2_B22, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B23 = factor(C2_B23, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B24 = factor(C2_B24, levels = c("Not true", "Sort of true", "Certainly true")),
+    C2_B25 = factor(C2_B25, levels = c("Certainly true", "Sort of true", "Not true"))
+  )
+
+##3
+our_data <- our_data %>% 
+  mutate(
+    C3_B1 = factor(C3_B1, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B2 = factor(C3_B2, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C3_B5 = factor(C3_B5, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C3_B10 = factor(C3_B10, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C3_B11 = factor(C3_B11, levels = c("Certainly true", "Sort of true", "Not true")),
+    C3_B12 = factor(C3_B12, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B13 = factor(C3_B13, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B14 = factor(C3_B14, levels = c("Certainly true", "Sort of true", "Not true")),
+    C3_B15 = factor(C3_B15, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B16 = factor(C3_B16, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B17 = factor(C3_B17, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B18 = factor(C3_B18, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B19 = factor(C3_B19, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B20 = factor(C3_B20, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B21 = factor(C3_B21, levels = c("Certainly true", "Sort of true", "Not true")),
+    C3_B22 = factor(C3_B22, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B23 = factor(C3_B23, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B24 = factor(C3_B24, levels = c("Not true", "Sort of true", "Certainly true")),
+    C3_B25 = factor(C3_B25, levels = c("Certainly true", "Sort of true", "Not true"))
+  )
+
 ```
 
 ```{r Wentzel's}
