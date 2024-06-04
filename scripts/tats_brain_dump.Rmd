@@ -28,3 +28,29 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+our_data1 <- our_data %>% 
+  mutate(
+    C1_B1 = factor(C1_B1, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B2 = factor(C1_B2, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C1_B5 = factor(C1_B5, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C1_B10 = factor(C1_B10, levels = c("Not true", "Sort of true", "Certainly true")), 
+    C1_B11 = factor(C1_B11, levels = c("Certainly true", "Sort of true", "Not true")),
+    C1_B12 = factor(C1_B12, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B13 = factor(C1_B13, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B14 = factor(C1_B14, levels = c("Certainly true", "Sort of true", "Not true")),
+    C1_B15 = factor(C1_B15, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B16 = factor(C1_B16, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B17 = factor(C1_B17, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B18 = factor(C1_B18, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B19 = factor(C1_B19, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B20 = factor(C1_B20, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B21 = factor(C1_B21, levels = c("Certainly true", "Sort of true", "Not true")),
+    C1_B22 = factor(C1_B22, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B23 = factor(C1_B23, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B24 = factor(C1_B24, levels = c("Not true", "Sort of true", "Certainly true")),
+    C1_B25 = factor(C1_B25, levels = c("Certainly true", "Sort of true", "Not true"))
+  )
+  
+```
