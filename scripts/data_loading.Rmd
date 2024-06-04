@@ -129,7 +129,7 @@ library(dplyr)
 our_data <- st_data %>%
   select("X", "ID", cols_sdq, cols_wen, "FSM", cols_sqc, cols_sl, cols_lt, cols_lon, cols_ks2, cols_ks3)
 
-write.csv(our_data, file = "../data/our_data.csv", row.names = TRUE)
+write.csv(our_data, file = "../data/our_data.csv", row.names = FALSE)
 
 ```
 
@@ -319,6 +319,7 @@ our_data <- our_data %>%
 unique(our_data$Y7MathsNC)  #"6" NA  "5" "4" "3" "2" "7" "8"
 our_data$Y7MathsNC <- as.factor(our_data$Y7MathsNC)
 ```
+
 
 ```{r tidy up}
 our_data <- our_data %>%
