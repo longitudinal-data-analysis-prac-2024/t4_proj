@@ -50,9 +50,9 @@ our_data <- our_data %>%
 #     #YES!! = 1, yes = 2, no = 3, NO!! = 4
 
 levels_vec <- c("YES!!", "yes", "no", "NO!!")
-labels_vec <- c(1, 2, 3, 4)
+labels_vec <- c(4, 3, 2, 1)
 
-columns_to_mutate <- c("C2_SL1", "C2_SL2", "C2_SL3", "C2_SL4", "C2_SL5", "C3_SL1", "C3_SL2", "C3_SL3", "C3_SL4", "C3_SL5", "C1_LT1", "C1_LT2", "C1_LT3", "C1_LT4", "C1_LT5", "C1_LT6", "C1_LT7", "C1_LT8", "C1_LT9", "C1_LT10", "C2_LT1", "C2_LT2", "C2_LT3", "C2_LT4", "C2_LT5", "C2_LT6", "C2_LT7", "C2_LT8", "C2_LT9", "C2_LT10", "C3_LT1", "C3_LT2", "C3_LT3", "C3_LT4", "C3_LT5", "C3_LT6", "C3_LT7", "C3_LT8", "C3_LT9", "C3_LT10")
+columns_to_mutate <- c("C1_LT1", "C1_LT3", "C1_LT5", "C1_LT7", "C1_LT9", "C1_LT10", "C2_LT1", "C2_LT3", "C2_LT5", "C2_LT7", "C2_LT9", "C2_LT10", "C3_LT2", "C3_LT4", "C3_LT6", "C3_LT8")
 
 our_data <- our_data %>%
   mutate_at(vars(columns_to_mutate), ~factor(., levels = levels_vec, labels = labels_vec))
@@ -61,7 +61,7 @@ our_data <- our_data %>%
 levels_vec <- c("YES!!", "yes", "no", "NO!!")
 labels_vec <- c(1, 2, 3, 4)
 
-columns_to_mutate <- c("C2_SL1", "C2_SL2", "C2_SL3", "C2_SL4", "C2_SL5", "C3_SL1", "C3_SL2", "C3_SL3", "C3_SL4", "C3_SL5", "C1_LT1", "C1_LT2", "C1_LT3", "C1_LT4", "C1_LT5", "C1_LT6", "C1_LT7", "C1_LT8", "C1_LT9", "C1_LT10", "C2_LT1", "C2_LT2", "C2_LT3", "C2_LT4", "C2_LT5", "C2_LT6", "C2_LT7", "C2_LT8", "C2_LT9", "C2_LT10", "C3_LT1", "C3_LT2", "C3_LT3", "C3_LT4", "C3_LT5", "C3_LT6", "C3_LT7", "C3_LT8", "C3_LT9", "C3_LT10")
+columns_to_mutate <- c("C1_LT2", "C1_LT4", "C1_LT6", "C1_LT8", "C2_LT2", "C2_LT4", "C2_LT6", "C2_LT8", "C3_LT1", "C3_LT3", "C3_LT5", "C3_LT7", "C3_LT9", "C3_LT10")
 
 our_data <- our_data %>%
   mutate_at(vars(columns_to_mutate), ~factor(., levels = levels_vec, labels = labels_vec))
