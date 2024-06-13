@@ -1,0 +1,157 @@
+---
+title: "analysis.rmd"
+author: "chrysie"
+date: "2024-06-13"
+output: html_document
+---
+
+```{r }
+library(tidyverse)
+
+new_data <- read.csv("../data/our_data.csv")
+
+# summing the SDQ scores
+  # getting each wave separated
+cols_C1B <- new_data[, c("C1_B1", "C1_B2", "C1_B5", "C1_B10", "C1_B11", "C1_B12", "C1_B13", "C1_B14", "C1_B15", "C1_B16",
+                               "C1_B17", "C1_B18", "C1_B19", "C1_B20", "C1_B21", "C1_B22", "C1_B23", "C1_B24", "C1_B25")]
+                               
+cols_C2B <- new_data[, c("C2_B1", "C2_B2", "C2_B5", "C2_B10", "C2_B11", "C2_B12", "C2_B13", "C2_B14", "C2_B15", "C2_B16",
+                               "C2_B17", "C2_B18", "C2_B19", "C2_B20", "C2_B21", "C2_B22", "C2_B23", "C2_B24", "C2_B25")]
+
+cols_C3B <- new_data[, c("C3_B1", "C3_B2", "C3_B5", "C3_B10", "C3_B11", "C3_B12", "C3_B13", "C3_B14", "C3_B15", "C3_B16",
+                               "C3_B17", "C3_B18", "C3_B19", "C3_B20", "C3_B21", "C3_B22", "C3_B23", "C3_B24", "C3_B25")]
+
+  # summing the scores for each wave
+C1_Btotal <- rowSums(cols_C1B)
+C2_Btotal <- rowSums(cols_C2B)
+C3_Btotal <- rowSums(cols_C3B)
+
+
+# summing the wentzel scores
+# C1_AG1 to 4
+cols_C1AG <- new_data[, c("C1_AG1", "C1_AG2", "C1_AG3", "C1_AG4")]
+                  
+cols_C2AG <- new_data[, c("C2_AG1", "C2_AG2", "C2_AG3", "C2_AG4")]
+
+cols_C3AG <- new_data[, c("C3_AG1", "C3_AG2", "C3_AG3", "C3_AG4")]
+
+  # summing the scores for each wave
+C1_AGtotal <- rowSums(cols_C1AG)
+C2_AGtotal <- rowSums(cols_C2AG)
+C3_AGtotal <- rowSums(cols_C3AG)
+
+
+# summing the SCQ
+#C1_SConcern1 to 20
+
+cols_C1SC <- new_data[, c("C1_SConcern1", "C1_SConcern2", "C1_SConcern3", "C1_SConcern4", "C1_SConcern5", "C1_SConcern6", "C1_SConcern7", "C1_SConcern8", "C1_SConcern9", "C1_SConcern10", "C1_SConcern11", "C1_SConcern12", "C1_SConcern13", "C1_SConcern14", "C1_SConcern15", "C1_SConcern16", "C1_SConcern17", "C1_SConcern18", "C1_SConcern19", "C1_SConcern20")]
+
+cols_C2SC <- new_data[, c("C2_SConcern1", "C2_SConcern2", "C2_SConcern3", "C2_SConcern4", "C2_SConcern5", "C2_SConcern6", "C2_SConcern7", "C2_SConcern8", "C2_SConcern9", "C2_SConcern10", "C2_SConcern11", "C2_SConcern12", "C2_SConcern13", "C2_SConcern14", "C2_SConcern15", "C2_SConcern16", "C2_SConcern17", "C2_SConcern18", "C2_SConcern19", "C2_SConcern20")]
+
+cols_C3SC <- new_data[, c("C3_SConcern1", "C3_SConcern2", "C3_SConcern3", "C3_SConcern4", "C3_SConcern5", "C3_SConcern6", "C3_SConcern7", "C3_SConcern8", "C3_SConcern9", "C3_SConcern10", "C3_SConcern11", "C3_SConcern12", "C3_SConcern13", "C3_SConcern14", "C3_SConcern15", "C3_SConcern16", "C3_SConcern17", "C3_SConcern18", "C3_SConcern19", "C3_SConcern20")]
+
+  # summing the scores for each wave
+C1_SCtotal <- rowSums(cols_C1SC)
+C2_SCtotal <- rowSums(cols_C2SC)
+C3_SCtotal <- rowSums(cols_C3SC)
+ 
+  
+#summing the liking teachers scores
+#C1_LT1 to 10
+cols_C1LT <- new_data[, c("C1_LT1", "C1_LT2", "C1_LT3", "C1_LT4", "C1_LT5", "C1_LT6", "C1_LT7", "C1_LT8", "C1_LT9", "C1_LT10")]
+  
+cols_C2LT <- new_data[, c("C2_LT1", "C2_LT2", "C2_LT3", "C2_LT4", "C2_LT5", "C2_LT7", "C2_LT6", "C2_LT8", "C2_LT9", "C2_LT10")]
+  
+cols_C3LT <- new_data[, c("C3_LT1", "C3_LT2", "C3_LT3", "C3_LT4", "C3_LT5", "C3_LT6", "C3_LT7", "C3_LT8", "C3_LT9", "C3_LT10")]
+
+  # summing the scores for each wave
+C1_LTtotal <- rowSums(cols_C1LT)
+C2_LTtotal <- rowSums(cols_C2LT)
+C3_LTtotal <- rowSums(cols_C3LT)
+
+
+# summing the lonliness scores
+#C1_L1 to 15
+cols_C1L <- new_data[, c("C1_L1", "C1_L2", "C1_L3", "C1_L4", "C1_L5","C1_L6", "C1_L7","C1_L8","C1_L9", "C1_L10", "C1_L11", "C1_L12","C1_L13","C1_L14", "C1_L15")]
+
+cols_C2L <- new_data[, c("C2_L1","C2_L2", "C2_L6", "C2_L7", "C2_L11", "C2_L14","C2_L15")]
+
+cols_C3L <- new_data[, c("C3_L1", "C3_L2", "C3_L6", "C3_L7", "C3_L11", "C3_L14",   "C3_L15")]
+  
+  # summing the scores for each wave
+C1_Ltotal <- rowSums(cols_C1L)
+C2_Ltotal <- rowSums(cols_C2L)
+C3_Ltotal <- rowSums(cols_C3L)
+
+
+sum_data <- tibble(
+  ID = new_data$ID,
+  FSM = new_data$FSM,
+  KS2Eng = new_data$KS2Eng,
+  KS2Mat = new_data$KS2Mat,
+  KS3Eng = new_data$KS3Eng,
+  KS3Mat = new_data$KS3Mat,
+  C1_Btotal = C1_Btotal,
+  C2_Btotal = C2_Btotal,
+  C3_Btotal = C3_Btotal,
+  C1_AGtotal = C1_AGtotal,
+  C2_AGtotal = C2_AGtotal,
+  C3_AGtotal = C3_AGtotal,
+  C1_SCtotal = C1_SCtotal,
+  C2_SCtotal = C2_SCtotal,
+  C3_SCtotal = C3_SCtotal,
+  C1_LTtotal = C1_LTtotal,
+  C2_LTtotal = C2_LTtotal,
+  C3_LTtotal = C3_LTtotal,
+  C1_Ltotal = C1_Ltotal,
+  C2_Ltotal = C2_Ltotal,
+  C3_Ltotal = C3_Ltotal
+)
+
+
+# removing ppts who have no data
+rows_to_remove <- c()  # a vector to store indices of rows to remove
+
+for (i in 1:nrow(sum_data)) {
+  
+  # checking for NA values in the current row
+  row_na <- is.na(sum_data[i,])
+  
+  # counting the number of NA values in the row
+  no_na <- sum(row_na)  
+  
+  # If there are exactly 20 NA values, exclude this row
+  if (no_na == 20) {
+    rows_to_remove <- c(rows_to_remove, i)
+  }
+}
+
+# Remove rows with indices stored in rows_to_remove
+sum_data <- sum_data[-rows_to_remove,]
+
+
+# checking if there are any ppts with all the data - answer: there are none :/
+rows_to_keep <- c()  # a vector to store indices of rows to remove
+
+for (i in 1:nrow(sum_data)) {
+  
+  # checking for NA values in the current row
+  row_na <- is.na(sum_data[i,])
+  
+  # counting the number of NA values in the row
+  no_na <- sum(row_na)  
+  
+  # If there are exactly 20 NA values, include this row
+  if (no_na == 0) {
+    rows_to_keep <- c(rows_to_keep, i)
+  }
+}
+
+# Remove rows with indices stored in rows_to_keep
+complete_data <- sum_data[rows_to_keep,]
+
+```
+
+
+
+
