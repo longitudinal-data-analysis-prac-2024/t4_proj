@@ -130,7 +130,7 @@ for (i in 1:nrow(sum_data)) {
 sum_data <- sum_data[-rows_to_remove,]
 
 
-# checking if there are any ppts with all the data - answer: there are none :/
+##### checking if there are any ppts with all the data - answer: there are none :/ ####
 rows_to_keep <- c()  # a vector to store indices of rows to remove
 
 for (i in 1:nrow(sum_data)) {
@@ -149,6 +149,8 @@ for (i in 1:nrow(sum_data)) {
 
 # Remove rows with indices stored in rows_to_keep
 complete_data <- sum_data[rows_to_keep,]
+
+
 
 ```
 
