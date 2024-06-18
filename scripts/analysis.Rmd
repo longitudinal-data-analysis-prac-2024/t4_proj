@@ -132,17 +132,9 @@ sum_data <- sum_data[-rows_to_remove,]
 ```
 
 ```{r}
-data.table::melt()
-  #another function to reshape data from wide to long
-  #melt(df, id.vars, variable.name, value.name)
-  #id.vars is the outcome variable, variable.name is the names of 
-  #the factors and value.name is the coloumn with the data to be tested, the scores 
-  #melt(data = fancy.data, id.vars = c("pp", "intervention_type"), variable.name = 
-  #"Domain_Type", value.name = "Effect_Score"))
-
 library(tidyverse)
 
-# adding NA values for the 2nd wave of data collection for grades
+# adding NA values for the 2nd wave of data collection for grades because R can't handle things that aren't uniform
 prep_data <- sum_data %>%
   rename(C1_Mat = KS2Mat, C3_Mat = KS3Mat, C1_Eng = KS2Eng, C3_Eng = KS3Eng) %>%
   mutate(C2_Eng = NA_real_, C2_Mat = NA_real_)
@@ -150,7 +142,7 @@ prep_data <- sum_data %>%
 # converting the df to long format
 long_data <- prep_data %>%
   pivot_longer(
-    cols = matches("C[123]_"), # Only pivot columns that match the pattern C1_, C2_, or C3_
+    cols = matches("C[123]_"),
     names_to = c("timepoint", "measure"),
     names_pattern = "C(\\d+)_(.*)"
   ) %>%
@@ -159,17 +151,177 @@ long_data <- prep_data %>%
     values_from = value
   ) %>%
   rename(Wave = timepoint) %>%
-  relocate(Wave, .after = ID)
-
-# this has worked only the waves are in 1 3 2 order rather than 1 2 3 order which is a little annoying
-
-
-
+  mutate(Wave = factor(Wave, levels = c("1", "2", "3"))) %>%
+  arrange(ID, Wave) %>%
+  relocate(Wave, .after = ID) %>%
+  mutate(Wave = as.numeric(Wave)) %>%
+  mutate_at(vars(ends_with("total")), ~replace_na(., 0)) %>%
+  mutate_at(vars(FSM, Eng, Mat), ~replace_na(.,0))
 
 ```
 
 ```{r}
+# imma visualise a little first coz that's gonna help me ac understand the onlsaught of numbers the lmer is gonna give me
+library(ggplot2)
 
+long_data %>% 
+  group_by(Wave) %>%
+  mutate(tmean = mean(Btotal)) %>% 
+  ggplot(mapping = aes(x = Wave, y = tmean)) +
+  geom_line() +
+  labs(title = "SQD Score Over Time for Entire Sample",
+       y = "SDQ score") +
+    scale_x_discrete(limits = c(1, 2, 3))
+
+# okay so overall, the average SDQ goes up from primary to secondary school
+
+# split by FSM status
+long_data %>% 
+  group_by(Wave, FSM) %>% 
+  mutate(tmean = mean(Btotal)) %>% 
+  ggplot(mapping = aes(x = Wave, y = tmean, colour = factor(FSM))) +
+  geom_line() +
+  labs(title = "SDQ Score Over Time, FSM Status",
+       y = "SDQ score") +
+  scale_x_discrete(limits = c(1, 2, 3))
+
+# overall those without FSM (1 - aka higher SES) have a higher SDQ throughout the primary-secondary school transition than those with FSM (2 - aka lower SES); but SDQ increases for both groups - NOTE: 0 indicated people who didn't indicate FSM status
+
+# grades for english and maths
+long_data %>%
+  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
+  group_by(Wave, Subject) %>%
+  summarize(tmean = mean(Grade, na.rm = TRUE), .groups = 'drop') %>%
+  ggplot(aes(x = Wave, y = tmean, color = Subject, group = Subject)) +
+  geom_line() +
+  labs(title = "Grades Over Time for Entire Sample",
+       y = "Mean Grade",
+       color = "Subject") +
+  scale_x_discrete(limits = c(1, 2, 3))
+# all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
+```
+
+```{r}
+# linear mixed effects models
+#"ID"  
+#"Wave"  
+#"FSM" - fixed effect
+#"Eng" - random effect
+#"Mat" - random effect
+#"Btotal" - random effect
+#"AGtotal" - random effect
+#"SCtotal" - random effect
+#"LTtotal" - random effect
+#"Ltotal"- random effect
+
+#install.packages("lmerTest")
+library(lmerTest)
+model1 <- lmer(Btotal ~ 1 + Wave + (Wave|ID), data = long_data, REML = FALSE)
+summary(model1)
+{
+#   Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+#   method [lmerModLmerTest]
+# Formula: Btotal ~ 1 + Wave + (Wave | ID)
+#    Data: long_data
+# 
+#      AIC      BIC   logLik deviance df.resid 
+#  49672.3  49712.4 -24830.1  49660.3     5895 
+# 
+# Scaled residuals: 
+#     Min      1Q  Median      3Q     Max 
+# -1.8032 -0.8784  0.3137  0.8126  2.4229 
+# 
+# Random effects:
+#  Groups   Name        Variance Std.Dev. Corr 
+#  ID       (Intercept)  64.154   8.010        
+#           Wave          8.051   2.837   -0.77
+#  Residual             234.534  15.315        
+# Number of obs: 5901, groups:  ID, 1967
+# 
+# Fixed effects:
+#              Estimate Std. Error        df t value Pr(>|t|)    
+# (Intercept)    6.8051     0.5575 1967.0829   12.21   <2e-16 ***
+# Wave           6.6627     0.2524 1967.1486   26.40   <2e-16 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Correlation of Fixed Effects:
+#      (Intr)
+# Wave -0.910
+}
+
+# This LMM indicates that both Wave (time) and the individual ID significantly influence Btotal (SDQ score). The negative correlation between random intercepts and slopes suggests that individuals with higher initial Btotal scores tend to have a smaller increase (or even a decrease) in Btotal over time.
+
+# Overall, the model suggests that Btotal scores increase with time (Wave), and there is significant variability both in the baseline scores (Intercept) and in how scores change over time (Wave) across individuals (ID).
+
+model2 <-  model2 <- lmer(Btotal ~ Wave + FSM + 
+               (1 + Wave | ID) + 
+               (1 + Wave | Eng) + 
+               (1 + Wave | Mat) + 
+               (1 + Wave | AGtotal) + 
+               (1 + Wave | SCtotal) + 
+               (1 + Wave | LTtotal) + 
+               (1 + Wave | Ltotal), 
+               data = long_data,
+               REML = FALSE)
+summary(model2)
+{
+# Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
+#   method [lmerModLmerTest]
+# Formula: Btotal ~ Wave + FSM + (1 + Wave | ID) + (1 + Wave | Eng) + (1 +  
+#     Wave | Mat) + (1 + Wave | AGtotal) + (1 + Wave | SCtotal) +  
+#     (1 + Wave | LTtotal) + (1 + Wave | Ltotal)
+#    Data: long_data
+# 
+#      AIC      BIC   logLik deviance df.resid 
+#  44895.3  45062.3 -22422.6  44845.3     5876 
+# 
+# Scaled residuals: 
+#     Min      1Q  Median      3Q     Max 
+# -3.4259 -0.1084  0.0627  0.4690  4.0145 
+# 
+# Random effects:
+#  Groups   Name        Variance  Std.Dev. Corr 
+#  ID       (Intercept)   0.42425  0.6513       
+#           Wave          3.29886  1.8163  -1.00
+#  SCtotal  (Intercept)  15.37190  3.9207       
+#           Wave          2.04860  1.4313  -0.89
+#  Ltotal   (Intercept)   4.19838  2.0490       
+#           Wave          0.23786  0.4877  1.00 
+#  LTtotal  (Intercept)   0.17437  0.4176       
+#           Wave          0.14576  0.3818  1.00 
+#  AGtotal  (Intercept)  50.82182  7.1289       
+#           Wave          2.31825  1.5226  -1.00
+#  Mat      (Intercept)   0.00000  0.0000       
+#           Wave          0.21454  0.4632   NaN 
+#  Eng      (Intercept)   0.00000  0.0000       
+#           Wave          0.06565  0.2562   NaN 
+#  Residual             102.09846 10.1044       
+# Number of obs: 5901, groups:  
+# ID, 1967; SCtotal, 149; Ltotal, 51; LTtotal, 32; AGtotal, 18; Mat, 9; Eng, 8
+# 
+# Fixed effects:
+#              Estimate Std. Error        df t value Pr(>|t|)    
+# (Intercept)   34.4475     2.0882   26.4729  16.497 1.89e-15 ***
+# Wave          -0.7155     0.5997   24.5945  -1.193   0.2442    
+# FSM           -0.6443     0.2802 1526.1509  -2.299   0.0216 *  
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Correlation of Fixed Effects:
+#      (Intr) Wave  
+# Wave -0.792       
+# FSM  -0.143  0.012
+# optimizer (nloptwrap) convergence code: 0 (OK)
+# boundary (singular) fit: see help('isSingular')
+}
+
+isSingular(model2) # TRUE
+
+```
+
+```{r}
+# SEM models
 ## taken from CA stats coursework
 #install.packages("lavaan")
 #library(lavaan)
@@ -183,11 +335,6 @@ long_data <- prep_data %>%
 # 
 # (mod2.sum <- summary(model2, fit.measures = TRUE))
 
-#lmerTest::lmer(inflations ~ trial * condition + (1 | ID), data = adj.long)
-
-
 ```
-
-
 
 

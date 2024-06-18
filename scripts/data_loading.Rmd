@@ -239,7 +239,7 @@ our_data <- our_data %>%
 ```{r FSM}
 #### [**FSM**]{.underline}
 
-## "FSM" #0 for no, 1 for yes
+## "FSM" #1 for no, 2 for yes
 
 library(dplyr)
 
