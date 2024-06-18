@@ -129,27 +129,61 @@ for (i in 1:nrow(sum_data)) {
 # Remove rows with indices stored in rows_to_remove
 sum_data <- sum_data[-rows_to_remove,]
 
+```
 
-##### checking if there are any ppts with all the data - answer: there are none :/ ####
-rows_to_keep <- c()  # a vector to store indices of rows to remove
+```{r}
+data.table::melt()
+  #another function to reshape data from wide to long
+  #melt(df, id.vars, variable.name, value.name)
+  #id.vars is the outcome variable, variable.name is the names of 
+  #the factors and value.name is the coloumn with the data to be tested, the scores 
+  #melt(data = fancy.data, id.vars = c("pp", "intervention_type"), variable.name = 
+  #"Domain_Type", value.name = "Effect_Score"))
 
-for (i in 1:nrow(sum_data)) {
-  
-  # checking for NA values in the current row
-  row_na <- is.na(sum_data[i,])
-  
-  # counting the number of NA values in the row
-  no_na <- sum(row_na)  
-  
-  # If there are exactly 20 NA values, include this row
-  if (no_na == 0) {
-    rows_to_keep <- c(rows_to_keep, i)
-  }
-}
+library(tidyverse)
 
-# Remove rows with indices stored in rows_to_keep
-complete_data <- sum_data[rows_to_keep,]
+# adding NA values for the 2nd wave of data collection for grades
+prep_data <- sum_data %>%
+  rename(C1_Mat = KS2Mat, C3_Mat = KS3Mat, C1_Eng = KS2Eng, C3_Eng = KS3Eng) %>%
+  mutate(C2_Eng = NA_real_, C2_Mat = NA_real_)
 
+# converting the df to long format
+long_data <- prep_data %>%
+  pivot_longer(
+    cols = matches("C[123]_"), # Only pivot columns that match the pattern C1_, C2_, or C3_
+    names_to = c("timepoint", "measure"),
+    names_pattern = "C(\\d+)_(.*)"
+  ) %>%
+  pivot_wider(
+    names_from = measure,
+    values_from = value
+  ) %>%
+  rename(Wave = timepoint) %>%
+  relocate(Wave, .after = ID)
+
+# this has worked only the waves are in 1 3 2 order rather than 1 2 3 order which is a little annoying
+
+
+
+
+```
+
+```{r}
+
+## taken from CA stats coursework
+#install.packages("lavaan")
+#library(lavaan)
+# mod.spec2 <- 'grp =~ 1*bart + grips + soep + forb
+# bart =~ adj_bart_score_early + adj_bart_score_middle + adj_bart_score_late 
+# grips =~ grips_commonly + grips_attracted + grips_chances + grips_fun + grips_enjoy + grips_part + grips_hurt + grips_friends
+# soep =~ soep_leisure + soep_health + soep_driving + soep_occupation + soep_faith + soep_finance + soep_general
+# forb =~ forb_gamble + forb_sport + forb_cigarettes + forb_invest + forb_speed + forb_drink'
+# 
+# model2 <- lavaan::cfa(mod.spec2, data = wide.z)
+# 
+# (mod2.sum <- summary(model2, fit.measures = TRUE))
+
+#lmerTest::lmer(inflations ~ trial * condition + (1 | ID), data = adj.long)
 
 
 ```
