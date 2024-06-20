@@ -8,7 +8,7 @@ output: html_document
 ```{r }
 library(tidyverse)
 
-new_data <- read.csv("../data/our_data.csv")
+new_data <- read.csv("../data/our_data.csv", row.names = 1)
 
 # summing the SDQ scores
   # getting each wave separated
@@ -130,7 +130,7 @@ for (i in 1:nrow(sum_data)) {
 sum_data <- sum_data[-rows_to_remove,]
 
 # making a lil .csv so the project can be run from here onwards - it's like a game checkpoint
-write.csv(sum_data, file = "../data/our_data.csv", row.names = FALSE)
+write.csv(sum_data, file = "../data/sum_data.csv", row.names = FALSE)
 
 ```
 
@@ -162,7 +162,7 @@ long_data <- prep_data %>%
   mutate_at(vars(FSM, Eng, Mat), ~replace_na(.,0))
 
 #  long format checkpoint
-write.csv(long_data, file = "../data/our_data.csv", row.names = FALSE)
+write.csv(long_data, file = "../data/long_data.csv", row.names = FALSE)
 
 
 ```
@@ -206,7 +206,23 @@ long_data %>%
        color = "Subject") +
   scale_x_discrete(limits = c(1, 2, 3))
 # all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
+
+
 ```
+
+```{r}
+# trying to deal with the NAs with multiple imputation
+#install.packages("mice")
+library(mice)
+
+# creating the imputation model
+imp <- mice(new_data, method = rep("pmm", ncol(new_data)))
+
+# making the imputated dataset
+imputed_data <- complete(imp)
+
+```
+
 
 ```{r}
 # linear mixed effects models
@@ -330,6 +346,23 @@ isSingular(model2) # TRUE
 ```
 
 ```{r}
+# take 2 on lme models
+library(lme4)
+
+# Model with random intercept only
+ri_model <- lmer(Btotal ~ Time + FSM + (1 | ID), data = long_data)
+
+# Model with random intercept and random slope for Time
+rs_model <- lmer(Btotal ~ Time + FSM + (1 + Time | ID), data = long_data)
+
+intelligence_model <- lmer(Btotal ~ Time + FSM + (1 + Time + AGtotal + SCtotal + LTtotal + Ltotal | ID ), data = long_data)
+
+AIC(ri_model, rs_model)
+
+```
+
+
+```{r}
 # SEM models
 
 #install.packages("lavaan")
@@ -359,4 +392,31 @@ summary(sem_fit1, fit.measures=TRUE)
 
 ```
 
+```{r}
+# the graveyard
 
+T1 <- rep(1,nrow(sum_data))
+T2 <- rep(2,nrow(sum_data))
+T3 <- rep(3,nrow(sum_data))
+
+testsum_data <- cbind(sum_data, T1, T2, T3)
+
+ggplot(data = testsum_data, aes(x = T1, y = C1_Btotal)) + geom_point()
+
+ggplot(data = testsum_data, aes(x = T2, y = C2_Btotal)) + geom_point()
+
+# Reshape the data
+testsum_long <- testsum_data %>%
+  pivot_longer(cols = starts_with("T"), names_to = "Time", values_to = "TimeValue") %>%
+  pivot_longer(cols = starts_with("C"), names_to = "BtotalType", values_to = "BtotalValue")
+
+# Filter to match the correct pairs
+testsum_long <- testsum_long %>%
+  filter((Time == "T1" & BtotalType == "C1_Btotal") | (Time == "T2" & BtotalType == "C2_Btotal") | (Time == "T3" & BtotalType == "C3_Btotal"))
+
+ggplot(data = testsum_long, aes(x = TimeValue, y = BtotalValue, color = Time, group = ID)) +
+  geom_line() +
+  labs(x = "Time", y = "Btotal Scores", color = "Time") +
+  scale_color_manual(values = c("T1" = "blue", "T2" = "red")) +  # Customize line colors
+  theme_minimal()
+```
