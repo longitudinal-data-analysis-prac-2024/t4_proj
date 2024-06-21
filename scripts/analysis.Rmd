@@ -23,6 +23,11 @@ new_data <- complete(imp)
 # saving the new data frame because the imputation takes a hot minute so there's no need to re run it every time we open this scritp
 write.csv(new_data, file = "../data/new_data.csv", row.names = FALSE)
 
+```
+
+```{r}
+# calling the imputed data into the envrionment
+new_data <- read.csv("../data/new_data.csv")
 
 # summing the SDQ scores
   # getting each wave separated
@@ -101,10 +106,12 @@ C3_Ltotal <- rowSums(cols_C3L)
 sum_data <- tibble(
   ID = new_data$ID,
   FSM = new_data$FSM,
-  KS2Eng = new_data$KS2Eng,
-  KS2Mat = new_data$KS2Mat,
-  KS3Eng = new_data$KS3Eng,
-  KS3Mat = new_data$KS3Mat,
+  C1_Eng = new_data$KS2Eng,
+  C1_Mat = new_data$KS2Mat,
+  C2_Eng = new_data$KS2Eng,
+  C2_Mat = new_data$KS2Mat,
+  C3_Eng = new_data$KS3Eng,
+  C3_Mat = new_data$KS3Mat,
   C1_Btotal = C1_Btotal,
   C2_Btotal = C2_Btotal,
   C3_Btotal = C3_Btotal,
@@ -123,27 +130,7 @@ sum_data <- tibble(
 )
 
 
-# removing ppts who have no data
-rows_to_remove <- c()  # a vector to store indices of rows to remove
-
-for (i in 1:nrow(sum_data)) {
-  
-  # checking for NA values in the current row
-  row_na <- is.na(sum_data[i,])
-  
-  # counting the number of NA values in the row
-  no_na <- sum(row_na)  
-  
-  # If there are exactly 20 NA values, exclude this row
-  if (no_na == 20) {
-    rows_to_remove <- c(rows_to_remove, i)
-  }
-}
-
-# Remove rows with indices stored in rows_to_remove
-sum_data <- sum_data[-rows_to_remove,]
-
-# making a lil .csv so the project can be run from here onwards - it's like a game checkpoint
+# making a lil .csv so the project can be run from here on wards - it's like a game checkpoint
 write.csv(sum_data, file = "../data/sum_data.csv", row.names = FALSE)
 
 ```
@@ -151,13 +138,8 @@ write.csv(sum_data, file = "../data/sum_data.csv", row.names = FALSE)
 ```{r}
 library(tidyverse)
 
-# adding NA values for the 2nd wave of data collection for grades because R can't handle things that aren't uniform
-prep_data <- sum_data %>%
-  rename(C1_Mat = KS2Mat, C3_Mat = KS3Mat, C1_Eng = KS2Eng, C3_Eng = KS3Eng) %>%
-  mutate(C2_Eng = NA_real_, C2_Mat = NA_real_)
-
 # converting the df to long format
-long_data <- prep_data %>%
+long_data <- sum_data %>%
   pivot_longer(
     cols = matches("C[123]_"),
     names_to = c("timepoint", "measure"),
@@ -178,7 +160,6 @@ long_data <- prep_data %>%
 #  long format checkpoint
 write.csv(long_data, file = "../data/long_data.csv", row.names = FALSE)
 
-
 ```
 
 
@@ -193,9 +174,9 @@ long_data %>%
   geom_line() +
   labs(title = "SQD Score Over Time for Entire Sample",
        y = "SDQ score") +
-    scale_x_discrete(limits = c(1, 2, 3))
+  scale_x_continuous(breaks = c(1,2,3))
 
-# okay so overall, the average SDQ goes up from primary to secondary school
+# okay so overall, the average SDQ goes down from primary to secondary school
 
 # split by FSM status
 long_data %>% 
@@ -205,7 +186,7 @@ long_data %>%
   geom_line() +
   labs(title = "SDQ Score Over Time, FSM Status",
        y = "SDQ score") +
-  scale_x_discrete(limits = c(1, 2, 3))
+  scale_x_continuous(breaks = c(1,2,3))
 
 # overall those without FSM (1 - aka higher SES) have a higher SDQ throughout the primary-secondary school transition than those with FSM (2 - aka lower SES); but SDQ increases for both groups - NOTE: 0 indicated people who didn't indicate FSM status
 
@@ -219,14 +200,275 @@ long_data %>%
   labs(title = "Grades Over Time for Entire Sample",
        y = "Mean Grade",
        color = "Subject") +
-  scale_x_discrete(limits = c(1, 2, 3))
+  scale_x_continuous(breaks = c(1,2,3))
 # all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
 
+
+ggplot(data = long_data[1:100], aes(x = Time, y = Btotal, colour = ID)) +
+  geom_line() +
+  theme_minimal () +
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks = c(1,2,3))
+```
+
+
+```{r}
+# take 2 on lme models
+# note: random intercepts go after the | and random slopes go after (1 +
+
+library(lme4)
+
+# Model with random intercept only
+base_model <- lmer(Btotal ~ Time + (1 | ID), data = long_data)
+summary(base_model)
+{
+#   Linear mixed model fit by REML ['lmerMod']
+# Formula: Btotal ~ Time + (1 | ID)
+#    Data: long_data
+# 
+# REML criterion at convergence: 37659.5
+# 
+# Scaled residuals: 
+#     Min      1Q  Median      3Q     Max 
+# -5.3393 -0.5772 -0.0595  0.5029  4.9919 
+# 
+# Random effects:
+#  Groups   Name        Variance Std.Dev.
+#  ID       (Intercept)  5.478   2.341   
+#  Residual             10.086   3.176   
+# Number of obs: 6882, groups:  ID, 2294
+# 
+# Fixed effects:
+#             Estimate Std. Error t value
+# (Intercept) 35.16274    0.11246 312.670
+# Time        -0.18112    0.04689  -3.863
+# 
+# Correlation of Fixed Effects:
+#      (Intr)
+# Time -0.834
+}
+# The model indicates that Btotal decreases slightly over time, and this effect is statistically significant.
+# There is significant variability in the intercepts across different individuals (ID), suggesting that individual differences account for a substantial portion of the variance in Btotal.
+# The high t values for both the intercept and the Time coefficient suggest that these fixed effects are very significant predictors of Btotal.
+
+# model considering the effect of FSMs on SDQ over time
+fixed_model<-lmer(Btotal ~ Time + FSM + (1 | ID), data = long_data)
+summary(fixed_model)
+{
+#   Linear mixed model fit by REML ['lmerMod']
+# Formula: Btotal ~ Time + FSM + (1 | ID)
+#    Data: long_data
+# 
+# REML criterion at convergence: 37639.6
+# 
+# Scaled residuals: 
+#     Min      1Q  Median      3Q     Max 
+# -5.3205 -0.5726 -0.0644  0.4937  5.0201 
+# 
+# Random effects:
+#  Groups   Name        Variance Std.Dev.
+#  ID       (Intercept)  5.399   2.324   
+#  Residual             10.086   3.176   
+# Number of obs: 6882, groups:  ID, 2294
+# 
+# Fixed effects:
+#             Estimate Std. Error t value
+# (Intercept) 34.28607    0.21876 156.727
+# Time        -0.18112    0.04689  -3.863
+# FSM          0.73748    0.15793   4.670
+# 
+# Correlation of Fixed Effects:
+#      (Intr) Time  
+# Time -0.429       
+# FSM  -0.858  0.000
+}
+# The intercept (34.28607) represents the estimated value of Btotal when Time and FSM are both zero.
+# Time has a significant negative effect on Btotal, suggesting that as Time increases, Btotal tends to decrease.
+# FSM has a significant positive effect on Btotal, suggesting that higher FSM values are associated with higher Btotal. - aka if you're on FSM you have worse MH transitioning
+
+# model considering the effect of Grades on SDQ over time
+grades_model <- lmer(Btotal ~ Time * Eng + Time * Mat + (1 | ID), data = long_data)
+summary(grades_model)
+{
+#   Linear mixed model fit by REML ['lmerMod']
+# Formula: Btotal ~ Time * Eng + Time * Mat + (1 | ID)
+#    Data: long_data
+# 
+# REML criterion at convergence: 37557.9
+# 
+# Scaled residuals: 
+#     Min      1Q  Median      3Q     Max 
+# -5.4386 -0.5707 -0.0603  0.4933  4.9998 
+# 
+# Random effects:
+#  Groups   Name        Variance Std.Dev.
+#  ID       (Intercept) 5.408    2.326   
+#  Residual             9.914    3.149   
+# Number of obs: 6882, groups:  ID, 2294
+# 
+# Fixed effects:
+#             Estimate Std. Error t value
+# (Intercept) 41.00840    0.67523  60.732
+# Time        -2.25233    0.27483  -8.195
+# Eng         -0.65459    0.19362  -3.381
+# Mat         -0.74688    0.17388  -4.295
+# Time:Eng     0.39134    0.07760   5.043
+# Time:Mat     0.10680    0.06875   1.553
+# 
+# Correlation of Fixed Effects:
+#          (Intr) Time   Eng    Mat    Tm:Eng
+# Time     -0.884                            
+# Eng      -0.510  0.449                     
+# Mat      -0.332  0.270 -0.630              
+# Time:Eng  0.457 -0.502 -0.915  0.595       
+# Time:Mat  0.295 -0.303  0.597 -0.918 -0.658
+}
+# Time: Significant negative effect on Btotal, indicating that Btotal tends to decrease over time.
+# Eng and Mat: Both have significant negative effects on Btotal, indicating that higher values in these subjects are associated with lower Btotal.
+# Time: Significant positive interaction effect, suggesting that the relationship between Eng and Btotal depends on Time. As Time and Eng increase together, Btotal tends to increase more than if they were considered separately.
+# Time: Interaction effect is positive but not significant, indicating that the relationship between Mat and Btotal does not significantly change with Time.
+
+
+# model considering the effect of all factors on SDQ over time
+full_model <- lmer(Btotal ~ Time * AGtotal + Time * SCtotal + Time * LTtotal + Time * Ltotal + FSM + (1 | ID), data = long_data)
+summary(full_model)
+{
+#   Linear mixed model fit by REML ['lmerMod']
+# Formula: Btotal ~ Time * AGtotal + Time * SCtotal + Time * LTtotal + Time *  
+#     Ltotal + FSM + (1 | ID)
+#    Data: long_data
+# 
+# REML criterion at convergence: 36812.1
+# 
+# Scaled residuals: 
+#     Min      1Q  Median      3Q     Max 
+# -5.1528 -0.5692 -0.0363  0.5212  5.9990 
+# 
+# Random effects:
+#  Groups   Name        Variance Std.Dev.
+#  ID       (Intercept) 3.745    1.935   
+#  Residual             9.384    3.063   
+# Number of obs: 6882, groups:  ID, 2294
+# 
+# Fixed effects:
+#               Estimate Std. Error t value
+# (Intercept)  33.899589   0.871232  38.910
+# Time         -1.987804   0.359140  -5.535
+# AGtotal       0.065225   0.036696   1.777
+# SCtotal       0.018972   0.004061   4.672
+# LTtotal      -0.179944   0.016011 -11.239
+# Ltotal        0.083767   0.012801   6.544
+# FSM           0.438387   0.140370   3.123
+# Time:AGtotal  0.016512   0.016873   0.979
+# Time:SCtotal  0.004549   0.001918   2.372
+# Time:LTtotal  0.080970   0.007135  11.348
+# Time:Ltotal   0.017217   0.008639   1.993
+# 
+# Correlation of Fixed Effects:
+#             (Intr) Time   AGtotl SCtotl LTtotl Ltotal FSM    Tm:AGt Tm:SCt Tm:LTt
+# Time        -0.895                                                               
+# AGtotal     -0.645  0.658                                                        
+# SCtotal     -0.320  0.283  0.104                                                 
+# LTtotal     -0.570  0.540 -0.054  0.037                                          
+# Ltotal      -0.272  0.259  0.087 -0.334  0.003                                   
+# FSM         -0.206  0.013  0.007 -0.020  0.045 -0.020                            
+# Time:AGtotl  0.583 -0.732 -0.905 -0.076  0.016 -0.072  0.002                     
+# Time:SCtotl  0.236 -0.224 -0.078 -0.915  0.000  0.386  0.002  0.053              
+# Time:LTtotl  0.464 -0.513  0.024 -0.005 -0.928  0.109 -0.042  0.019 -0.039       
+# Time:Ltotal  0.186 -0.266 -0.062  0.260  0.011 -0.884  0.011  0.078 -0.350 -0.072
+}
+# Time: Significant negative effect on Btotal, indicating that as Time increases, Btotal tends to decrease.
+# AGtotal, SCtotal, LTtotal, Ltotal: Each has its own significant effect on Btotal, and their interactions with Time suggest that their effects may vary depending on the level of Time.
+# FSM: Significant positive effect on Btotal, suggesting that higher FSM values are associated with higher Btotal.
+# Interpreting interactions (e.g., Time X AGtotal): The coefficient (e.g., Time = 0.016512) indicates how the effect of AGtotal on Btotal changes with Time. Here, it's positive, suggesting that as Time and AGtotal increase together, Btotal tends to increase more than expected from their individual effects.
+
+```
+
+```{r}
+# which model is best
+# anova(model1, model2)
+# A significant p-value (< 0.05) suggests that the more complex model (model1) fits significantly better than the simpler model (model2).
+# AIC and BIC values  - lower values = better fitting model
+
+# likelihood ratio test (will include AIC and BIC)
+anova(full_model, base_model) # full is sig better
 
 ```
 
 
 ```{r}
+# SEM models
+
+#install.packages("lavaan")
+library(lavaan)
+
+## taken from CA stats coursework
+# mod.spec2 <- 'grp =~ 1*bart + grips + soep + forb
+# bart =~ adj_bart_score_early + adj_bart_score_middle + adj_bart_score_late 
+# grips =~ grips_commonly + grips_attracted + grips_chances + grips_fun + grips_enjoy + grips_part + grips_hurt + grips_friends
+# soep =~ soep_leisure + soep_health + soep_driving + soep_occupation + soep_faith + soep_finance + soep_general
+# forb =~ forb_gamble + forb_sport + forb_cigarettes + forb_invest + forb_speed + forb_drink'
+# 
+# model2 <- lavaan::cfa(mod.spec2, data = wide.z)
+# 
+# (mod2.sum <- summary(model2, fit.measures = TRUE))
+
+sem_model <- '
+  # Measurement model
+  Btotal =~ C1_Btotal + C2_Btotal + C3_Btotal
+  AGtotal =~ AGtotal
+  SCtotal =~ SCtotal
+  LTtotal =~ LTtotal
+  
+  # Structural model
+  Btotal ~ AGtotal + SCtotal + LTtotal + FSM + C1_Btotal + C2_Btotal + C3_Btotal
+  
+  # FSM affecting Btotal directly
+  FSM ~~ Btotal
+'
+
+# fitting the model made
+sem_fit1 <- sem(sem_model, data = sum_data, missing="fiml", fixed.x=FALSE)
+
+# having a lil look-see at all the ugly stats that are supposed ot mean something to me
+summary(sem_fit1, fit.measures=TRUE)
+
+```
+
+
+#### dubbed uselenss
+```{r}
+# the graveyard
+
+T1 <- rep(1,nrow(sum_data))
+T2 <- rep(2,nrow(sum_data))
+T3 <- rep(3,nrow(sum_data))
+
+testsum_data <- cbind(sum_data, T1, T2, T3)
+
+ggplot(data = testsum_data, aes(x = T1, y = C1_Btotal)) + geom_point()
+
+ggplot(data = testsum_data, aes(x = T2, y = C2_Btotal)) + geom_point()
+
+# Reshape the data
+testsum_long <- testsum_data %>%
+  pivot_longer(cols = starts_with("T"), names_to = "Time", values_to = "TimeValue") %>%
+  pivot_longer(cols = starts_with("C"), names_to = "BtotalType", values_to = "BtotalValue")
+
+# Filter to match the correct pairs
+testsum_long <- testsum_long %>%
+  filter((Time == "T1" & BtotalType == "C1_Btotal") | (Time == "T2" & BtotalType == "C2_Btotal") | (Time == "T3" & BtotalType == "C3_Btotal"))
+
+ggplot(data = testsum_long, aes(x = TimeValue, y = BtotalValue, color = Time, group = ID)) +
+  geom_line() +
+  labs(x = "Time", y = "Btotal Scores", color = "Time") +
+  scale_color_manual(values = c("T1" = "blue", "T2" = "red")) +  # Customize line colors
+  theme_minimal()
+```
+
+
+```{r}
+# the cemetary
 # linear mixed effects models
 #"ID"  
 #"Time"  
@@ -238,6 +480,7 @@ long_data %>%
 #"SCtotal" - random effect
 #"LTtotal" - random effect
 #"Ltotal"- random effect
+# note: random intercepts go after the | and random slopes go after (1 +
 
 #install.packages("lmerTest")
 library(lmerTest)
@@ -345,80 +588,4 @@ isSingular(model2) # TRUE
 
 # icba to deal with this now - i have to get rid of some multicollinearity that's begin created by the excessive inclusion fo intercepts and slopes but imma try to wrap my head around this later
 
-```
-
-```{r}
-# take 2 on lme models
-library(lme4)
-
-# Model with random intercept only
-ri_model <- lmer(Btotal ~ Time + FSM + (1 | ID), data = long_data)
-
-# Model with random intercept and random slope for Time
-rs_model <- lmer(Btotal ~ Time + FSM + (1 + Time | ID), data = long_data)
-
-intelligence_model <- lmer(Btotal ~ Time + FSM + (1 + Time + AGtotal + SCtotal + LTtotal + Ltotal | ID ), data = long_data)
-
-AIC(ri_model, rs_model)
-
-```
-
-
-```{r}
-# SEM models
-
-#install.packages("lavaan")
-library(lavaan)
-
-## taken from CA stats coursework
-# mod.spec2 <- 'grp =~ 1*bart + grips + soep + forb
-# bart =~ adj_bart_score_early + adj_bart_score_middle + adj_bart_score_late 
-# grips =~ grips_commonly + grips_attracted + grips_chances + grips_fun + grips_enjoy + grips_part + grips_hurt + grips_friends
-# soep =~ soep_leisure + soep_health + soep_driving + soep_occupation + soep_faith + soep_finance + soep_general
-# forb =~ forb_gamble + forb_sport + forb_cigarettes + forb_invest + forb_speed + forb_drink'
-# 
-# model2 <- lavaan::cfa(mod.spec2, data = wide.z)
-# 
-# (mod2.sum <- summary(model2, fit.measures = TRUE))
-
-sem_model1 <- '
-  C1_Btotal ~ KS2Eng + KS2Mat + C1_AGtotal + C1_SCtotal + C1_LTtotal + C1_Ltotal + FSM
-  C2_Btotal ~ C2_AGtotal + C2_SCtotal + C2_LTtotal + C2_Ltotal + FSM
-  C3_Btotal ~ KS3Eng + KS3Mat + C3_AGtotal + C3_SCtotal + C3_LTtotal + C3_Ltotal + FSM '
-
-# fitting the model made
-sem_fit1 <- sem(sem_model1, data = sum_data, missing="fiml", fixed.x=FALSE)
-
-# having a lil look-see at all the ugly stats that are supposed ot mean something to me
-summary(sem_fit1, fit.measures=TRUE)
-
-```
-
-```{r}
-# the graveyard
-
-T1 <- rep(1,nrow(sum_data))
-T2 <- rep(2,nrow(sum_data))
-T3 <- rep(3,nrow(sum_data))
-
-testsum_data <- cbind(sum_data, T1, T2, T3)
-
-ggplot(data = testsum_data, aes(x = T1, y = C1_Btotal)) + geom_point()
-
-ggplot(data = testsum_data, aes(x = T2, y = C2_Btotal)) + geom_point()
-
-# Reshape the data
-testsum_long <- testsum_data %>%
-  pivot_longer(cols = starts_with("T"), names_to = "Time", values_to = "TimeValue") %>%
-  pivot_longer(cols = starts_with("C"), names_to = "BtotalType", values_to = "BtotalValue")
-
-# Filter to match the correct pairs
-testsum_long <- testsum_long %>%
-  filter((Time == "T1" & BtotalType == "C1_Btotal") | (Time == "T2" & BtotalType == "C2_Btotal") | (Time == "T3" & BtotalType == "C3_Btotal"))
-
-ggplot(data = testsum_long, aes(x = TimeValue, y = BtotalValue, color = Time, group = ID)) +
-  geom_line() +
-  labs(x = "Time", y = "Btotal Scores", color = "Time") +
-  scale_color_manual(values = c("T1" = "blue", "T2" = "red")) +  # Customize line colors
-  theme_minimal()
 ```
