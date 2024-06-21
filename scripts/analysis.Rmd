@@ -10,6 +10,16 @@ library(tidyverse)
 
 new_data <- read.csv("../data/our_data.csv", row.names = 1)
 
+# trying to deal with the NAs with multiple imputation
+#install.packages("mice")
+library(mice)
+
+# creating the imputation model
+imp <- mice(new_data, method = rep("pmm", ncol(new_data)))
+
+# making the imputated dataset
+imputed_data <- complete(imp)
+
 # summing the SDQ scores
   # getting each wave separated
 cols_C1B <- new_data[, c("C1_B1", "C1_B2", "C1_B5", "C1_B10", "C1_B11", "C1_B12", "C1_B13", "C1_B14", "C1_B15", "C1_B16",
@@ -167,6 +177,7 @@ write.csv(long_data, file = "../data/long_data.csv", row.names = FALSE)
 
 ```
 
+
 ```{r}
 # imma visualise a little first coz that's gonna help me ac understand the onlsaught of numbers the lmer is gonna give me
 library(ggplot2)
@@ -207,19 +218,6 @@ long_data %>%
   scale_x_discrete(limits = c(1, 2, 3))
 # all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
 
-
-```
-
-```{r}
-# trying to deal with the NAs with multiple imputation
-#install.packages("mice")
-library(mice)
-
-# creating the imputation model
-imp <- mice(new_data, method = rep("pmm", ncol(new_data)))
-
-# making the imputated dataset
-imputed_data <- complete(imp)
 
 ```
 
