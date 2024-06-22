@@ -2,8 +2,17 @@
 #loading everything in
 library("tidyverse")
 library("ggplot2")
+library("tidyverse")
+# Install necessary packages
+if(!require(wordcloud)) install.packages("wordcloud")
+if(!require(RColorBrewer)) install.packages("RColorBrewer")
+
+# Load the packages
+library(wordcloud)
+library(RColorBrewer)
 
 
+##boxplot for grades
 gradegraph <- long_data %>%
   mutate(across(c(Eng, Mat), ~na_if(., 0))) %>%
   pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
@@ -16,14 +25,87 @@ gradegraph <- long_data %>%
        color = "Subject") +
   scale_x_discrete(limits = c(1, 2, 3))
 gradegraph
-
-folder <- "t4_proj/scripts/descriptives"  # Path to the descriptives folder
+folder <- "descriptives"  # Path to the descriptives folder
 filename <- "gradegraph.png"  # Specify the filename and extension
-
 file_path <- file.path(folder, filename)
 ggsave(file_path, plot = gradegraph, width = 8, height = 6, dpi = 300)
 
-message("Plot saved to: ", file_path)
 
+##ethnicity graph
+ethnicity_data <- st_data %>%
+  filter(!is.na(Ethnicity5))
+ethnicity_percentage <- ethnicity_data %>%
+  group_by(Ethnicity5) %>%
+  summarise(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100) %>% 
+  mutate(Label = paste0(Ethnicity5, ": ", round(percentage, 1), "%"))
+
+pastel_colors <- c("#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#B3B3FF", "#FFC0CB")
+ethnicity_graph <- ggplot(ethnicity_percentage, aes(x = "", y = percentage, fill = Ethnicity5)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Ethnicity Distribution") +
+  theme(plot.background = element_rect(fill = "white", color = NA))+
+  theme_void() +
+  theme(legend.title = element_blank(), plot.background = element_rect(fill = "white", color = NA)) +
+  geom_text(aes(label = Label), position = position_stack(vjust = 0.5), color = "black") +
+  scale_fill_manual(values = pastel_colors)
+ethnicityname <- "ethnicitygraph.png"  
+ethnicity_path <- file.path(folder, ethnicityname)
+ggsave(ethnicity_path, plot = ethnicity_graph, width = 8, height = 6, dpi = 300)
+
+##first language
+language_summary <- st_data %>%
+  filter(!is.na(Firstlanguage)) %>% 
+  group_by(Firstlanguage) %>%
+  summarise(Count = n()) %>%
+  arrange(desc(Count))
+color_palette <- brewer.pal(8, "Pastel2")
+langname <- "languages_wordcloud.png" 
+png(file.path(folder, langname), width = 10, height = 6, units = "in", res = 300)
+wordcloud(words = language_summary$Firstlanguage, 
+          freq = language_summary$Count, 
+          scale = c(10, 1),
+          min.freq = 1,
+          max.words = Inf,
+          random.order = FALSE, 
+          rot.per = 0.2,
+          colors = color_palette)
+
+## GENDER
+gender_counts <- st_data %>%
+  group_by(Gender) %>%
+  filter(!is.na(Gender)) %>% 
+  summarise(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100)
+gendergraph <- ggplot(gender_counts, aes(x = "", y = percentage, fill = Gender)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Gender Distribution") +
+  theme_void() +
+  theme(legend.title = element_blank(), plot.background = element_rect(fill = "white", color = NA)) +
+  geom_text(aes(label = paste0(round(percentage), "%")), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = pastel_colors)
+langname <- "languages_wordcloud.png" 
+gender_path <- file.path(folder, "gendergraph.png")
+ggsave(gender_path, plot = gendergraph, width = 8, height = 6, dpi = 300)
+
+## free school meals
+fsm_percentage <- st_data %>%
+  group_by(FSM) %>%
+  filter(!is.na(FSM)) %>% 
+  summarise(count = n()) %>%
+  mutate(percentage = round((count / sum(count)) * 100, 1))
+write.csv(fsm_percentage, file.path(folder, "freeschoolmeal_table.csv"))
+print(fsm_percentage)
+
+
+##sen
+sen_percentage <- filtered_datasen %>%
+  group_by(SENstatus) %>%
+  summarise(count = n()) %>%
+  mutate(percentage = round((count / sum(count))*100, 1))
+print(sen_percentage)
+write.csv(sen_percentage, file.path(folder, "sen_table.csv"))
 
 ```
