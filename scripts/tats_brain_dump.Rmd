@@ -30,83 +30,221 @@ plot(pressure)
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 ```{r}
-##1
-our_data <- our_data %>% 
-  mutate(
-    C1_B1 = factor(C1_B1, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B2 = factor(C1_B2, levels = c("Not true", "Sort of true", "Certainly true")), 
-    C1_B5 = factor(C1_B5, levels = c("Not true", "Sort of true", "Certainly true")), 
-    C1_B10 = factor(C1_B10, levels = c("Not true", "Sort of true", "Certainly true")), 
-    C1_B11 = factor(C1_B11, levels = c("Certainly true", "Sort of true", "Not true")),
-    C1_B12 = factor(C1_B12, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B13 = factor(C1_B13, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B14 = factor(C1_B14, levels = c("Certainly true", "Sort of true", "Not true")),
-    C1_B15 = factor(C1_B15, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B16 = factor(C1_B16, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B17 = factor(C1_B17, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B18 = factor(C1_B18, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B19 = factor(C1_B19, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B20 = factor(C1_B20, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B21 = factor(C1_B21, levels = c("Certainly true", "Sort of true", "Not true")),
-    C1_B22 = factor(C1_B22, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B23 = factor(C1_B23, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B24 = factor(C1_B24, levels = c("Not true", "Sort of true", "Certainly true")),
-    C1_B25 = factor(C1_B25, levels = c("Certainly true", "Sort of true", "Not true"))
-  )
+long_data %>%
+  mutate(across(c(Eng, Mat), ~na_if(., 0))) %>%
+  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
+  group_by(Wave, Subject) %>%
+  summarize(tmean = mean(Grade, na.rm = TRUE), .groups = 'drop') %>%
+  ggplot(aes(x = Wave, y = tmean, color = Subject, group = Subject)) +
+  geom_line() +
+  labs(title = "Grades Over Time for Entire Sample",
+       y = "Mean Grade",
+       color = "Subject") +
+  scale_x_discrete(limits = c(1, 2, 3))
 
-##2
-our_data <- our_data %>% 
-  mutate(
-    C2_B1 = factor(C2_B1, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B2 = factor(C2_B2, levels = c("Not true", "Sort of true", "Certainly true")), 
-    C2_B5 = factor(C2_B5, levels = c("Not true", "Sort of true", "Certainly true")), 
-    C2_B10 = factor(C2_B10, levels = c("Not true", "Sort of true", "Certainly true")), 
-    C2_B11 = factor(C2_B11, levels = c("Certainly true", "Sort of true", "Not true")),
-    C2_B12 = factor(C2_B12, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B13 = factor(C2_B13, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B14 = factor(C2_B14, levels = c("Certainly true", "Sort of true", "Not true")),
-    C2_B15 = factor(C2_B15, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B16 = factor(C2_B16, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B17 = factor(C2_B17, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B18 = factor(C2_B18, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B19 = factor(C2_B19, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B20 = factor(C2_B20, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B21 = factor(C2_B21, levels = c("Certainly true", "Sort of true", "Not true")),
-    C2_B22 = factor(C2_B22, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B23 = factor(C2_B23, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B24 = factor(C2_B24, levels = c("Not true", "Sort of true", "Certainly true")),
-    C2_B25 = factor(C2_B25, levels = c("Certainly true", "Sort of true", "Not true"))
-  )
+st_data %>% 
+  group_by(Wave) %>% 
+  summarise(mean(Eng))
 
-##3
-our_data <- our_data %>% 
-  mutate(
-    C3_B1 = factor(C3_B1, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B2 = factor(C3_B2, levels = c("Not true", "Sort of true", "Certainly true")), 
-    C3_B5 = factor(C3_B5, levels = c("Not true", "Sort of true", "Certainly true")), 
-    C3_B10 = factor(C3_B10, levels = c("Not true", "Sort of true", "Certainly true")), 
-    C3_B11 = factor(C3_B11, levels = c("Certainly true", "Sort of true", "Not true")),
-    C3_B12 = factor(C3_B12, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B13 = factor(C3_B13, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B14 = factor(C3_B14, levels = c("Certainly true", "Sort of true", "Not true")),
-    C3_B15 = factor(C3_B15, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B16 = factor(C3_B16, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B17 = factor(C3_B17, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B18 = factor(C3_B18, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B19 = factor(C3_B19, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B20 = factor(C3_B20, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B21 = factor(C3_B21, levels = c("Certainly true", "Sort of true", "Not true")),
-    C3_B22 = factor(C3_B22, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B23 = factor(C3_B23, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B24 = factor(C3_B24, levels = c("Not true", "Sort of true", "Certainly true")),
-    C3_B25 = factor(C3_B25, levels = c("Certainly true", "Sort of true", "Not true"))
-  )
+parentrelationship <- st_data %>% 
+  group_by(P1_Relationship) %>% 
+  summarise(count = n())
+print(parentrelationship)
 
-SDQ1 <- c("C1_B1","C1_B2","C1_B5","C1_B10","C1_B11","C1_B12","C1_B13","C1_B14","C1_B15","C1_B16", "C1_B17", "C1_B18", "C1_B19", "C1_B20", "C1_B21", "C1_B22", "C1_B23", "C1_B24", "C1_B25")
-Sdq_data <- our_data %>%
-  rowwise() %>%
-  mutate(Proportion = sum(c_across(all_of(SDQ1))))
-Sdq_data$Combined_Proportion <- rowMeans(select(Sdq_data, Proportion))
-our_data <- bind_cols(our_data, Sdq_data$Combined_Proportion)
-  
+
+# Grouping by P1_SEN1a and counting occurrences, ignoring NA values
+sen1 <- st_data %>%
+  filter(!is.na(P1_SEN1a)) %>%
+  group_by(P1_SEN1a) %>%
+  summarise(count = n())
+
+# Printing the result
+print(sen1)
+
+
+sen2 <- st_data %>%
+  filter(!is.na(P1_SEN2b)) %>%
+  group_by(P1_SEN2b) %>%
+  summarise(count = n())
+
+p2sen2 <- st_data %>%
+  filter(!is.na(P2_SEN2b)) %>%
+  group_by(P2_SEN2b) %>%
+  summarise(count = n())
+print(p2sen2)
+
+# Printing the result
+print(sen2)
+
+parentalstructure <- st_data %>%
+  filter(!is.na(P1_ParentalStructure)) %>%
+  group_by(P1_ParentalStructure) %>%
+  summarise(count = n())
+
+# Printing the result
+print(parentalstructure)
+
+ethnicity <- st_data %>%
+  filter(!is.na(Ethnicity5)) %>%
+  group_by(Ethnicity5) %>%
+  summarise(count = n())
+
+# Printing the result
+print(ethnicity)
+
+
+filtered_datasen <- st_data %>%
+  filter(!is.na(SENstatus))
+
+# Calculate the proportion of participants having free school meals
+sen_proportion <- filtered_datasen %>%
+  group_by(SENstatus) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+# Print the proportion
+print(sen_proportion)
+
+
+# Assuming you have already loaded the dplyr package and have the st_data dataset
+
+# Filter out rows where FSM is NA
+filtered_data <- st_data %>%
+  filter(!is.na(FSM))
+
+# Calculate the proportion of participants having free school meals
+fsm_proportion <- filtered_data %>%
+  group_by(FSM) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+# Print the proportion
+print(fsm_proportion)
+
+long_data <- long_data %>% 
+  mutate(across(c(Eng, Mat), ~na_if(., 0)))
+
+library(ggplot2)
+# Assuming you have already loaded the dplyr package and have the st_data dataset
+
+
+# Assuming you have already loaded the dplyr package and have the st_data dataset
+
+# Filter out rows where Ethnicity5 is NA
+filtered_data <- st_data %>%
+  filter(!is.na(Ethnicity5))
+
+# Calculate the proportions of each ethnicity
+ethnicity_counts <- filtered_data %>%
+  group_by(Ethnicity5) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+# Define a custom pastel color palette
+pastel_colors <- c("#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#B3B3FF", "#FFC0CB")
+
+# Create the pie chart using ggplot2 with a custom pastel color palette
+ggplot(ethnicity_counts, aes(x = "", y = proportion, fill = Ethnicity5)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Ethnicity Distribution") +
+  theme_void() +
+  theme(legend.title = element_blank()) +
+  scale_fill_manual(values = pastel_colors)
+
+
+filtered_datalang <- st_data %>%
+  filter(!is.na(Firstlanguage))
+
+# Calculate the proportions of each ethnicity
+language_counts <- filtered_data %>%
+  group_by(Firstlanguage) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+
+filtered_data <- st_data %>%
+  filter(!is.na(Ethnicity5))
+
+# Calculate the proportions of each ethnicity
+gender_counts <- filtered_data %>%
+  group_by(Gender) %>%
+  filter(!is.na(Gender)) %>% 
+  summarise(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100)
+
+# Create the pie chart using ggplot2 with a custom pastel color palette
+ggplot(gender_counts, aes(x = "", y = percentage, fill = Gender)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  labs(title = "Gender Distribution") +
+  theme_void() +
+  theme(legend.title = element_blank()) +
+    geom_text(aes(label = paste0(round(percentage), "%")), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = pastel_colors)
+
+library(tidyverse)
+
+long_data %>%
+  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
+  ggplot(aes(x = as.factor(Wave), y = Grade, color = Subject)) +
+  geom_boxplot() +
+  labs(title = "Grades Over Time for Entire Sample",
+       x = "Wave",
+       y = "Grade",
+       color = "Subject") +
+  scale_x_discrete(limits = c(1, 2, 3))
+
+long_data %>%
+  mutate(across(c(Eng, Mat), ~na_if(., 0))) %>%
+  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
+  ggplot(aes(x = as.factor(Wave), y = Grade, color = Subject)) +
+  geom_boxplot() +
+  labs(title = "Grades Over Time for Entire Sample",
+       x = "Wave",
+       y = "Grade",
+       color = "Subject") +
+  scale_x_discrete(limits = c(1, 2, 3))
+
+library(tidyverse)
+
+long_data %>%
+  mutate(across(c(Eng, Mat), ~na_if(., 0))) %>%
+  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
+  ggplot(aes(x = as.factor(Wave), y = Grade, color = Subject)) +
+  geom_boxplot() +
+  stat_summary(fun = mean, geom = "point", shape = 20, size = 3, color = "black", position = position_dodge(0.75)) +
+  labs(title = "Grades Over Time for Entire Sample",
+       x = "Wave",
+       y = "Grade",
+       color = "Subject") +
+  scale_x_discrete(limits = c(1, 2, 3))
+
+st_data <- st_data %>%
+  mutate(Age_years1 = floor(Age_C1 / 12))
+
+age_data1 <- st_data %>%
+  group_by(Age_years1) %>%
+  summarise(count = n())
+
+print(age_data1)
+
+st_data <- st_data %>%
+  mutate(Age_years2 = floor(Age_C2 / 12))
+
+age_data2 <- st_data %>%
+  group_by(Age_years2) %>%
+  summarise(count = n())
+
+print(age_data2)
+
+st_data <- st_data %>%
+  mutate(Age_years3 = floor(Age_C3 / 12))
+
+age_data3 <- st_data %>%
+  group_by(Age_years3) %>%
+  summarise(count = n())
+
+print(age_data3)
+
 ```
