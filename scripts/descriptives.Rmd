@@ -1,19 +1,29 @@
 ```{r}
 #loading everything in
 library("tidyverse")
-library("ggplot")
+library("ggplot2")
 
 
 gradegraph <- long_data %>%
   mutate(across(c(Eng, Mat), ~na_if(., 0))) %>%
   pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
-  group_by(Wave, Subject) %>%
-  summarize(tmean = mean(Grade, na.rm = TRUE), .groups = 'drop') %>%
-  ggplot(aes(x = Wave, y = tmean, color = Subject, group = Subject)) +
-  geom_line() +
+  ggplot(aes(x = as.factor(Wave), y = Grade, color = Subject)) +
+  geom_boxplot() +
+  stat_summary(fun = mean, geom = "point", shape = 20, size = 3, color = "black", position = position_dodge(0.75)) +
   labs(title = "Grades Over Time for Entire Sample",
-       y = "Mean Grade",
+       x = "Wave",
+       y = "Grade",
        color = "Subject") +
   scale_x_discrete(limits = c(1, 2, 3))
+gradegraph
+
+folder <- "t4_proj/scripts/descriptives"  # Path to the descriptives folder
+filename <- "gradegraph.png"  # Specify the filename and extension
+
+file_path <- file.path(folder, filename)
+ggsave(file_path, plot = gradegraph, width = 8, height = 6, dpi = 300)
+
+message("Plot saved to: ", file_path)
 
 
+```
