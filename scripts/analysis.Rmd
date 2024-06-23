@@ -5,7 +5,7 @@ date: "2024-06-13"
 output: html_document
 ---
 
-```{r }
+```{r set up}
 library(tidyverse)
 
 our_data <- read.csv("../data/our_data.csv", row.names = 1)
@@ -20,12 +20,12 @@ imp <- mice(our_data, method = rep("pmm", ncol(new_data)))
 # making the imputated dataset
 new_data <- complete(imp)
 
-# saving the new data frame because the imputation takes a hot minute so there's no need to re run it every time we open this scritp
+# saving the new data frame because the imputation takes a hot minute so there's no need to re run it every time we open this script
 write.csv(new_data, file = "../data/new_data.csv", row.names = FALSE)
 
 ```
 
-```{r}
+```{r creating the summed data frame}
 # calling the imputed data into the envrionment
 new_data <- read.csv("../data/new_data.csv")
 
@@ -135,7 +135,7 @@ write.csv(sum_data, file = "../data/sum_data.csv", row.names = FALSE)
 
 ```
 
-```{r}
+```{r getting the data into long format}
 library(tidyverse)
 
 # converting the df to long format
@@ -162,8 +162,7 @@ write.csv(long_data, file = "../data/long_data.csv", row.names = FALSE)
 
 ```
 
-
-```{r}
+```{r visualising the data}
 # imma visualise a little first coz that's gonna help me ac understand the onlsaught of numbers the lmer is gonna give me
 library(ggplot2)
 
@@ -203,19 +202,18 @@ long_data %>%
   scale_x_continuous(breaks = c(1,2,3))
 # all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
 
-
-ggplot(data = long_data[1:100], aes(x = Time, y = Btotal, colour = ID)) +
+# note to self: this should work now with he as.factor() argument
+ggplot(data = long_data, aes(x = Time, y = Btotal, colour = as.factor(ID))) +
   geom_line() +
   theme_minimal () +
   theme(legend.position = "none") +
   scale_x_continuous(breaks = c(1,2,3))
 ```
 
-
-```{r}
+```{r linear-mixed effects models}
 # take 2 on lme models
 # note: random intercepts go after the | and random slopes go after (1 +
-
+#install.packages("lme4")
 library(lme4)
 
 # Model with random intercept only
@@ -251,6 +249,7 @@ summary(base_model)
 # There is significant variability in the intercepts across different individuals (ID), suggesting that individual differences account for a substantial portion of the variance in Btotal.
 # The high t values for both the intercept and the Time coefficient suggest that these fixed effects are very significant predictors of Btotal.
 
+
 # model considering the effect of FSMs on SDQ over time
 fixed_model<-lmer(Btotal ~ Time + FSM + (1 | ID), data = long_data)
 summary(fixed_model)
@@ -285,6 +284,7 @@ summary(fixed_model)
 # The intercept (34.28607) represents the estimated value of Btotal when Time and FSM are both zero.
 # Time has a significant negative effect on Btotal, suggesting that as Time increases, Btotal tends to decrease.
 # FSM has a significant positive effect on Btotal, suggesting that higher FSM values are associated with higher Btotal. - aka if you're on FSM you have worse MH transitioning
+
 
 # model considering the effect of Grades on SDQ over time
 grades_model <- lmer(Btotal ~ Time * Eng + Time * Mat + (1 | ID), data = long_data)
@@ -384,7 +384,7 @@ summary(full_model)
 
 ```
 
-```{r}
+```{r comparing the LME models}
 # which model is best
 # anova(model1, model2)
 # A significant p-value (< 0.05) suggests that the more complex model (model1) fits significantly better than the simpler model (model2).
@@ -395,48 +395,88 @@ anova(full_model, base_model) # full is sig better
 
 ```
 
+```{r normalising the data}
+# normalising the data for the SEM
+norm_data <- sum_data
 
-```{r}
+# crating the normalisation function
+normalize <- function(x) { (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE) }
+
+# Identify columns to normalize (excluding ID)
+cols_to_normalize <- setdiff(names(norm_data), "ID")
+
+# Apply normalization to all relevant columns
+norm_data[cols_to_normalize] <- lapply(norm_data[cols_to_normalize], normalize)
+
+# Check if normalization is done correctly
+summary(norm_data)
+
+```
+
+```{r SEM model}
 # SEM models
 
 #install.packages("lavaan")
 library(lavaan)
 
-## taken from CA stats coursework
-# mod.spec2 <- 'grp =~ 1*bart + grips + soep + forb
-# bart =~ adj_bart_score_early + adj_bart_score_middle + adj_bart_score_late 
-# grips =~ grips_commonly + grips_attracted + grips_chances + grips_fun + grips_enjoy + grips_part + grips_hurt + grips_friends
-# soep =~ soep_leisure + soep_health + soep_driving + soep_occupation + soep_faith + soep_finance + soep_general
-# forb =~ forb_gamble + forb_sport + forb_cigarettes + forb_invest + forb_speed + forb_drink'
-# 
-# model2 <- lavaan::cfa(mod.spec2, data = wide.z)
-# 
-# (mod2.sum <- summary(model2, fit.measures = TRUE))
-
-sem_model <- '
-  # Measurement model
-  Btotal =~ C1_Btotal + C2_Btotal + C3_Btotal
-  AGtotal =~ AGtotal
-  SCtotal =~ SCtotal
-  LTtotal =~ LTtotal
+# creating the model
+crosslagged_model <- '
+  # Regressions at each time point
+  C1_Btotal ~ C1_AGtotal + C1_SCtotal + C1_LTtotal + C1_Ltotal + FSM
+  C2_Btotal ~ C2_AGtotal + C2_SCtotal + C2_LTtotal + C2_Ltotal + FSM
+  C3_Btotal ~ C3_AGtotal + C3_SCtotal + C3_LTtotal + C3_Ltotal + FSM
   
-  # Structural model
-  Btotal ~ AGtotal + SCtotal + LTtotal + FSM + C1_Btotal + C2_Btotal + C3_Btotal
+  # Auto-regressive paths
+  C2_Btotal ~ C1_Btotal
+  C3_Btotal ~ C2_Btotal
   
-  # FSM affecting Btotal directly
-  FSM ~~ Btotal
+  # Cross-lagged paths (to see the influence of predictors over time)
+  C2_AGtotal ~ C1_AGtotal
+  C3_AGtotal ~ C2_AGtotal
+  C2_SCtotal ~ C1_SCtotal
+  C3_SCtotal ~ C2_SCtotal
+  C2_LTtotal ~ C1_LTtotal
+  C3_LTtotal ~ C2_LTtotal
+  C2_Ltotal ~ C1_Ltotal
+  C3_Ltotal ~ C2_Ltotal
 '
 
 # fitting the model made
-sem_fit1 <- sem(sem_model, data = sum_data, missing="fiml", fixed.x=FALSE)
+cl_fit <- sem(crosslagged_model, data = norm_data, missing="fiml", fixed.x=FALSE)
 
-# having a lil look-see at all the ugly stats that are supposed ot mean something to me
-summary(sem_fit1, fit.measures=TRUE)
+# having a lil look-see what the ugly stats that are supposed to mean something 
+summary(cl_fit, fit.measures=TRUE)
 
+#install.packages("semPlot")
+library(semPlot)
+
+# plotting it all coz let's be real no one understands stats
+node.labs1 <- c("C1 SDQ", "C1 Intelligence", "C1 School Concern", "C1 Liking Teachers", "C1 Lonliness", "FSM", 
+                "C2 SDQ", "C2 Intelligence", "C2 School Concern", "C2 Liking Teachers", "C2 Lonliness", 
+                "C3 SDQ", "C3 Intelligence", "C3 School Concern", "C3 Liking Teachers", "C3 Lonliness")
+
+figure1 <- semPlot::semPaths(cl_fit, 
+                             nCharNodes = 3, 
+                             sizeMan = 5, 
+                             residuals = TRUE, 
+                             whatLabels = "est", 
+                             width = 16, 
+                             height = 5, 
+                             normalize = FALSE) 
+                             nodeLabels = node.labs1)
+
+(figure1 <- qgraph::qgraph(figure1, title = "Model 1"))
+
+semPlot::semCors(model1)
+
+
+# note to self: FSM needs to be added to every time point in the cross lagged section
+#               english and maths scores need to be added to the model
 ```
 
 
-#### dubbed uselenss
+
+#### dubbed useless
 ```{r}
 # the graveyard
 
