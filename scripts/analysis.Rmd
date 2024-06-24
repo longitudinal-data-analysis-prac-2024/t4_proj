@@ -17,6 +17,9 @@ library(mice)
 #install.packages("lmerTest")
 library(lmerTest)
 
+#install.packages("gridExtra")
+library(gridExtra)
+
 
 ```
 
@@ -437,72 +440,107 @@ ggsave(filename = "../output/base_mod_fig.jpg", plot = base_mod_fig)
 ggsave(filename = "../output/fsm_mod_fig.jpg", plot = fsm_mod_fig)
 
 
-
-# getting a data frame 
-grades_data <- long_data %>%
-  select(ID, Time, Eng, Mat) %>%
-  filter(Time == c("1", "3"))
-  
 # visual for the grades model
-grades_data %>%
-  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
-  group_by(Time, Subject) %>%
-  summarize(tmean = mean(Grade, na.rm = TRUE), .groups = 'drop') %>%
-  ggplot(aes(x = Time, y = tmean, color = Subject, group = Subject)) +
-  geom_line() +
-  labs(title = "Grades Over Time for Entire Sample",
-       y = "Mean Grade",
-       color = "Subject") +
-  scale_x_continuous(breaks = c(1,2,3)) +
-  scale_colour_manual(
-    values = c("Eng" = "maroon4", "Mat" = "olivedrab3"), 
-    name = "Subjects", 
-    labels = c("English", "Maths"))
+library(gridExtra)
+
+# English scores
+plot_eng <- ggplot(long_data, aes(x = Eng, y = Btotal)) +
+  geom_point() +                      
+  geom_smooth(method = "lm", se = FALSE, color = "hotpink3") +  
+  labs(title = "SDQ Score and Subject Grades over Time",
+       x = "English Scores",
+       y = "SDQ Scores") +      
+  theme_minimal() +            
+  facet_wrap(~ Time, labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
+                                                  "2" = "Time Point 2 - Beginning of Yr 7", 
+                                                  "3" = "Time Point 3 - End of Yr 7"))) +  
+  theme(aspect.ratio = 0.5, plot.title = element_text(hjust = 0.4)) +
+  coord_fixed(ratio = 0.1)
+
+# maths scores
+plot_mat <- ggplot(long_data, aes(x = Mat, y = Btotal)) +
+  geom_point() +                      
+  geom_smooth(method = "lm", se = FALSE, color = "hotpink3") +  
+  labs(x = "Maths Scores",
+       y = "SDQ Scores") +      
+  theme_minimal() +            
+  facet_wrap(~ Time, labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
+                                                  "2" = "Time Point 2 - Beginning of Yr 7", 
+                                                  "3" = "Time Point 3 - End of Yr 7"))) +  
+  theme(aspect.ratio = 0.5, plot.title = element_text(hjust = 0.4)) +
+  coord_fixed(ratio = 0.1)
+
+# combine plots into one grid with 2 rows
+(grades_plot <- grid.arrange(plot_eng, plot_mat, nrow = 2))
+
+# saving it
+ggsave(filename = "../output/grades_plot.jpg", plot = grades_plot, width = 11, height = 7, units = "in")
 
 
+# visualisation for all variables
+# wentzel's intelligence
+plot_wen <- ggplot(long_data, aes(x = AGtotal, y = Btotal)) +
+  geom_point() +                      
+  geom_smooth(method = "lm", se = FALSE, color = "hotpink3") +  
+  labs(title = "SDQ Score and Psychosocial Variables over Time",
+       x = "Wentzel's Intelligence Scores",
+       y = "SDQ Scores") +  
+  theme(plot.title = element_text(size = 100)) +
+  theme_minimal() +            
+  facet_wrap(~ Time, labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
+                                                  "2" = "Time Point 2 - Beginning of Yr 7", 
+                                                  "3" = "Time Point 3 - End of Yr 7"))) +  
+  theme(plot.title = element_text(hjust = 0.5), strip.text = element_text(size = 20),
+        axis.text = element_text(size = 15), axis.title = element_text(size = 20))
 
-# ChatGTP test
-# Prepare the data for plotting
-grades_btotal_data <- long_data %>%
-  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
-  group_by(Time, Subject) %>%
-  summarize(
-    grade_mean = mean(Grade, na.rm = TRUE),
-    .groups = 'drop'
-  ) %>%
-  left_join(long_data %>% group_by(Time) %>% summarize(btotal_mean = mean(Btotal, na.rm = TRUE)), by = "Time")
+# school concern
+plot_sc <- ggplot(long_data, aes(x = SCtotal, y = Btotal)) +
+  geom_point() +                      
+  geom_smooth(method = "lm", se = FALSE, color = "hotpink3") +  
+  labs(x = "School Concern Scores",
+       y = "SDQ Scores") +      
+  theme_minimal() +            
+  facet_wrap(~ Time, labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
+                                                  "2" = "Time Point 2 - Beginning of Yr 7", 
+                                                  "3" = "Time Point 3 - End of Yr 7"))) +  
+  theme(plot.title = element_text(hjust = 0.4), strip.text = element_text(size = 20),
+        axis.text = element_text(size = 15), axis.title = element_text(size = 20))
 
-# Plot the data
-grades_btotal_data %>%
-  ggplot(aes(x = Time)) +
-  geom_boxplot(aes(y = btotal_mean), colour = "steelblue", linewidth = 1.5, linetype = "dashed") +  # Btotal line
-  geom_boxplot(aes(y = grade_mean, colour = Subject, group = Subject), linewidth = 1.5) +  # Grade lines
-  labs(title = "Grades and Btotal Over Time",
-       y = "Mean Score",
-       colour = "Measure") +
-  scale_x_continuous(breaks = c(1, 2, 3)) +
-  scale_colour_manual(
-    values = c("Eng" = "maroon4", "Mat" = "olivedrab3"), 
-    name = "Subjects", 
-    labels = c("English", "Maths")
-  ) +
-  theme(plot.title = element_text(hjust = 0.5))
+# liking teachers
+plot_lt <- ggplot(long_data, aes(x = LTtotal, y = Btotal)) +
+  geom_point() +                      
+  geom_smooth(method = "lm", se = FALSE, color = "hotpink3") +  
+  labs(x = "Liking Teachers Scores",
+       y = "SDQ Scores") +      
+  theme_minimal() +            
+  facet_wrap(~ Time, labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
+                                                  "2" = "Time Point 2 - Beginning of Yr 7", 
+                                                  "3" = "Time Point 3 - End of Yr 7"))) +  
+  theme(plot.title = element_text(hjust = 0.4), strip.text = element_text(size = 20),
+        axis.text = element_text(size = 15), axis.title = element_text(size = 20))
+
+# lonliness
+plot_lon <- ggplot(long_data, aes(x = Ltotal, y = Btotal)) +
+  geom_point() +                      
+  geom_smooth(method = "lm", se = FALSE, color = "hotpink3") +  
+  labs(x = "Lonliness Scores",
+       y = "SDQ Scores") +      
+  theme_minimal() +            
+  facet_wrap(~ Time, scales = "free_x", labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
+                                                  "2" = "Time Point 2 - Beginning of Yr 7", 
+                                                  "3" = "Time Point 3 - End of Yr 7"))) +  
+  theme(plot.title = element_text(hjust = 0.4), strip.text = element_text(size = 20),
+        axis.text = element_text(size = 15), axis.title = element_text(size = 20))
+
+# combine plots into one grid 
+(vars_plot <- grid.arrange(plot_wen, plot_sc, plot_lt, plot_lon, nrow = 4))
+
+vars_plot$children[[1]]$children[[1]]$children[[2]] <- editGrob(vars_plot$children[[1]]$children[[1]]$children[[2]], 
+                                                            gp = gpar(fontsize = 100))
 
 
-
-
-
-
-# note to self: this should work now with he as.factor() argument
-long_data$ID <- as.factor(long_data$ID)
-
-ggplot(data = long_data, aes(x = Time, y = Btotal, colour = ID)) +
-  geom_line() +
-  theme_minimal () +
-  theme(legend.position = "none") +
-  scale_x_continuous(breaks = c(1,2,3))
-
-
+# saving it
+ggsave(filename = "../output/vars_plot.jpg", plot = vars_plot, width = 20, height = 15, units = "in")
 
 ```
 
@@ -1180,6 +1218,17 @@ SEMPlot2 <- change_node_label(SEMPlot, nlabels)
 
 
 #### dubbed useless
+```{r}
+# note to self: this should work now with he as.factor() argument
+long_data$ID <- as.factor(long_data$ID)
+
+ggplot(data = long_data, aes(x = Time, y = Btotal, colour = ID)) +
+  geom_line() +
+  theme_minimal () +
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks = c(1,2,3))
+```
+
 ```{r}
 # the graveyard
 
