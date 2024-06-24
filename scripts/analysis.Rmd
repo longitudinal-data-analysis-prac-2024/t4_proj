@@ -590,6 +590,7 @@ write.csv(lme_stats, file = "../output/lme_stats.csv", row.names = FALSE)
 
 ```
 
+
 ```{r comparing the LME models}
 # which model is best
 # anova(model1, model2)
@@ -600,6 +601,7 @@ write.csv(lme_stats, file = "../output/lme_stats.csv", row.names = FALSE)
 anova(full_model, base_model) # full is sig better - expected tbh
 
 ```
+
 
 ```{r normalising the data}
 # normalising the data for the SEM
@@ -621,9 +623,17 @@ norm_data[cols_to_normalize] <- lapply(norm_data[cols_to_normalize], normalize)
 # Check if normalization is done correctly
 summary(norm_data)
 
+norm_data <- norm_data %>%
+  rename("T1_Eng" = "C1_Eng", "T1_Mat" = "C1_Mat", "T2_Eng" = "C2_Eng", "T2_Mat" = "C2_Mat", "T3_Eng" = "C3_Eng",
+         "T3_Mat" = "C3_Mat", "T1_SQD" = "C1_Btotal", "T2_SQD" = "C2_Btotal", "T3_SQD" = "C3_Btotal",
+         "T1_Wen" = "C1_AGtotal", "T2_Wen" = "C2_AGtotal", "T3_Wen" = "C3_AGtotal", "T1_SC" = "C1_SCtotal",
+         "T2_SC" = "C2_SCtotal", "T3_SC" = "C3_SCtotal", "T1_LT" = "C1_LTtotal", "T2_LT" = "C2_LTtotal",
+         "T3_LT" = "C3_LTtotal", "T1_Lon" = "C1_Ltotal", "T2_Lon" = "C2_Ltotal", "T3_Lon" = "C3_Ltotal")
+
 ```
 
-```{r SEM model}
+
+```{r SEM model 1}
 # SEM models
 
 #install.packages("lavaan")
@@ -631,9 +641,9 @@ library(lavaan)
 
 reg_model <- '
   # Regressions at each time point
-  C1_Btotal ~ C1_AGtotal + C1_SCtotal + C1_LTtotal + C1_Ltotal + FSM + C1_Eng + C1_Mat
-  C2_Btotal ~ C2_AGtotal + C2_SCtotal + C2_LTtotal + C2_Ltotal + FSM
-  C3_Btotal ~ C3_AGtotal + C3_SCtotal + C3_LTtotal + C3_Ltotal + FSM + C3_Eng + C3_Mat
+  T1_SQD ~ T1_Wen + T1_SC + T1_LT + T1_Lon + FSM + T1_Eng + T1_Mat
+  T2_SQD ~ T2_Wen + T2_SC + T2_LT + T2_Lon + FSM
+  T3_SQD ~ T3_Wen + T3_SC + T3_LT + T3_Lon + FSM + T3_Eng + T3_Mat
 '
 
 reg_fit <- sem(reg_model, data = norm_data, missing = "fiml", fixed.x = FALSE)
@@ -703,235 +713,236 @@ summary(reg_fit, fit.measures = TRUE)
 # 
 # Regressions:
 #                    Estimate  Std.Err  z-value  P(>|z|)
-#   C1_Btotal ~                                         
-#     C1_AGtotal        0.079    0.018    4.442    0.000
-#     C1_SCtotal        0.165    0.018    8.939    0.000
-#     C1_LTtotal       -0.136    0.018   -7.668    0.000
-#     C1_Ltotal         0.349    0.019   18.612    0.000
+#   T1_SQD ~                                            
+#     T1_Wen            0.079    0.018    4.442    0.000
+#     T1_SC             0.165    0.018    8.939    0.000
+#     T1_LT            -0.136    0.018   -7.668    0.000
+#     T1_Lon            0.349    0.019   18.612    0.000
 #     FSM               0.035    0.018    1.939    0.053
-#     C1_Eng           -0.063    0.022   -2.909    0.004
-#     C1_Mat            0.012    0.022    0.554    0.580
-#   C2_Btotal ~                                         
-#     C2_AGtotal        0.072    0.019    3.769    0.000
-#     C2_SCtotal        0.240    0.020   11.981    0.000
-#     C2_LTtotal       -0.096    0.019   -4.965    0.000
-#     C2_Ltotal         0.059    0.020    2.899    0.004
+#     T1_Eng           -0.063    0.022   -2.909    0.004
+#     T1_Mat            0.012    0.022    0.554    0.580
+#   T2_SQD ~                                            
+#     T2_Wen            0.072    0.019    3.769    0.000
+#     T2_SC             0.240    0.020   11.981    0.000
+#     T2_LT            -0.096    0.019   -4.965    0.000
+#     T2_Lon            0.059    0.020    2.899    0.004
 #     FSM               0.030    0.020    1.509    0.131
-#   C3_Btotal ~                                         
-#     C3_AGtotal        0.074    0.019    3.830    0.000
-#     C3_SCtotal        0.182    0.020    9.267    0.000
-#     C3_LTtotal        0.058    0.020    2.994    0.003
-#     C3_Ltotal         0.197    0.020    9.985    0.000
+#   T3_SQD ~                                            
+#     T3_Wen            0.074    0.019    3.830    0.000
+#     T3_SC             0.182    0.020    9.267    0.000
+#     T3_LT             0.058    0.020    2.994    0.003
+#     T3_Lon            0.197    0.020    9.985    0.000
 #     FSM               0.070    0.020    3.520    0.000
-#     C3_Eng            0.129    0.023    5.675    0.000
-#     C3_Mat           -0.036    0.023   -1.559    0.119
+#     T3_Eng            0.129    0.023    5.675    0.000
+#     T3_Mat           -0.036    0.023   -1.559    0.119
 # 
 # Covariances:
 #                    Estimate  Std.Err  z-value  P(>|z|)
-#  .C1_Btotal ~~                                        
-#    .C2_Btotal         0.198    0.017   11.361    0.000
-#    .C3_Btotal         0.228    0.018   12.920    0.000
-#  .C2_Btotal ~~                                        
-#    .C3_Btotal         0.304    0.020   15.454    0.000
-#   C1_AGtotal ~~                                       
-#     C1_SCtotal       -0.209    0.021   -9.814    0.000
-#     C1_LTtotal        0.141    0.021    6.682    0.000
-#     C1_Ltotal        -0.214    0.021  -10.018    0.000
+#  .T1_SQD ~~                                           
+#    .T2_SQD            0.198    0.017   11.361    0.000
+#    .T3_SQD            0.228    0.018   12.920    0.000
+#  .T2_SQD ~~                                           
+#    .T3_SQD            0.304    0.020   15.454    0.000
+#   T1_Wen ~~                                           
+#     T1_SC            -0.209    0.021   -9.814    0.000
+#     T1_LT             0.141    0.021    6.682    0.000
+#     T1_Lon           -0.214    0.021  -10.018    0.000
 #     FSM              -0.057    0.021   -2.740    0.006
-#     C1_Eng            0.181    0.021    8.514    0.000
-#     C1_Mat            0.144    0.021    6.848    0.000
-#     C2_AGtotal        0.376    0.022   16.865    0.000
-#     C2_SCtotal       -0.106    0.021   -5.060    0.000
-#     C2_LTtotal        0.161    0.021    7.606    0.000
-#     C2_Ltotal        -0.127    0.021   -6.048    0.000
-#     C3_AGtotal        0.245    0.021   11.417    0.000
-#     C3_SCtotal       -0.065    0.021   -3.088    0.002
-#     C3_LTtotal       -0.114    0.021   -5.419    0.000
-#     C3_Ltotal        -0.076    0.021   -3.616    0.000
-#     C3_Eng            0.137    0.021    6.487    0.000
-#     C3_Mat            0.125    0.021    5.920    0.000
-#   C1_SCtotal ~~                                       
-#     C1_LTtotal       -0.181    0.021   -8.534    0.000
-#     C1_Ltotal         0.332    0.022   15.084    0.000
+#     T1_Eng            0.181    0.021    8.514    0.000
+#     T1_Mat            0.144    0.021    6.848    0.000
+#     T2_Wen            0.376    0.022   16.865    0.000
+#     T2_SC            -0.106    0.021   -5.060    0.000
+#     T2_LT             0.161    0.021    7.606    0.000
+#     T2_Lon           -0.127    0.021   -6.048    0.000
+#     T3_Wen            0.245    0.021   11.417    0.000
+#     T3_SC            -0.065    0.021   -3.088    0.002
+#     T3_LT            -0.114    0.021   -5.419    0.000
+#     T3_Lon           -0.076    0.021   -3.616    0.000
+#     T3_Eng            0.137    0.021    6.487    0.000
+#     T3_Mat            0.125    0.021    5.920    0.000
+#   T1_SC ~~                                            
+#     T1_LT            -0.181    0.021   -8.534    0.000
+#     T1_Lon            0.332    0.022   15.084    0.000
 #     FSM               0.106    0.021    5.070    0.000
-#     C1_Eng           -0.160    0.021   -7.590    0.000
-#     C1_Mat           -0.209    0.021   -9.811    0.000
-#     C2_AGtotal       -0.037    0.021   -1.766    0.077
-#     C2_SCtotal        0.419    0.023   18.525    0.000
-#     C2_LTtotal       -0.213    0.021   -9.999    0.000
-#     C2_Ltotal         0.206    0.021    9.659    0.000
-#     C3_AGtotal       -0.036    0.021   -1.740    0.082
-#     C3_SCtotal        0.356    0.022   16.068    0.000
-#     C3_LTtotal        0.105    0.021    4.981    0.000
-#     C3_Ltotal         0.246    0.021   11.428    0.000
-#     C3_Eng           -0.136    0.021   -6.452    0.000
-#     C3_Mat           -0.163    0.021   -7.730    0.000
-#   C1_LTtotal ~~                                       
-#     C1_Ltotal        -0.273    0.022  -12.617    0.000
+#     T1_Eng           -0.160    0.021   -7.590    0.000
+#     T1_Mat           -0.209    0.021   -9.811    0.000
+#     T2_Wen           -0.037    0.021   -1.766    0.077
+#     T2_SC             0.419    0.023   18.525    0.000
+#     T2_LT            -0.213    0.021   -9.999    0.000
+#     T2_Lon            0.206    0.021    9.659    0.000
+#     T3_Wen           -0.036    0.021   -1.740    0.082
+#     T3_SC             0.356    0.022   16.068    0.000
+#     T3_LT             0.105    0.021    4.981    0.000
+#     T3_Lon            0.246    0.021   11.428    0.000
+#     T3_Eng           -0.136    0.021   -6.452    0.000
+#     T3_Mat           -0.163    0.021   -7.730    0.000
+#   T1_LT ~~                                            
+#     T1_Lon           -0.273    0.022  -12.617    0.000
 #     FSM              -0.103    0.021   -4.902    0.000
-#     C1_Eng            0.147    0.021    6.973    0.000
-#     C1_Mat            0.180    0.021    8.507    0.000
-#     C2_AGtotal        0.066    0.021    3.152    0.002
-#     C2_SCtotal       -0.131    0.021   -6.235    0.000
-#     C2_LTtotal        0.173    0.021    8.178    0.000
-#     C2_Ltotal        -0.091    0.021   -4.323    0.000
-#     C3_AGtotal        0.031    0.021    1.496    0.135
-#     C3_SCtotal       -0.115    0.021   -5.486    0.000
-#     C3_LTtotal       -0.178    0.021   -8.377    0.000
-#     C3_Ltotal        -0.122    0.021   -5.806    0.000
-#     C3_Eng            0.130    0.021    6.199    0.000
-#     C3_Mat            0.147    0.021    6.959    0.000
-#   C1_Ltotal ~~                                        
+#     T1_Eng            0.147    0.021    6.973    0.000
+#     T1_Mat            0.180    0.021    8.507    0.000
+#     T2_Wen            0.066    0.021    3.152    0.002
+#     T2_SC            -0.131    0.021   -6.235    0.000
+#     T2_LT             0.173    0.021    8.178    0.000
+#     T2_Lon           -0.091    0.021   -4.323    0.000
+#     T3_Wen            0.031    0.021    1.496    0.135
+#     T3_SC            -0.115    0.021   -5.486    0.000
+#     T3_LT            -0.178    0.021   -8.377    0.000
+#     T3_Lon           -0.122    0.021   -5.806    0.000
+#     T3_Eng            0.130    0.021    6.199    0.000
+#     T3_Mat            0.147    0.021    6.959    0.000
+#   T1_Lon ~~                                           
 #     FSM               0.107    0.021    5.087    0.000
-#     C1_Eng           -0.118    0.021   -5.609    0.000
-#     C1_Mat           -0.208    0.021   -9.753    0.000
-#     C2_AGtotal       -0.127    0.021   -6.031    0.000
-#     C2_SCtotal        0.273    0.022   12.599    0.000
-#     C2_LTtotal       -0.240    0.021  -11.175    0.000
-#     C2_Ltotal         0.296    0.022   13.584    0.000
-#     C3_AGtotal       -0.072    0.021   -3.456    0.001
-#     C3_SCtotal        0.293    0.022   13.489    0.000
-#     C3_LTtotal        0.176    0.021    8.317    0.000
-#     C3_Ltotal         0.370    0.022   16.638    0.000
-#     C3_Eng           -0.130    0.021   -6.182    0.000
-#     C3_Mat           -0.177    0.021   -8.336    0.000
+#     T1_Eng           -0.118    0.021   -5.609    0.000
+#     T1_Mat           -0.208    0.021   -9.753    0.000
+#     T2_Wen           -0.127    0.021   -6.031    0.000
+#     T2_SC             0.273    0.022   12.599    0.000
+#     T2_LT            -0.240    0.021  -11.175    0.000
+#     T2_Lon            0.296    0.022   13.584    0.000
+#     T3_Wen           -0.072    0.021   -3.456    0.001
+#     T3_SC             0.293    0.022   13.489    0.000
+#     T3_LT             0.176    0.021    8.317    0.000
+#     T3_Lon            0.370    0.022   16.638    0.000
+#     T3_Eng           -0.130    0.021   -6.182    0.000
+#     T3_Mat           -0.177    0.021   -8.336    0.000
 #   FSM ~~                                              
-#     C1_Eng           -0.173    0.021   -8.161    0.000
-#     C1_Mat           -0.203    0.021   -9.519    0.000
-#     C2_AGtotal       -0.036    0.021   -1.730    0.084
-#     C2_SCtotal        0.054    0.021    2.599    0.009
-#     C2_LTtotal       -0.073    0.021   -3.510    0.000
-#     C2_Ltotal         0.025    0.021    1.187    0.235
-#     C3_AGtotal       -0.034    0.021   -1.646    0.100
-#     C3_SCtotal        0.045    0.021    2.134    0.033
-#     C3_LTtotal        0.046    0.021    2.210    0.027
-#     C3_Ltotal         0.011    0.021    0.549    0.583
-#     C3_Eng           -0.175    0.021   -8.239    0.000
-#     C3_Mat           -0.191    0.021   -9.001    0.000
-#   C1_Eng ~~                                           
-#     C1_Mat            0.616    0.025   25.130    0.000
-#     C2_AGtotal        0.005    0.021    0.255    0.798
-#     C2_SCtotal       -0.138    0.021   -6.561    0.000
-#     C2_LTtotal        0.123    0.021    5.861    0.000
-#     C2_Ltotal        -0.048    0.021   -2.303    0.021
-#     C3_AGtotal        0.036    0.021    1.733    0.083
-#     C3_SCtotal       -0.117    0.021   -5.564    0.000
-#     C3_LTtotal       -0.070    0.021   -3.334    0.001
-#     C3_Ltotal        -0.103    0.021   -4.908    0.000
-#     C3_Eng            0.630    0.025   25.538    0.000
-#     C3_Mat            0.504    0.023   21.565    0.000
-#   C1_Mat ~~                                           
-#     C2_AGtotal        0.011    0.021    0.522    0.602
-#     C2_SCtotal       -0.199    0.021   -9.338    0.000
-#     C2_LTtotal        0.156    0.021    7.370    0.000
-#     C2_Ltotal        -0.079    0.021   -3.780    0.000
-#     C3_AGtotal        0.043    0.021    2.074    0.038
-#     C3_SCtotal       -0.193    0.021   -9.077    0.000
-#     C3_LTtotal       -0.035    0.021   -1.668    0.095
-#     C3_Ltotal        -0.131    0.021   -6.235    0.000
-#     C3_Eng            0.548    0.024   23.016    0.000
-#     C3_Mat            0.651    0.025   26.131    0.000
-#   C2_AGtotal ~~                                       
-#     C2_SCtotal       -0.055    0.021   -2.655    0.008
-#     C2_LTtotal        0.214    0.021   10.005    0.000
-#     C2_Ltotal        -0.169    0.021   -8.000    0.000
-#     C3_AGtotal        0.467    0.023   20.284    0.000
-#     C3_SCtotal       -0.063    0.021   -3.022    0.003
-#     C3_LTtotal       -0.202    0.021   -9.505    0.000
-#     C3_Ltotal        -0.118    0.021   -5.625    0.000
-#     C3_Eng            0.038    0.021    1.804    0.071
-#     C3_Mat            0.037    0.021    1.759    0.079
-#   C2_SCtotal ~~                                       
-#     C2_LTtotal       -0.172    0.021   -8.110    0.000
-#     C2_Ltotal         0.375    0.022   16.813    0.000
-#     C3_AGtotal       -0.050    0.021   -2.393    0.017
-#     C3_SCtotal        0.509    0.023   21.722    0.000
-#     C3_LTtotal        0.101    0.021    4.814    0.000
-#     C3_Ltotal         0.305    0.022   13.964    0.000
-#     C3_Eng           -0.117    0.021   -5.586    0.000
-#     C3_Mat           -0.188    0.021   -8.869    0.000
-#   C2_LTtotal ~~                                       
-#     C2_Ltotal        -0.240    0.021  -11.184    0.000
-#     C3_AGtotal        0.135    0.021    6.417    0.000
-#     C3_SCtotal       -0.139    0.021   -6.597    0.000
-#     C3_LTtotal       -0.455    0.023  -19.826    0.000
-#     C3_Ltotal        -0.190    0.021   -8.937    0.000
-#     C3_Eng            0.138    0.021    6.529    0.000
-#     C3_Mat            0.124    0.021    5.876    0.000
-#   C2_Ltotal ~~                                        
-#     C3_AGtotal       -0.096    0.021   -4.559    0.000
-#     C3_SCtotal        0.217    0.021   10.163    0.000
-#     C3_LTtotal        0.182    0.021    8.566    0.000
-#     C3_Ltotal         0.439    0.023   19.253    0.000
-#     C3_Eng           -0.046    0.021   -2.186    0.029
-#     C3_Mat           -0.072    0.021   -3.446    0.001
-#   C3_AGtotal ~~                                       
-#     C3_SCtotal       -0.055    0.021   -2.641    0.008
-#     C3_LTtotal       -0.337    0.022  -15.285    0.000
-#     C3_Ltotal        -0.113    0.021   -5.400    0.000
-#     C3_Eng            0.024    0.021    1.164    0.244
-#     C3_Mat            0.031    0.021    1.503    0.133
-#   C3_SCtotal ~~                                       
-#     C3_LTtotal        0.108    0.021    5.164    0.000
-#     C3_Ltotal         0.360    0.022   16.227    0.000
-#     C3_Eng           -0.079    0.021   -3.787    0.000
-#     C3_Mat           -0.156    0.021   -7.371    0.000
-#   C3_LTtotal ~~                                       
-#     C3_Ltotal         0.195    0.021    9.164    0.000
-#     C3_Eng           -0.058    0.021   -2.793    0.005
-#     C3_Mat           -0.043    0.021   -2.067    0.039
-#   C3_Ltotal ~~                                        
-#     C3_Eng           -0.071    0.021   -3.396    0.001
-#     C3_Mat           -0.105    0.021   -4.988    0.000
-#   C3_Eng ~~                                           
-#     C3_Mat            0.599    0.024   24.610    0.000
+#     T1_Eng           -0.173    0.021   -8.161    0.000
+#     T1_Mat           -0.203    0.021   -9.519    0.000
+#     T2_Wen           -0.036    0.021   -1.730    0.084
+#     T2_SC             0.054    0.021    2.599    0.009
+#     T2_LT            -0.073    0.021   -3.510    0.000
+#     T2_Lon            0.025    0.021    1.187    0.235
+#     T3_Wen           -0.034    0.021   -1.646    0.100
+#     T3_SC             0.045    0.021    2.134    0.033
+#     T3_LT             0.046    0.021    2.210    0.027
+#     T3_Lon            0.011    0.021    0.549    0.583
+#     T3_Eng           -0.175    0.021   -8.239    0.000
+#     T3_Mat           -0.191    0.021   -9.001    0.000
+#   T1_Eng ~~                                           
+#     T1_Mat            0.616    0.025   25.130    0.000
+#     T2_Wen            0.005    0.021    0.255    0.798
+#     T2_SC            -0.138    0.021   -6.561    0.000
+#     T2_LT             0.123    0.021    5.861    0.000
+#     T2_Lon           -0.048    0.021   -2.303    0.021
+#     T3_Wen            0.036    0.021    1.733    0.083
+#     T3_SC            -0.117    0.021   -5.564    0.000
+#     T3_LT            -0.070    0.021   -3.334    0.001
+#     T3_Lon           -0.103    0.021   -4.908    0.000
+#     T3_Eng            0.630    0.025   25.538    0.000
+#     T3_Mat            0.504    0.023   21.565    0.000
+#   T1_Mat ~~                                           
+#     T2_Wen            0.011    0.021    0.522    0.602
+#     T2_SC            -0.199    0.021   -9.338    0.000
+#     T2_LT             0.156    0.021    7.370    0.000
+#     T2_Lon           -0.079    0.021   -3.780    0.000
+#     T3_Wen            0.043    0.021    2.074    0.038
+#     T3_SC            -0.193    0.021   -9.077    0.000
+#     T3_LT            -0.035    0.021   -1.668    0.095
+#     T3_Lon           -0.131    0.021   -6.235    0.000
+#     T3_Eng            0.548    0.024   23.016    0.000
+#     T3_Mat            0.651    0.025   26.131    0.000
+#   T2_Wen ~~                                           
+#     T2_SC            -0.055    0.021   -2.655    0.008
+#     T2_LT             0.214    0.021   10.005    0.000
+#     T2_Lon           -0.169    0.021   -8.000    0.000
+#     T3_Wen            0.467    0.023   20.284    0.000
+#     T3_SC            -0.063    0.021   -3.022    0.003
+#     T3_LT            -0.202    0.021   -9.505    0.000
+#     T3_Lon           -0.118    0.021   -5.625    0.000
+#     T3_Eng            0.038    0.021    1.804    0.071
+#     T3_Mat            0.037    0.021    1.759    0.079
+#   T2_SC ~~                                            
+#     T2_LT            -0.172    0.021   -8.110    0.000
+#     T2_Lon            0.375    0.022   16.813    0.000
+#     T3_Wen           -0.050    0.021   -2.393    0.017
+#     T3_SC             0.509    0.023   21.722    0.000
+#     T3_LT             0.101    0.021    4.814    0.000
+#     T3_Lon            0.305    0.022   13.964    0.000
+#     T3_Eng           -0.117    0.021   -5.586    0.000
+#     T3_Mat           -0.188    0.021   -8.869    0.000
+#   T2_LT ~~                                            
+#     T2_Lon           -0.240    0.021  -11.184    0.000
+#     T3_Wen            0.135    0.021    6.417    0.000
+#     T3_SC            -0.139    0.021   -6.597    0.000
+#     T3_LT            -0.455    0.023  -19.826    0.000
+#     T3_Lon           -0.190    0.021   -8.937    0.000
+#     T3_Eng            0.138    0.021    6.529    0.000
+#     T3_Mat            0.124    0.021    5.876    0.000
+#   T2_Lon ~~                                           
+#     T3_Wen           -0.096    0.021   -4.559    0.000
+#     T3_SC             0.217    0.021   10.163    0.000
+#     T3_LT             0.182    0.021    8.566    0.000
+#     T3_Lon            0.439    0.023   19.253    0.000
+#     T3_Eng           -0.046    0.021   -2.186    0.029
+#     T3_Mat           -0.072    0.021   -3.446    0.001
+#   T3_Wen ~~                                           
+#     T3_SC            -0.055    0.021   -2.641    0.008
+#     T3_LT            -0.337    0.022  -15.285    0.000
+#     T3_Lon           -0.113    0.021   -5.400    0.000
+#     T3_Eng            0.024    0.021    1.164    0.244
+#     T3_Mat            0.031    0.021    1.503    0.133
+#   T3_SC ~~                                            
+#     T3_LT             0.108    0.021    5.164    0.000
+#     T3_Lon            0.360    0.022   16.227    0.000
+#     T3_Eng           -0.079    0.021   -3.787    0.000
+#     T3_Mat           -0.156    0.021   -7.371    0.000
+#   T3_LT ~~                                            
+#     T3_Lon            0.195    0.021    9.164    0.000
+#     T3_Eng           -0.058    0.021   -2.793    0.005
+#     T3_Mat           -0.043    0.021   -2.067    0.039
+#   T3_Lon ~~                                           
+#     T3_Eng           -0.071    0.021   -3.396    0.001
+#     T3_Mat           -0.105    0.021   -4.988    0.000
+#   T3_Eng ~~                                           
+#     T3_Mat            0.599    0.024   24.610    0.000
 # 
 # Intercepts:
 #                    Estimate  Std.Err  z-value  P(>|z|)
-#    .C1_Btotal         0.000    0.018    0.000    1.000
-#    .C2_Btotal        -0.000    0.020   -0.000    1.000
-#    .C3_Btotal        -0.000    0.020   -0.000    1.000
-#     C1_AGtotal       -0.000    0.021   -0.000    1.000
-#     C1_SCtotal        0.000    0.021    0.000    1.000
-#     C1_LTtotal        0.000    0.021    0.000    1.000
-#     C1_Ltotal         0.000    0.021    0.000    1.000
+#    .T1_SQD            0.000    0.018    0.000    1.000
+#    .T2_SQD           -0.000    0.020   -0.000    1.000
+#    .T3_SQD           -0.000    0.020   -0.000    1.000
+#     T1_Wen           -0.000    0.021   -0.000    1.000
+#     T1_SC             0.000    0.021    0.000    1.000
+#     T1_LT             0.000    0.021    0.000    1.000
+#     T1_Lon            0.000    0.021    0.000    1.000
 #     FSM               0.000    0.021    0.000    1.000
-#     C1_Eng            0.000    0.021    0.000    1.000
-#     C1_Mat           -0.000    0.021   -0.000    1.000
-#     C2_AGtotal       -0.000    0.021   -0.000    1.000
-#     C2_SCtotal       -0.000    0.021   -0.000    1.000
-#     C2_LTtotal        0.000    0.021    0.000    1.000
-#     C2_Ltotal         0.000    0.021    0.000    1.000
-#     C3_AGtotal       -0.000    0.021   -0.000    1.000
-#     C3_SCtotal       -0.000    0.021   -0.000    1.000
-#     C3_LTtotal        0.000    0.021    0.000    1.000
-#     C3_Ltotal         0.000    0.021    0.000    1.000
-#     C3_Eng           -0.000    0.021   -0.000    1.000
-#     C3_Mat           -0.000    0.021   -0.000    1.000
+#     T1_Eng            0.000    0.021    0.000    1.000
+#     T1_Mat           -0.000    0.021   -0.000    1.000
+#     T2_Wen           -0.000    0.021   -0.000    1.000
+#     T2_SC            -0.000    0.021   -0.000    1.000
+#     T2_LT             0.000    0.021    0.000    1.000
+#     T2_Lon            0.000    0.021    0.000    1.000
+#     T3_Wen           -0.000    0.021   -0.000    1.000
+#     T3_SC            -0.000    0.021   -0.000    1.000
+#     T3_LT             0.000    0.021    0.000    1.000
+#     T3_Lon            0.000    0.021    0.000    1.000
+#     T3_Eng           -0.000    0.021   -0.000    1.000
+#     T3_Mat           -0.000    0.021   -0.000    1.000
 # 
 # Variances:
 #                    Estimate  Std.Err  z-value  P(>|z|)
-#    .C1_Btotal         0.726    0.021   33.785    0.000
-#    .C2_Btotal         0.885    0.026   33.809    0.000
-#    .C3_Btotal         0.878    0.026   33.738    0.000
-#     C1_AGtotal        1.000    0.030   33.867    0.000
-#     C1_SCtotal        1.000    0.030   33.867    0.000
-#     C1_LTtotal        1.000    0.030   33.867    0.000
-#     C1_Ltotal         1.000    0.030   33.867    0.000
+#    .T1_SQD            0.726    0.021   33.785    0.000
+#    .T2_SQD            0.885    0.026   33.809    0.000
+#    .T3_SQD            0.878    0.026   33.738    0.000
+#     T1_Wen            1.000    0.030   33.867    0.000
+#     T1_SC             1.000    0.030   33.867    0.000
+#     T1_LT             1.000    0.030   33.867    0.000
+#     T1_Lon            1.000    0.030   33.867    0.000
 #     FSM               1.000    0.030   33.867    0.000
-#     C1_Eng            1.000    0.030   33.867    0.000
-#     C1_Mat            1.000    0.030   33.867    0.000
-#     C2_AGtotal        1.000    0.030   33.867    0.000
-#     C2_SCtotal        1.000    0.030   33.867    0.000
-#     C2_LTtotal        1.000    0.030   33.867    0.000
-#     C2_Ltotal         1.000    0.030   33.867    0.000
-#     C3_AGtotal        1.000    0.030   33.867    0.000
-#     C3_SCtotal        1.000    0.030   33.867    0.000
-#     C3_LTtotal        1.000    0.030   33.867    0.000
-#     C3_Ltotal         1.000    0.030   33.867    0.000
-#     C3_Eng            1.000    0.030   33.867    0.000
-#     C3_Mat            1.000    0.030   33.867    0.000
+#     T1_Eng            1.000    0.030   33.867    0.000
+#     T1_Mat            1.000    0.030   33.867    0.000
+#     T2_Wen            1.000    0.030   33.867    0.000
+#     T2_SC             1.000    0.030   33.867    0.000
+#     T2_LT             1.000    0.030   33.867    0.000
+#     T2_Lon            1.000    0.030   33.867    0.000
+#     T3_Wen            1.000    0.030   33.867    0.000
+#     T3_SC             1.000    0.030   33.867    0.000
+#     T3_LT             1.000    0.030   33.867    0.000
+#     T3_Lon            1.000    0.030   33.867    0.000
+#     T3_Eng            1.000    0.030   33.867    0.000
+#     T3_Mat            1.000    0.030   33.867    0.000
 }
+
 
 # The model fit was evaluated using several fit indices. The Comparative Fit Index (CFI) was 0.915, indicating a reasonably good fit. The Tucker-Lewis Index (TLI) was 0.856, also suggesting an acceptable fit. The Root Mean Square Error of Approximation (RMSEA) was 0.048 with a 90% confidence interval from 0.042 to 0.055, indicating that the model fits the data well. The model was compared against a baseline model, showing significant improvement as indicated by the chi-square test (p < 0.001).
 # At each time point (C1, C2, C3), the regression coefficients for predicting Btotal (SQD scores) from various predictors (AGtotal, SCtotal, LTtotal, Ltotal, FSM, Eng, Mat) were estimated. Significant predictors varied across time points.
@@ -939,28 +950,30 @@ summary(reg_fit, fit.measures = TRUE)
 # Intercept estimates for the latent variables (C1_Btotal, C2_Btotal, C3_Btotal, C1_AGtotal, etc.) were examined, although they did not significantly deviate from zero. Variances of the latent variables (C1_Btotal, C2_Btotal, C3_Btotal, C1_AGtotal, etc.) were estimated, providing insights into the variability of these constructs.
 # In conclusion, the SEM analysis provided insights into how various factors such as academic scores (Eng, Mat), socio-emotional factors (AGtotal, SCtotal, LTtotal, Ltotal), and demographic characteristics (FSM) relate to each other and influence Btotal (SQD scores) across different time points. The model showed a good fit to the data, suggesting that the specified relationships adequately explain the observed data patterns.
 
+```
 
+```{r SEM model 2}
 
 # creating the cross-lagged model
 crosslagged_model <- '
   # Regressions at each time point
-  C1_Btotal ~ C1_AGtotal + C1_SCtotal + C1_LTtotal + C1_Ltotal + FSM 
-  C2_Btotal ~ C2_AGtotal + C2_SCtotal + C2_LTtotal + C2_Ltotal + FSM
-  C3_Btotal ~ C3_AGtotal + C3_SCtotal + C3_LTtotal + C3_Ltotal + FSM
+  T1_SQD ~ T1_Wen + T1_SC + T1_LT + T1_Lon + FSM + T1_Eng + T1_Mat
+  T2_SQD ~ T2_Wen + T2_SC + T2_LT + T2_Lon + FSM
+  T3_SQD ~ T3_Wen + T3_SC + T3_LT + T3_Lon + FSM + T3_Eng + T3_Mat
 
   # Auto-regressive paths
-  C2_Btotal ~ C1_Btotal
-  C3_Btotal ~ C2_Btotal
+  T2_SQD ~ T1_SQD
+  T3_SQD ~ T2_SQD
   
   # Cross-lagged paths (to see the influence of predictors over time)
-  C2_AGtotal ~ C1_AGtotal
-  C3_AGtotal ~ C2_AGtotal
-  C2_SCtotal ~ C1_SCtotal
-  C3_SCtotal ~ C2_SCtotal
-  C2_LTtotal ~ C1_LTtotal
-  C3_LTtotal ~ C2_LTtotal
-  C2_Ltotal ~ C1_Ltotal
-  C3_Ltotal ~ C2_Ltotal
+  T2_Wen ~ T1_Wen
+  T3_Wen ~ T2_Wen
+  T2_SC ~ T1_SC
+  T3_SC ~ T2_SC
+  T2_LT ~ T1_LT
+  T3_LT ~ T2_LT
+  T2_Lon ~ T1_Lon
+  T3_Lon ~ T2_Lon
 '
 
 # fitting the model made
@@ -969,61 +982,61 @@ cl_fit <- sem(crosslagged_model, data = norm_data, missing = "fiml", fixed.x = F
 # having a lil look-see what the ugly stats that are supposed to mean something 
 summary(cl_fit, fit.measures = TRUE)
 {
-#   lavaan 0.6-18 ended normally after 7 iterations
+#   lavaan 0.6-18 ended normally after 23 iterations
 # 
 #   Estimator                                         ML
 #   Optimization method                           NLMINB
-#   Number of model parameters                        67
+#   Number of model parameters                       105
 # 
 #   Number of observations                          2294
 #   Number of missing patterns                         1
 # 
 # Model Test User Model:
 #                                                       
-#   Test statistic                              1680.287
-#   Degrees of freedom                                85
+#   Test statistic                              1877.098
+#   Degrees of freedom                               125
 #   P-value (Chi-square)                           0.000
 # 
 # Model Test Baseline Model:
 # 
-#   Test statistic                              6770.349
-#   Degrees of freedom                               110
+#   Test statistic                              7010.818
+#   Degrees of freedom                               154
 #   P-value                                        0.000
 # 
 # User Model versus Baseline Model:
 # 
-#   Comparative Fit Index (CFI)                    0.760
-#   Tucker-Lewis Index (TLI)                       0.690
+#   Comparative Fit Index (CFI)                    0.744
+#   Tucker-Lewis Index (TLI)                       0.685
 #                                                       
-#   Robust Comparative Fit Index (CFI)             0.761
-#   Robust Tucker-Lewis Index (TLI)                0.690
+#   Robust Comparative Fit Index (CFI)             0.745
+#   Robust Tucker-Lewis Index (TLI)                0.685
 # 
 # Loglikelihood and Information Criteria:
 # 
-#   Loglikelihood user model (H0)             -49181.550
-#   Loglikelihood unrestricted model (H1)     -48341.407
+#   Loglikelihood user model (H0)             -59986.571
+#   Loglikelihood unrestricted model (H1)     -59048.021
 #                                                       
-#   Akaike (AIC)                               98497.100
-#   Bayesian (BIC)                             98881.550
-#   Sample-size adjusted Bayesian (SABIC)      98668.679
+#   Akaike (AIC)                              120183.141
+#   Bayesian (BIC)                            120785.637
+#   Sample-size adjusted Bayesian (SABIC)     120452.033
 # 
 # Root Mean Square Error of Approximation:
 # 
-#   RMSEA                                          0.090
-#   90 Percent confidence interval - lower         0.087
-#   90 Percent confidence interval - upper         0.094
+#   RMSEA                                          0.078
+#   90 Percent confidence interval - lower         0.075
+#   90 Percent confidence interval - upper         0.081
 #   P-value H_0: RMSEA <= 0.050                    0.000
-#   P-value H_0: RMSEA >= 0.080                    1.000
+#   P-value H_0: RMSEA >= 0.080                    0.170
 #                                                       
-#   Robust RMSEA                                   0.090
-#   90 Percent confidence interval - lower         0.087
-#   90 Percent confidence interval - upper         0.094
+#   Robust RMSEA                                   0.078
+#   90 Percent confidence interval - lower         0.075
+#   90 Percent confidence interval - upper         0.081
 #   P-value H_0: Robust RMSEA <= 0.050             0.000
-#   P-value H_0: Robust RMSEA >= 0.080             1.000
+#   P-value H_0: Robust RMSEA >= 0.080             0.163
 # 
 # Standardized Root Mean Square Residual:
 # 
-#   SRMR                                           0.099
+#   SRMR                                           0.086
 # 
 # Parameter Estimates:
 # 
@@ -1033,99 +1046,141 @@ summary(cl_fit, fit.measures = TRUE)
 # 
 # Regressions:
 #                    Estimate  Std.Err  z-value  P(>|z|)
-#   C1_Btotal ~                                         
-#     C1_AGtotal        0.092    0.018    4.984    0.000
-#     C1_SCtotal        0.205    0.019   10.695    0.000
-#     C1_LTtotal       -0.141    0.019   -7.547    0.000
-#     C1_Ltotal         0.364    0.020   18.583    0.000
-#     FSM               0.038    0.018    2.119    0.034
-#   C2_Btotal ~                                         
-#     C2_AGtotal        0.073    0.020    3.734    0.000
-#     C2_SCtotal        0.223    0.021   10.626    0.000
-#     C2_LTtotal       -0.078    0.020   -3.846    0.000
-#     C2_Ltotal         0.053    0.021    2.497    0.013
+#   T1_SQD ~                                            
+#     T1_Wen            0.100    0.019    5.364    0.000
+#     T1_SC             0.201    0.019   10.383    0.000
+#     T1_LT            -0.136    0.019   -7.259    0.000
+#     T1_Lon            0.364    0.020   18.482    0.000
+#     FSM               0.031    0.018    1.672    0.094
+#     T1_Eng           -0.061    0.023   -2.654    0.008
+#     T1_Mat            0.007    0.023    0.289    0.773
+#   T2_SQD ~                                            
+#     T2_Wen            0.073    0.020    3.734    0.000
+#     T2_SC             0.223    0.021   10.626    0.000
+#     T2_LT            -0.078    0.020   -3.846    0.000
+#     T2_Lon            0.053    0.021    2.497    0.013
 #     FSM               0.006    0.019    0.303    0.762
-#   C3_Btotal ~                                         
-#     C3_AGtotal        0.046    0.020    2.358    0.018
-#     C3_SCtotal        0.147    0.020    7.308    0.000
-#     C3_LTtotal        0.034    0.020    1.716    0.086
-#     C3_Ltotal         0.173    0.020    8.600    0.000
-#     FSM               0.040    0.018    2.193    0.028
-#   C2_Btotal ~                                         
-#     C1_Btotal         0.244    0.020   12.207    0.000
-#   C3_Btotal ~                                         
-#     C2_Btotal         0.331    0.019   17.469    0.000
-#   C2_AGtotal ~                                        
-#     C1_AGtotal        0.376    0.019   19.449    0.000
-#   C3_AGtotal ~                                        
-#     C2_AGtotal        0.467    0.018   25.330    0.000
-#   C2_SCtotal ~                                        
-#     C1_SCtotal        0.419    0.019   22.129    0.000
-#   C3_SCtotal ~                                        
-#     C2_SCtotal        0.509    0.018   28.312    0.000
-#   C2_LTtotal ~                                        
-#     C1_LTtotal        0.173    0.021    8.428    0.000
-#   C3_LTtotal ~                                        
-#     C2_LTtotal       -0.455    0.019  -24.454    0.000
-#   C2_Ltotal ~                                         
-#     C1_Ltotal         0.296    0.020   14.829    0.000
-#   C3_Ltotal ~                                         
-#     C2_Ltotal         0.439    0.019   23.403    0.000
+#   T3_SQD ~                                            
+#     T3_Wen            0.047    0.019    2.395    0.017
+#     T3_SC             0.149    0.020    7.438    0.000
+#     T3_LT             0.038    0.020    1.905    0.057
+#     T3_Lon            0.176    0.020    8.839    0.000
+#     FSM               0.058    0.019    3.098    0.002
+#     T3_Eng            0.115    0.023    5.002    0.000
+#     T3_Mat           -0.009    0.023   -0.399    0.690
+#   T2_SQD ~                                            
+#     T1_SQD            0.244    0.020   12.207    0.000
+#   T3_SQD ~                                            
+#     T2_SQD            0.343    0.019   18.136    0.000
+#   T2_Wen ~                                            
+#     T1_Wen            0.376    0.019   19.449    0.000
+#   T3_Wen ~                                            
+#     T2_Wen            0.467    0.018   25.330    0.000
+#   T2_SC ~                                             
+#     T1_SC             0.419    0.019   22.129    0.000
+#   T3_SC ~                                             
+#     T2_SC             0.509    0.018   28.312    0.000
+#   T2_LT ~                                             
+#     T1_LT             0.173    0.021    8.428    0.000
+#   T3_LT ~                                             
+#     T2_LT            -0.455    0.019  -24.454    0.000
+#   T2_Lon ~                                            
+#     T1_Lon            0.296    0.020   14.829    0.000
+#   T3_Lon ~                                            
+#     T2_Lon            0.439    0.019   23.403    0.000
 # 
 # Covariances:
 #                    Estimate  Std.Err  z-value  P(>|z|)
-#   C1_AGtotal ~~                                       
-#     C1_SCtotal       -0.209    0.021   -9.814    0.000
-#     C1_LTtotal        0.141    0.021    6.682    0.000
-#     C1_Ltotal        -0.214    0.021  -10.018    0.000
+#   T1_Wen ~~                                           
+#     T1_SC            -0.209    0.021   -9.814    0.000
+#     T1_LT             0.141    0.021    6.682    0.000
+#     T1_Lon           -0.214    0.021  -10.018    0.000
 #     FSM              -0.057    0.021   -2.740    0.006
-#   C1_SCtotal ~~                                       
-#     C1_LTtotal       -0.181    0.021   -8.534    0.000
-#     C1_Ltotal         0.332    0.022   15.084    0.000
+#     T1_Eng            0.181    0.021    8.514    0.000
+#     T1_Mat            0.144    0.021    6.848    0.000
+#     T3_Eng            0.137    0.021    6.488    0.000
+#     T3_Mat            0.125    0.021    5.920    0.000
+#   T1_SC ~~                                            
+#     T1_LT            -0.181    0.021   -8.534    0.000
+#     T1_Lon            0.332    0.022   15.084    0.000
 #     FSM               0.106    0.021    5.070    0.000
-#   C1_LTtotal ~~                                       
-#     C1_Ltotal        -0.273    0.022  -12.617    0.000
+#     T1_Eng           -0.160    0.021   -7.591    0.000
+#     T1_Mat           -0.209    0.021   -9.812    0.000
+#     T3_Eng           -0.136    0.021   -6.452    0.000
+#     T3_Mat           -0.163    0.021   -7.730    0.000
+#   T1_LT ~~                                            
+#     T1_Lon           -0.273    0.022  -12.617    0.000
 #     FSM              -0.103    0.021   -4.902    0.000
-#   C1_Ltotal ~~                                        
+#     T1_Eng            0.147    0.021    6.973    0.000
+#     T1_Mat            0.180    0.021    8.507    0.000
+#     T3_Eng            0.130    0.021    6.200    0.000
+#     T3_Mat            0.147    0.021    6.959    0.000
+#   T1_Lon ~~                                           
 #     FSM               0.107    0.021    5.087    0.000
+#     T1_Eng           -0.118    0.021   -5.609    0.000
+#     T1_Mat           -0.208    0.021   -9.753    0.000
+#     T3_Eng           -0.130    0.021   -6.182    0.000
+#     T3_Mat           -0.177    0.021   -8.336    0.000
+#   FSM ~~                                              
+#     T1_Eng           -0.173    0.021   -8.161    0.000
+#     T1_Mat           -0.203    0.021   -9.519    0.000
+#     T3_Eng           -0.175    0.021   -8.239    0.000
+#     T3_Mat           -0.191    0.021   -9.001    0.000
+#   T1_Eng ~~                                           
+#     T1_Mat            0.616    0.025   25.130    0.000
+#     T3_Eng            0.630    0.025   25.538    0.000
+#     T3_Mat            0.504    0.023   21.565    0.000
+#   T1_Mat ~~                                           
+#     T3_Eng            0.548    0.024   23.016    0.000
+#     T3_Mat            0.651    0.025   26.131    0.000
+#   T3_Eng ~~                                           
+#     T3_Mat            0.599    0.024   24.610    0.000
 # 
 # Intercepts:
 #                    Estimate  Std.Err  z-value  P(>|z|)
-#    .C1_Btotal         0.000    0.018    0.000    1.000
-#    .C2_Btotal        -0.000    0.019   -0.000    1.000
-#    .C3_Btotal        -0.000    0.018   -0.000    1.000
-#    .C2_AGtotal       -0.000    0.019   -0.000    1.000
-#    .C3_AGtotal        0.000    0.018    0.000    1.000
-#    .C2_SCtotal       -0.000    0.019   -0.000    1.000
-#    .C3_SCtotal        0.000    0.018    0.000    1.000
-#    .C2_LTtotal        0.000    0.021    0.000    1.000
-#    .C3_LTtotal        0.000    0.019    0.000    1.000
-#    .C2_Ltotal         0.000    0.020    0.000    1.000
-#    .C3_Ltotal         0.000    0.019    0.000    1.000
-#     C1_AGtotal       -0.000    0.021   -0.000    1.000
-#     C1_SCtotal        0.000    0.021    0.000    1.000
-#     C1_LTtotal        0.000    0.021    0.000    1.000
-#     C1_Ltotal         0.000    0.021    0.000    1.000
+#    .T1_SQD            0.000    0.018    0.000    1.000
+#    .T2_SQD           -0.000    0.019   -0.000    1.000
+#    .T3_SQD           -0.000    0.018   -0.000    1.000
+#    .T2_Wen           -0.000    0.019   -0.000    1.000
+#    .T3_Wen            0.000    0.018    0.000    1.000
+#    .T2_SC            -0.000    0.019   -0.000    1.000
+#    .T3_SC             0.000    0.018    0.000    1.000
+#    .T2_LT             0.000    0.021    0.000    1.000
+#    .T3_LT             0.000    0.019    0.000    1.000
+#    .T2_Lon            0.000    0.020    0.000    1.000
+#    .T3_Lon            0.000    0.019    0.000    1.000
+#     T1_Wen           -0.000    0.021   -0.000    1.000
+#     T1_SC             0.000    0.021    0.000    1.000
+#     T1_LT             0.000    0.021    0.000    1.000
+#     T1_Lon            0.000    0.021    0.000    1.000
 #     FSM               0.000    0.021    0.000    1.000
+#     T1_Eng            0.000    0.021    0.000    1.000
+#     T1_Mat           -0.000    0.021   -0.000    1.000
+#     T3_Eng           -0.000    0.021   -0.000    1.000
+#     T3_Mat           -0.000    0.021   -0.000    1.000
 # 
 # Variances:
 #                    Estimate  Std.Err  z-value  P(>|z|)
-#    .C1_Btotal         0.727    0.021   33.867    0.000
-#    .C2_Btotal         0.829    0.024   33.867    0.000
-#    .C3_Btotal         0.776    0.023   33.867    0.000
-#    .C2_AGtotal        0.858    0.025   33.867    0.000
-#    .C3_AGtotal        0.781    0.023   33.867    0.000
-#    .C2_SCtotal        0.824    0.024   33.867    0.000
-#    .C3_SCtotal        0.741    0.022   33.867    0.000
-#    .C2_LTtotal        0.970    0.029   33.867    0.000
-#    .C3_LTtotal        0.793    0.023   33.867    0.000
-#    .C2_Ltotal         0.912    0.027   33.867    0.000
-#    .C3_Ltotal         0.807    0.024   33.867    0.000
-#     C1_AGtotal        1.000    0.030   33.867    0.000
-#     C1_SCtotal        1.000    0.030   33.867    0.000
-#     C1_LTtotal        1.000    0.030   33.867    0.000
-#     C1_Ltotal         1.000    0.030   33.867    0.000
+#    .T1_SQD            0.724    0.021   33.867    0.000
+#    .T2_SQD            0.829    0.024   33.867    0.000
+#    .T3_SQD            0.764    0.023   33.867    0.000
+#    .T2_Wen            0.858    0.025   33.867    0.000
+#    .T3_Wen            0.781    0.023   33.867    0.000
+#    .T2_SC             0.824    0.024   33.867    0.000
+#    .T3_SC             0.741    0.022   33.867    0.000
+#    .T2_LT             0.970    0.029   33.867    0.000
+#    .T3_LT             0.793    0.023   33.867    0.000
+#    .T2_Lon            0.912    0.027   33.867    0.000
+#    .T3_Lon            0.807    0.024   33.867    0.000
+#     T1_Wen            1.000    0.030   33.867    0.000
+#     T1_SC             1.000    0.030   33.867    0.000
+#     T1_LT             1.000    0.030   33.867    0.000
+#     T1_Lon            1.000    0.030   33.867    0.000
 #     FSM               1.000    0.030   33.867    0.000
+#     T1_Eng            1.000    0.030   33.867    0.000
+#     T1_Mat            1.000    0.030   33.867    0.000
+#     T3_Eng            1.000    0.030   33.867    0.000
+#     T3_Mat            1.000    0.030   33.867    0.000
 }
 
 # The SEM model tested relationships among variables over time, focusing on how initial conditions and changes in variables influence subsequent outcomes.
@@ -1173,43 +1228,38 @@ write.csv(sem_stats, file = "../output/sem_stats.csv", row.names = FALSE)
 ```{r plotting the SEModels}
 #install.packages("semPlot")
 library(semPlot)
+#reg_semplot.jpg and cl_semplot.jpg
 
-
-
-
-
-# removing the empty string from node names
-param_table <- parameterTable(cl_fit)
-node_names <- unique(c(param_table$lhs, param_table$rhs))
-node_names <- node_names[node_names != ""]
-print(node_names)
-
-
-# plotting it all coz let's be real no one understands stats
-nlabels <- c("C1_Btotal",  "C2_Btotal",  "C3_Btotal",  "C2_AGtotal", "C3_AGtotal", "C2_SCtotal", "C3_SCtotal", "C2_LTtotal", "C3_LTtotal", "C2_Ltotal",  "C3_Ltotal",  "C1_AGtotal", "C1_SCtotal", "C1_LTtotal", "C1_Ltotal",  "FSM",  "")  
- 
-
-SEMPlot <- semPlot::semPaths(cl_fit,
+# reg model
+jpeg(filename = "../output/reg_semplot.jpg", res = 300, width = 2500, height = 2100)
+reg_semplot <- semPlot::semPaths(reg_fit,
                              sizeMan = 5, 
                              residuals = TRUE, 
                              whatLabels = "est", 
                              width = 40, 
                              height = 5, 
-                             normalize = FALSE)
-                             #nodeLabels = nlabels)
-
-(SEMPlot <- qgraph::qgraph(SEMPlot, title = "Model 1"))
-
-semPlot::semCors(model1)
-
+                             normalize = FALSE,
+                             nCharNodes = 6,
+                             mar = c(3, 3, 3, 3),
+                             layout = "tree")
+dev.off()
 
 
+# cross lagged model
+jpeg(filename = "../output/cl_semplot.jpg", res = 300, width = 2500, height = 2100)
+cl_semplot <- semPlot::semPaths(cl_fit,
+                             sizeMan = 5, 
+                             residuals = TRUE, 
+                             whatLabels = "est", 
+                             width = 40, 
+                             height = 5, 
+                             normalize = FALSE,
+                             nCharNodes = 6,
+                             mar = c(1, 1, 1, 1),
+                             layout = "tree")
+dev.off()
 
-#install.packages("semptools")
-library(semptools)
-nlabels <- list(list(node = "C1_A", to = "C1_WI"))
 
-SEMPlot2 <- change_node_label(SEMPlot, nlabels)
 ```
 
 
