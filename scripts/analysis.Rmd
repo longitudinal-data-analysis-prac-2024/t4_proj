@@ -491,8 +491,9 @@ plot_wen <- ggplot(long_data, aes(x = AGtotal, y = Btotal)) +
   facet_wrap(~ Time, labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
                                                   "2" = "Time Point 2 - Beginning of Yr 7", 
                                                   "3" = "Time Point 3 - End of Yr 7"))) +  
-  theme(plot.title = element_text(hjust = 0.5), strip.text = element_text(size = 20),
-        axis.text = element_text(size = 15), axis.title = element_text(size = 20))
+  theme(plot.title = element_text(hjust = 0.5))
+        #, strip.text = element_text(size = 20),
+        #axis.text = element_text(size = 15), axis.title = element_text(size = 20))
 
 # school concern
 plot_sc <- ggplot(long_data, aes(x = SCtotal, y = Btotal)) +
@@ -504,8 +505,9 @@ plot_sc <- ggplot(long_data, aes(x = SCtotal, y = Btotal)) +
   facet_wrap(~ Time, labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
                                                   "2" = "Time Point 2 - Beginning of Yr 7", 
                                                   "3" = "Time Point 3 - End of Yr 7"))) +  
-  theme(plot.title = element_text(hjust = 0.4), strip.text = element_text(size = 20),
-        axis.text = element_text(size = 15), axis.title = element_text(size = 20))
+  theme(plot.title = element_text(hjust = 0.4))
+        #, strip.text = element_text(size = 20),
+        #axis.text = element_text(size = 15), axis.title = element_text(size = 20))
 
 # liking teachers
 plot_lt <- ggplot(long_data, aes(x = LTtotal, y = Btotal)) +
@@ -517,8 +519,9 @@ plot_lt <- ggplot(long_data, aes(x = LTtotal, y = Btotal)) +
   facet_wrap(~ Time, labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
                                                   "2" = "Time Point 2 - Beginning of Yr 7", 
                                                   "3" = "Time Point 3 - End of Yr 7"))) +  
-  theme(plot.title = element_text(hjust = 0.4), strip.text = element_text(size = 20),
-        axis.text = element_text(size = 15), axis.title = element_text(size = 20))
+  theme(plot.title = element_text(hjust = 0.4))
+        #, strip.text = element_text(size = 20),
+        #axis.text = element_text(size = 15), axis.title = element_text(size = 20))
 
 # lonliness
 plot_lon <- ggplot(long_data, aes(x = Ltotal, y = Btotal)) +
@@ -530,8 +533,9 @@ plot_lon <- ggplot(long_data, aes(x = Ltotal, y = Btotal)) +
   facet_wrap(~ Time, scales = "free_x", labeller = labeller(Time = c("1" = "Time Point 1 - End of Yr 6", 
                                                   "2" = "Time Point 2 - Beginning of Yr 7", 
                                                   "3" = "Time Point 3 - End of Yr 7"))) +  
-  theme(plot.title = element_text(hjust = 0.4), strip.text = element_text(size = 20),
-        axis.text = element_text(size = 15), axis.title = element_text(size = 20))
+  theme(plot.title = element_text(hjust = 0.4))
+        #, strip.text = element_text(size = 20),
+        #axis.text = element_text(size = 15), axis.title = element_text(size = 20))
 
 # combine plots into one grid 
 (vars_plot <- grid.arrange(plot_wen, plot_sc, plot_lt, plot_lon, nrow = 4))
