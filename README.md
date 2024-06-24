@@ -80,10 +80,12 @@ Here is a figure showing effect of free school meals on SDQ score over time![](o
 
 # Descriptive data
 
-We also had a look at some demographic data out of interest. Here are the children's grades[ ](scripts/descriptives/gradegraph.png)
+We also had a look at some demographic data out of interest.
 
-Here is the ethnicity of the children[ ](scripts/descriptives/ethnicitygraph.png)
+Here are the childrens' grades over time![](output/gradegraph.png)
 
-The gender:[ ](scripts/descriptives/gendergraph.png)
+The ethnicity of the children![](output/ethnicitygraph.png)
 
-And the languages most commonly spoken as the first language:[ ](scripts/descriptives/languages_wordcloud.png)
+Their gender![](output/gendergraph.png)
+
+And finally, the languages most commonly spoken as the first language![](output/languages_wordcloud.png)
