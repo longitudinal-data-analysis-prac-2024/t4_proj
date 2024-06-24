@@ -25,6 +25,7 @@ write.csv(new_data, file = "../data/new_data.csv", row.names = FALSE)
 
 ```
 
+
 ```{r creating the summed data frame}
 # calling the imputed data into the envrionment
 new_data <- read.csv("../data/new_data.csv")
@@ -135,6 +136,7 @@ write.csv(sum_data, file = "../data/sum_data.csv", row.names = FALSE)
 
 ```
 
+
 ```{r getting the data into long format}
 library(tidyverse)
 
@@ -161,6 +163,7 @@ long_data <- sum_data %>%
 write.csv(long_data, file = "../data/long_data.csv", row.names = FALSE)
 
 ```
+
 
 ```{r visualising the data}
 # imma visualise a little first coz that's gonna help me ac understand the onlsaught of numbers the lmer is gonna give me
@@ -203,24 +206,29 @@ long_data %>%
 # all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
 
 # note to self: this should work now with he as.factor() argument
-ggplot(data = long_data, aes(x = Time, y = Btotal, colour = as.factor(ID))) +
+long_data$ID <- as.factor(long_data$ID)
+
+ggplot(data = long_data, aes(x = Time, y = Btotal, colour = ID)) +
   geom_line() +
   theme_minimal () +
   theme(legend.position = "none") +
   scale_x_continuous(breaks = c(1,2,3))
 ```
 
+
 ```{r linear-mixed effects models}
 # take 2 on lme models
 # note: random intercepts go after the | and random slopes go after (1 +
-#install.packages("lme4")
-library(lme4)
+#long_data <- read.csv("../data/long_data.csv")
+#install.packages("lmerTest")
+library(lmerTest)
 
 # Model with random intercept only
-base_model <- lmer(Btotal ~ Time + (1 | ID), data = long_data)
+base_model <- lmerTest::lmer(Btotal ~ Time + (1 | ID), data = long_data)
 summary(base_model)
 {
-#   Linear mixed model fit by REML ['lmerMod']
+# Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+# lmerModLmerTest]
 # Formula: Btotal ~ Time + (1 | ID)
 #    Data: long_data
 # 
@@ -237,9 +245,11 @@ summary(base_model)
 # Number of obs: 6882, groups:  ID, 2294
 # 
 # Fixed effects:
-#             Estimate Std. Error t value
-# (Intercept) 35.16274    0.11246 312.670
-# Time        -0.18112    0.04689  -3.863
+#               Estimate Std. Error         df t value Pr(>|t|)    
+# (Intercept)   35.16274    0.11246 6854.81436 312.670  < 2e-16 ***
+# Time          -0.18112    0.04689 4587.00023  -3.863 0.000114 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 # 
 # Correlation of Fixed Effects:
 #      (Intr)
@@ -251,10 +261,11 @@ summary(base_model)
 
 
 # model considering the effect of FSMs on SDQ over time
-fixed_model<-lmer(Btotal ~ Time + FSM + (1 | ID), data = long_data)
+fixed_model <- lmerTest::lmer(Btotal ~ Time + FSM + (1 | ID), data = long_data)
 summary(fixed_model)
 {
-#   Linear mixed model fit by REML ['lmerMod']
+# Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+# lmerModLmerTest]
 # Formula: Btotal ~ Time + FSM + (1 | ID)
 #    Data: long_data
 # 
@@ -271,10 +282,12 @@ summary(fixed_model)
 # Number of obs: 6882, groups:  ID, 2294
 # 
 # Fixed effects:
-#             Estimate Std. Error t value
-# (Intercept) 34.28607    0.21876 156.727
-# Time        -0.18112    0.04689  -3.863
-# FSM          0.73748    0.15793   4.670
+#               Estimate Std. Error         df t value Pr(>|t|)    
+# (Intercept)   34.28607    0.21876 3355.06606 156.727  < 2e-16 ***
+# Time          -0.18112    0.04689 4587.00001  -3.863 0.000114 ***
+# FSM            0.73748    0.15793 2291.99998   4.670 3.19e-06 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 # 
 # Correlation of Fixed Effects:
 #      (Intr) Time  
@@ -287,10 +300,11 @@ summary(fixed_model)
 
 
 # model considering the effect of Grades on SDQ over time
-grades_model <- lmer(Btotal ~ Time * Eng + Time * Mat + (1 | ID), data = long_data)
+grades_model <- lmerTest::lmer(Btotal ~ Time * Eng + Time * Mat + (1 | ID), data = long_data)
 summary(grades_model)
 {
-#   Linear mixed model fit by REML ['lmerMod']
+# Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+# lmerModLmerTest]
 # Formula: Btotal ~ Time * Eng + Time * Mat + (1 | ID)
 #    Data: long_data
 # 
@@ -307,13 +321,15 @@ summary(grades_model)
 # Number of obs: 6882, groups:  ID, 2294
 # 
 # Fixed effects:
-#             Estimate Std. Error t value
-# (Intercept) 41.00840    0.67523  60.732
-# Time        -2.25233    0.27483  -8.195
-# Eng         -0.65459    0.19362  -3.381
-# Mat         -0.74688    0.17388  -4.295
-# Time:Eng     0.39134    0.07760   5.043
-# Time:Mat     0.10680    0.06875   1.553
+#               Estimate Std. Error         df t value Pr(>|t|)    
+# (Intercept)   41.00840    0.67523 6776.74018  60.732  < 2e-16 ***
+# Time          -2.25233    0.27483 5096.58085  -8.195 3.13e-16 ***
+# Eng           -0.65459    0.19362 6802.52017  -3.381 0.000727 ***
+# Mat           -0.74688    0.17388 6831.93097  -4.295 1.77e-05 ***
+# Time:Eng       0.39134    0.07760 5877.89587   5.043 4.72e-07 ***
+# Time:Mat       0.10680    0.06875 5918.33771   1.553 0.120403    
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 # 
 # Correlation of Fixed Effects:
 #          (Intr) Time   Eng    Mat    Tm:Eng
@@ -330,10 +346,11 @@ summary(grades_model)
 
 
 # model considering the effect of all factors on SDQ over time
-full_model <- lmer(Btotal ~ Time * AGtotal + Time * SCtotal + Time * LTtotal + Time * Ltotal + FSM + (1 | ID), data = long_data)
+full_model <- lmerTest::lmer(Btotal ~ Time * AGtotal + Time * SCtotal + Time * LTtotal + Time * Ltotal + FSM + (1 | ID), data = long_data)
 summary(full_model)
 {
-#   Linear mixed model fit by REML ['lmerMod']
+# Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+# lmerModLmerTest]
 # Formula: Btotal ~ Time * AGtotal + Time * SCtotal + Time * LTtotal + Time *  
 #     Ltotal + FSM + (1 | ID)
 #    Data: long_data
@@ -351,31 +368,44 @@ summary(full_model)
 # Number of obs: 6882, groups:  ID, 2294
 # 
 # Fixed effects:
-#               Estimate Std. Error t value
-# (Intercept)  33.899589   0.871232  38.910
-# Time         -1.987804   0.359140  -5.535
-# AGtotal       0.065225   0.036696   1.777
-# SCtotal       0.018972   0.004061   4.672
-# LTtotal      -0.179944   0.016011 -11.239
-# Ltotal        0.083767   0.012801   6.544
-# FSM           0.438387   0.140370   3.123
-# Time:AGtotal  0.016512   0.016873   0.979
-# Time:SCtotal  0.004549   0.001918   2.372
-# Time:LTtotal  0.080970   0.007135  11.348
-# Time:Ltotal   0.017217   0.008639   1.993
+#                Estimate Std. Error         df t value Pr(>|t|)    
+# (Intercept)   3.390e+01  8.712e-01  6.414e+03  38.910  < 2e-16 ***
+# Time         -1.988e+00  3.591e-01  5.871e+03  -5.535 3.25e-08 ***
+# AGtotal       6.523e-02  3.670e-02  6.082e+03   1.777  0.07554 .  
+# SCtotal       1.897e-02  4.061e-03  6.027e+03   4.672 3.05e-06 ***
+# LTtotal      -1.799e-01  1.601e-02  6.422e+03 -11.239  < 2e-16 ***
+# Ltotal        8.377e-02  1.280e-02  5.837e+03   6.544 6.52e-11 ***
+# FSM           4.384e-01  1.404e-01  2.272e+03   3.123  0.00181 ** 
+# Time:AGtotal  1.651e-02  1.687e-02  5.788e+03   0.979  0.32781    
+# Time:SCtotal  4.549e-03  1.918e-03  5.853e+03   2.372  0.01771 *  
+# Time:LTtotal  8.097e-02  7.135e-03  6.191e+03  11.348  < 2e-16 ***
+# Time:Ltotal   1.722e-02  8.639e-03  6.257e+03   1.993  0.04631 *  
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 # 
 # Correlation of Fixed Effects:
-#             (Intr) Time   AGtotl SCtotl LTtotl Ltotal FSM    Tm:AGt Tm:SCt Tm:LTt
-# Time        -0.895                                                               
-# AGtotal     -0.645  0.658                                                        
-# SCtotal     -0.320  0.283  0.104                                                 
-# LTtotal     -0.570  0.540 -0.054  0.037                                          
-# Ltotal      -0.272  0.259  0.087 -0.334  0.003                                   
-# FSM         -0.206  0.013  0.007 -0.020  0.045 -0.020                            
-# Time:AGtotl  0.583 -0.732 -0.905 -0.076  0.016 -0.072  0.002                     
-# Time:SCtotl  0.236 -0.224 -0.078 -0.915  0.000  0.386  0.002  0.053              
-# Time:LTtotl  0.464 -0.513  0.024 -0.005 -0.928  0.109 -0.042  0.019 -0.039       
-# Time:Ltotal  0.186 -0.266 -0.062  0.260  0.011 -0.884  0.011  0.078 -0.350 -0.072
+#             (Intr) Time   AGtotl SCtotl LTtotl Ltotal FSM    Tm:AGt Tm:SCt
+# Time        -0.895                                                        
+# AGtotal     -0.645  0.658                                                 
+# SCtotal     -0.320  0.283  0.104                                          
+# LTtotal     -0.570  0.540 -0.054  0.037                                   
+# Ltotal      -0.272  0.259  0.087 -0.334  0.003                            
+# FSM         -0.206  0.013  0.007 -0.020  0.045 -0.020                     
+# Time:AGtotl  0.583 -0.732 -0.905 -0.076  0.016 -0.072  0.002              
+# Time:SCtotl  0.236 -0.224 -0.078 -0.915  0.000  0.386  0.002  0.053       
+# Time:LTtotl  0.464 -0.513  0.024 -0.005 -0.928  0.109 -0.042  0.019 -0.039
+# Time:Ltotal  0.186 -0.266 -0.062  0.260  0.011 -0.884  0.011  0.078 -0.350
+#             Tm:LTt
+# Time              
+# AGtotal           
+# SCtotal           
+# LTtotal           
+# Ltotal            
+# FSM               
+# Time:AGtotl       
+# Time:SCtotl       
+# Time:LTtotl       
+# Time:Ltotal -0.072
 }
 # Time: Significant negative effect on Btotal, indicating that as Time increases, Btotal tends to decrease.
 # AGtotal, SCtotal, LTtotal, Ltotal: Each has its own significant effect on Btotal, and their interactions with Time suggest that their effects may vary depending on the level of Time.
@@ -383,6 +413,70 @@ summary(full_model)
 # Interpreting interactions (e.g., Time X AGtotal): The coefficient (e.g., Time = 0.016512) indicates how the effect of AGtotal on Btotal changes with Time. Here, it's positive, suggesting that as Time and AGtotal increase together, Btotal tends to increase more than expected from their individual effects.
 
 ```
+
+
+```{r visualsing the lme models}
+library(ggplot2)
+
+long_data$ID <- as.factor(long_data$ID)
+ggplot(long_data, aes(x = Time, y = Btotal, color = as.factor(ID))) +
+  geom_line(aes(group = AGtotal)) +
+  geom_point() +
+  labs(color = "ID")
+
+
+```
+
+
+```{r lme "reporting-stats" data frame}
+# getting all the reporting stats so they can be put into the read me
+
+# creating a function to extract the required values from a model summary
+extract_model_info <- function(model) {
+  summary_model <- summary(model)
+  coefs <- summary_model$coefficients
+  
+  # Extracting relevant values for each effect
+  beta <- coefs[, 1]
+  df <- coefs[, 3]
+  t_value <- coefs[, 4]
+  p_value <- coefs[, 5]
+  significant <- p_value < 0.05
+  
+  # Combine into a data frame
+  model_info <- data.frame(
+    Effect = rownames(coefs),
+    Beta = beta,
+    DF = df,
+    T_Value = t_value,
+    P_Value = p_value,
+    Significant = significant
+  )
+  
+  return(model_info)
+}
+
+# extracting information from each model
+base_model_info <- extract_model_info(base_model)
+grades_model_info <- extract_model_info(grades_model)
+full_model_info <- extract_model_info(full_model)
+
+# Adding a column to indicate the model
+base_model_info$Model <- "base_model"
+grades_model_info$Model <- "grades_model"
+full_model_info$Model <- "full_model"
+
+# Combining the information into a single data frame
+lme_stats <- rbind(base_model_info, grades_model_info, full_model_info)
+
+# Reordering columns for better readability
+lme_stats <- lme_stats[, c("Model", "Effect", "Beta", "DF", "T_Value", "P_Value", "Significant")]
+
+# lme stats checkpoint
+write.csv(lme_stats, file = "../output/lme_stats.csv", row.names = FALSE)
+
+```
+
 
 ```{r comparing the LME models}
 # which model is best
@@ -395,8 +489,11 @@ anova(full_model, base_model) # full is sig better
 
 ```
 
+
 ```{r normalising the data}
 # normalising the data for the SEM
+sum_data <- read.csv("../data/sum_data.csv")
+
 norm_data <- sum_data
 
 # crating the normalisation function
@@ -413,19 +510,332 @@ summary(norm_data)
 
 ```
 
+
 ```{r SEM model}
 # SEM models
 
 #install.packages("lavaan")
 library(lavaan)
 
-# creating the model
+reg_model <- '
+  # Regressions at each time point
+  C1_Btotal ~ C1_AGtotal + C1_SCtotal + C1_LTtotal + C1_Ltotal + FSM + C1_Eng + C1_Mat
+  C2_Btotal ~ C2_AGtotal + C2_SCtotal + C2_LTtotal + C2_Ltotal + FSM
+  C3_Btotal ~ C3_AGtotal + C3_SCtotal + C3_LTtotal + C3_Ltotal + FSM + C3_Eng + C3_Mat
+'
+
+reg_fit <- sem(reg_model, data = norm_data, missing = "fiml", fixed.x = FALSE)
+summary(reg_fit, fit.measures = TRUE)
+{
+#   lavaan 0.6-18 ended normally after 41 iterations
+# 
+#   Estimator                                         ML
+#   Optimization method                           NLMINB
+#   Number of model parameters                       198
+# 
+#   Number of observations                          2294
+#   Number of missing patterns                         1
+# 
+# Model Test User Model:
+#                                                       
+#   Test statistic                               203.709
+#   Degrees of freedom                                32
+#   P-value (Chi-square)                           0.000
+# 
+# Model Test Baseline Model:
+# 
+#   Test statistic                              2066.271
+#   Degrees of freedom                                54
+#   P-value                                        0.000
+# 
+# User Model versus Baseline Model:
+# 
+#   Comparative Fit Index (CFI)                    0.915
+#   Tucker-Lewis Index (TLI)                       0.856
+#                                                       
+#   Robust Comparative Fit Index (CFI)             0.915
+#   Robust Tucker-Lewis Index (TLI)                0.856
+# 
+# Loglikelihood and Information Criteria:
+# 
+#   Loglikelihood user model (H0)             -59149.876
+#   Loglikelihood unrestricted model (H1)     -59048.021
+#                                                       
+#   Akaike (AIC)                              118695.752
+#   Bayesian (BIC)                            119831.887
+#   Sample-size adjusted Bayesian (SABIC)     119202.804
+# 
+# Root Mean Square Error of Approximation:
+# 
+#   RMSEA                                          0.048
+#   90 Percent confidence interval - lower         0.042
+#   90 Percent confidence interval - upper         0.055
+#   P-value H_0: RMSEA <= 0.050                    0.651
+#   P-value H_0: RMSEA >= 0.080                    0.000
+#                                                       
+#   Robust RMSEA                                   0.048
+#   90 Percent confidence interval - lower         0.042
+#   90 Percent confidence interval - upper         0.055
+#   P-value H_0: Robust RMSEA <= 0.050             0.667
+#   P-value H_0: Robust RMSEA >= 0.080             0.000
+# 
+# Standardized Root Mean Square Residual:
+# 
+#   SRMR                                           0.021
+# 
+# Parameter Estimates:
+# 
+#   Standard errors                             Standard
+#   Information                                 Observed
+#   Observed information based on                Hessian
+# 
+# Regressions:
+#                    Estimate  Std.Err  z-value  P(>|z|)
+#   C1_Btotal ~                                         
+#     C1_AGtotal        0.079    0.018    4.442    0.000
+#     C1_SCtotal        0.165    0.018    8.939    0.000
+#     C1_LTtotal       -0.136    0.018   -7.668    0.000
+#     C1_Ltotal         0.349    0.019   18.612    0.000
+#     FSM               0.035    0.018    1.939    0.053
+#     C1_Eng           -0.063    0.022   -2.909    0.004
+#     C1_Mat            0.012    0.022    0.554    0.580
+#   C2_Btotal ~                                         
+#     C2_AGtotal        0.072    0.019    3.769    0.000
+#     C2_SCtotal        0.240    0.020   11.981    0.000
+#     C2_LTtotal       -0.096    0.019   -4.965    0.000
+#     C2_Ltotal         0.059    0.020    2.899    0.004
+#     FSM               0.030    0.020    1.509    0.131
+#   C3_Btotal ~                                         
+#     C3_AGtotal        0.074    0.019    3.830    0.000
+#     C3_SCtotal        0.182    0.020    9.267    0.000
+#     C3_LTtotal        0.058    0.020    2.994    0.003
+#     C3_Ltotal         0.197    0.020    9.985    0.000
+#     FSM               0.070    0.020    3.520    0.000
+#     C3_Eng            0.129    0.023    5.675    0.000
+#     C3_Mat           -0.036    0.023   -1.559    0.119
+# 
+# Covariances:
+#                    Estimate  Std.Err  z-value  P(>|z|)
+#  .C1_Btotal ~~                                        
+#    .C2_Btotal         0.198    0.017   11.361    0.000
+#    .C3_Btotal         0.228    0.018   12.920    0.000
+#  .C2_Btotal ~~                                        
+#    .C3_Btotal         0.304    0.020   15.454    0.000
+#   C1_AGtotal ~~                                       
+#     C1_SCtotal       -0.209    0.021   -9.814    0.000
+#     C1_LTtotal        0.141    0.021    6.682    0.000
+#     C1_Ltotal        -0.214    0.021  -10.018    0.000
+#     FSM              -0.057    0.021   -2.740    0.006
+#     C1_Eng            0.181    0.021    8.514    0.000
+#     C1_Mat            0.144    0.021    6.848    0.000
+#     C2_AGtotal        0.376    0.022   16.865    0.000
+#     C2_SCtotal       -0.106    0.021   -5.060    0.000
+#     C2_LTtotal        0.161    0.021    7.606    0.000
+#     C2_Ltotal        -0.127    0.021   -6.048    0.000
+#     C3_AGtotal        0.245    0.021   11.417    0.000
+#     C3_SCtotal       -0.065    0.021   -3.088    0.002
+#     C3_LTtotal       -0.114    0.021   -5.419    0.000
+#     C3_Ltotal        -0.076    0.021   -3.616    0.000
+#     C3_Eng            0.137    0.021    6.487    0.000
+#     C3_Mat            0.125    0.021    5.920    0.000
+#   C1_SCtotal ~~                                       
+#     C1_LTtotal       -0.181    0.021   -8.534    0.000
+#     C1_Ltotal         0.332    0.022   15.084    0.000
+#     FSM               0.106    0.021    5.070    0.000
+#     C1_Eng           -0.160    0.021   -7.590    0.000
+#     C1_Mat           -0.209    0.021   -9.811    0.000
+#     C2_AGtotal       -0.037    0.021   -1.766    0.077
+#     C2_SCtotal        0.419    0.023   18.525    0.000
+#     C2_LTtotal       -0.213    0.021   -9.999    0.000
+#     C2_Ltotal         0.206    0.021    9.659    0.000
+#     C3_AGtotal       -0.036    0.021   -1.740    0.082
+#     C3_SCtotal        0.356    0.022   16.068    0.000
+#     C3_LTtotal        0.105    0.021    4.981    0.000
+#     C3_Ltotal         0.246    0.021   11.428    0.000
+#     C3_Eng           -0.136    0.021   -6.452    0.000
+#     C3_Mat           -0.163    0.021   -7.730    0.000
+#   C1_LTtotal ~~                                       
+#     C1_Ltotal        -0.273    0.022  -12.617    0.000
+#     FSM              -0.103    0.021   -4.902    0.000
+#     C1_Eng            0.147    0.021    6.973    0.000
+#     C1_Mat            0.180    0.021    8.507    0.000
+#     C2_AGtotal        0.066    0.021    3.152    0.002
+#     C2_SCtotal       -0.131    0.021   -6.235    0.000
+#     C2_LTtotal        0.173    0.021    8.178    0.000
+#     C2_Ltotal        -0.091    0.021   -4.323    0.000
+#     C3_AGtotal        0.031    0.021    1.496    0.135
+#     C3_SCtotal       -0.115    0.021   -5.486    0.000
+#     C3_LTtotal       -0.178    0.021   -8.377    0.000
+#     C3_Ltotal        -0.122    0.021   -5.806    0.000
+#     C3_Eng            0.130    0.021    6.199    0.000
+#     C3_Mat            0.147    0.021    6.959    0.000
+#   C1_Ltotal ~~                                        
+#     FSM               0.107    0.021    5.087    0.000
+#     C1_Eng           -0.118    0.021   -5.609    0.000
+#     C1_Mat           -0.208    0.021   -9.753    0.000
+#     C2_AGtotal       -0.127    0.021   -6.031    0.000
+#     C2_SCtotal        0.273    0.022   12.599    0.000
+#     C2_LTtotal       -0.240    0.021  -11.175    0.000
+#     C2_Ltotal         0.296    0.022   13.584    0.000
+#     C3_AGtotal       -0.072    0.021   -3.456    0.001
+#     C3_SCtotal        0.293    0.022   13.489    0.000
+#     C3_LTtotal        0.176    0.021    8.317    0.000
+#     C3_Ltotal         0.370    0.022   16.638    0.000
+#     C3_Eng           -0.130    0.021   -6.182    0.000
+#     C3_Mat           -0.177    0.021   -8.336    0.000
+#   FSM ~~                                              
+#     C1_Eng           -0.173    0.021   -8.161    0.000
+#     C1_Mat           -0.203    0.021   -9.519    0.000
+#     C2_AGtotal       -0.036    0.021   -1.730    0.084
+#     C2_SCtotal        0.054    0.021    2.599    0.009
+#     C2_LTtotal       -0.073    0.021   -3.510    0.000
+#     C2_Ltotal         0.025    0.021    1.187    0.235
+#     C3_AGtotal       -0.034    0.021   -1.646    0.100
+#     C3_SCtotal        0.045    0.021    2.134    0.033
+#     C3_LTtotal        0.046    0.021    2.210    0.027
+#     C3_Ltotal         0.011    0.021    0.549    0.583
+#     C3_Eng           -0.175    0.021   -8.239    0.000
+#     C3_Mat           -0.191    0.021   -9.001    0.000
+#   C1_Eng ~~                                           
+#     C1_Mat            0.616    0.025   25.130    0.000
+#     C2_AGtotal        0.005    0.021    0.255    0.798
+#     C2_SCtotal       -0.138    0.021   -6.561    0.000
+#     C2_LTtotal        0.123    0.021    5.861    0.000
+#     C2_Ltotal        -0.048    0.021   -2.303    0.021
+#     C3_AGtotal        0.036    0.021    1.733    0.083
+#     C3_SCtotal       -0.117    0.021   -5.564    0.000
+#     C3_LTtotal       -0.070    0.021   -3.334    0.001
+#     C3_Ltotal        -0.103    0.021   -4.908    0.000
+#     C3_Eng            0.630    0.025   25.538    0.000
+#     C3_Mat            0.504    0.023   21.565    0.000
+#   C1_Mat ~~                                           
+#     C2_AGtotal        0.011    0.021    0.522    0.602
+#     C2_SCtotal       -0.199    0.021   -9.338    0.000
+#     C2_LTtotal        0.156    0.021    7.370    0.000
+#     C2_Ltotal        -0.079    0.021   -3.780    0.000
+#     C3_AGtotal        0.043    0.021    2.074    0.038
+#     C3_SCtotal       -0.193    0.021   -9.077    0.000
+#     C3_LTtotal       -0.035    0.021   -1.668    0.095
+#     C3_Ltotal        -0.131    0.021   -6.235    0.000
+#     C3_Eng            0.548    0.024   23.016    0.000
+#     C3_Mat            0.651    0.025   26.131    0.000
+#   C2_AGtotal ~~                                       
+#     C2_SCtotal       -0.055    0.021   -2.655    0.008
+#     C2_LTtotal        0.214    0.021   10.005    0.000
+#     C2_Ltotal        -0.169    0.021   -8.000    0.000
+#     C3_AGtotal        0.467    0.023   20.284    0.000
+#     C3_SCtotal       -0.063    0.021   -3.022    0.003
+#     C3_LTtotal       -0.202    0.021   -9.505    0.000
+#     C3_Ltotal        -0.118    0.021   -5.625    0.000
+#     C3_Eng            0.038    0.021    1.804    0.071
+#     C3_Mat            0.037    0.021    1.759    0.079
+#   C2_SCtotal ~~                                       
+#     C2_LTtotal       -0.172    0.021   -8.110    0.000
+#     C2_Ltotal         0.375    0.022   16.813    0.000
+#     C3_AGtotal       -0.050    0.021   -2.393    0.017
+#     C3_SCtotal        0.509    0.023   21.722    0.000
+#     C3_LTtotal        0.101    0.021    4.814    0.000
+#     C3_Ltotal         0.305    0.022   13.964    0.000
+#     C3_Eng           -0.117    0.021   -5.586    0.000
+#     C3_Mat           -0.188    0.021   -8.869    0.000
+#   C2_LTtotal ~~                                       
+#     C2_Ltotal        -0.240    0.021  -11.184    0.000
+#     C3_AGtotal        0.135    0.021    6.417    0.000
+#     C3_SCtotal       -0.139    0.021   -6.597    0.000
+#     C3_LTtotal       -0.455    0.023  -19.826    0.000
+#     C3_Ltotal        -0.190    0.021   -8.937    0.000
+#     C3_Eng            0.138    0.021    6.529    0.000
+#     C3_Mat            0.124    0.021    5.876    0.000
+#   C2_Ltotal ~~                                        
+#     C3_AGtotal       -0.096    0.021   -4.559    0.000
+#     C3_SCtotal        0.217    0.021   10.163    0.000
+#     C3_LTtotal        0.182    0.021    8.566    0.000
+#     C3_Ltotal         0.439    0.023   19.253    0.000
+#     C3_Eng           -0.046    0.021   -2.186    0.029
+#     C3_Mat           -0.072    0.021   -3.446    0.001
+#   C3_AGtotal ~~                                       
+#     C3_SCtotal       -0.055    0.021   -2.641    0.008
+#     C3_LTtotal       -0.337    0.022  -15.285    0.000
+#     C3_Ltotal        -0.113    0.021   -5.400    0.000
+#     C3_Eng            0.024    0.021    1.164    0.244
+#     C3_Mat            0.031    0.021    1.503    0.133
+#   C3_SCtotal ~~                                       
+#     C3_LTtotal        0.108    0.021    5.164    0.000
+#     C3_Ltotal         0.360    0.022   16.227    0.000
+#     C3_Eng           -0.079    0.021   -3.787    0.000
+#     C3_Mat           -0.156    0.021   -7.371    0.000
+#   C3_LTtotal ~~                                       
+#     C3_Ltotal         0.195    0.021    9.164    0.000
+#     C3_Eng           -0.058    0.021   -2.793    0.005
+#     C3_Mat           -0.043    0.021   -2.067    0.039
+#   C3_Ltotal ~~                                        
+#     C3_Eng           -0.071    0.021   -3.396    0.001
+#     C3_Mat           -0.105    0.021   -4.988    0.000
+#   C3_Eng ~~                                           
+#     C3_Mat            0.599    0.024   24.610    0.000
+# 
+# Intercepts:
+#                    Estimate  Std.Err  z-value  P(>|z|)
+#    .C1_Btotal         0.000    0.018    0.000    1.000
+#    .C2_Btotal        -0.000    0.020   -0.000    1.000
+#    .C3_Btotal        -0.000    0.020   -0.000    1.000
+#     C1_AGtotal       -0.000    0.021   -0.000    1.000
+#     C1_SCtotal        0.000    0.021    0.000    1.000
+#     C1_LTtotal        0.000    0.021    0.000    1.000
+#     C1_Ltotal         0.000    0.021    0.000    1.000
+#     FSM               0.000    0.021    0.000    1.000
+#     C1_Eng            0.000    0.021    0.000    1.000
+#     C1_Mat           -0.000    0.021   -0.000    1.000
+#     C2_AGtotal       -0.000    0.021   -0.000    1.000
+#     C2_SCtotal       -0.000    0.021   -0.000    1.000
+#     C2_LTtotal        0.000    0.021    0.000    1.000
+#     C2_Ltotal         0.000    0.021    0.000    1.000
+#     C3_AGtotal       -0.000    0.021   -0.000    1.000
+#     C3_SCtotal       -0.000    0.021   -0.000    1.000
+#     C3_LTtotal        0.000    0.021    0.000    1.000
+#     C3_Ltotal         0.000    0.021    0.000    1.000
+#     C3_Eng           -0.000    0.021   -0.000    1.000
+#     C3_Mat           -0.000    0.021   -0.000    1.000
+# 
+# Variances:
+#                    Estimate  Std.Err  z-value  P(>|z|)
+#    .C1_Btotal         0.726    0.021   33.785    0.000
+#    .C2_Btotal         0.885    0.026   33.809    0.000
+#    .C3_Btotal         0.878    0.026   33.738    0.000
+#     C1_AGtotal        1.000    0.030   33.867    0.000
+#     C1_SCtotal        1.000    0.030   33.867    0.000
+#     C1_LTtotal        1.000    0.030   33.867    0.000
+#     C1_Ltotal         1.000    0.030   33.867    0.000
+#     FSM               1.000    0.030   33.867    0.000
+#     C1_Eng            1.000    0.030   33.867    0.000
+#     C1_Mat            1.000    0.030   33.867    0.000
+#     C2_AGtotal        1.000    0.030   33.867    0.000
+#     C2_SCtotal        1.000    0.030   33.867    0.000
+#     C2_LTtotal        1.000    0.030   33.867    0.000
+#     C2_Ltotal         1.000    0.030   33.867    0.000
+#     C3_AGtotal        1.000    0.030   33.867    0.000
+#     C3_SCtotal        1.000    0.030   33.867    0.000
+#     C3_LTtotal        1.000    0.030   33.867    0.000
+#     C3_Ltotal         1.000    0.030   33.867    0.000
+#     C3_Eng            1.000    0.030   33.867    0.000
+#     C3_Mat            1.000    0.030   33.867    0.000
+}
+
+# The model fit was evaluated using several fit indices. The Comparative Fit Index (CFI) was 0.915, indicating a reasonably good fit. The Tucker-Lewis Index (TLI) was 0.856, also suggesting an acceptable fit. The Root Mean Square Error of Approximation (RMSEA) was 0.048 with a 90% confidence interval from 0.042 to 0.055, indicating that the model fits the data well. The model was compared against a baseline model, showing significant improvement as indicated by the chi-square test (p < 0.001).
+# At each time point (C1, C2, C3), the regression coefficients for predicting Btotal (SQD scores) from various predictors (AGtotal, SCtotal, LTtotal, Ltotal, FSM, Eng, Mat) were estimated. Significant predictors varied across time points.
+#Covariances between latent variables (Btotal, AGtotal, SCtotal, LTtotal, Ltotal, FSM, Eng, Mat) were also examined, indicating how these variables are related to each other within each time point.
+# Intercept estimates for the latent variables (C1_Btotal, C2_Btotal, C3_Btotal, C1_AGtotal, etc.) were examined, although they did not significantly deviate from zero. Variances of the latent variables (C1_Btotal, C2_Btotal, C3_Btotal, C1_AGtotal, etc.) were estimated, providing insights into the variability of these constructs.
+# In conclusion, the SEM analysis provided insights into how various factors such as academic scores (Eng, Mat), socio-emotional factors (AGtotal, SCtotal, LTtotal, Ltotal), and demographic characteristics (FSM) relate to each other and influence Btotal (SQD scores) across different time points. The model showed a good fit to the data, suggesting that the specified relationships adequately explain the observed data patterns.
+
+
+
+# creating the cross-lagged model
 crosslagged_model <- '
   # Regressions at each time point
-  C1_Btotal ~ C1_AGtotal + C1_SCtotal + C1_LTtotal + C1_Ltotal + FSM
+  C1_Btotal ~ C1_AGtotal + C1_SCtotal + C1_LTtotal + C1_Ltotal + FSM 
   C2_Btotal ~ C2_AGtotal + C2_SCtotal + C2_LTtotal + C2_Ltotal + FSM
   C3_Btotal ~ C3_AGtotal + C3_SCtotal + C3_LTtotal + C3_Ltotal + FSM
-  
+
   # Auto-regressive paths
   C2_Btotal ~ C1_Btotal
   C3_Btotal ~ C2_Btotal
@@ -442,36 +852,250 @@ crosslagged_model <- '
 '
 
 # fitting the model made
-cl_fit <- sem(crosslagged_model, data = norm_data, missing="fiml", fixed.x=FALSE)
+cl_fit <- sem(crosslagged_model, data = norm_data, missing = "fiml", fixed.x = FALSE)
 
 # having a lil look-see what the ugly stats that are supposed to mean something 
-summary(cl_fit, fit.measures=TRUE)
+summary(cl_fit, fit.measures = TRUE)
+{
+#   lavaan 0.6-18 ended normally after 7 iterations
+# 
+#   Estimator                                         ML
+#   Optimization method                           NLMINB
+#   Number of model parameters                        67
+# 
+#   Number of observations                          2294
+#   Number of missing patterns                         1
+# 
+# Model Test User Model:
+#                                                       
+#   Test statistic                              1680.287
+#   Degrees of freedom                                85
+#   P-value (Chi-square)                           0.000
+# 
+# Model Test Baseline Model:
+# 
+#   Test statistic                              6770.349
+#   Degrees of freedom                               110
+#   P-value                                        0.000
+# 
+# User Model versus Baseline Model:
+# 
+#   Comparative Fit Index (CFI)                    0.760
+#   Tucker-Lewis Index (TLI)                       0.690
+#                                                       
+#   Robust Comparative Fit Index (CFI)             0.761
+#   Robust Tucker-Lewis Index (TLI)                0.690
+# 
+# Loglikelihood and Information Criteria:
+# 
+#   Loglikelihood user model (H0)             -49181.550
+#   Loglikelihood unrestricted model (H1)     -48341.407
+#                                                       
+#   Akaike (AIC)                               98497.100
+#   Bayesian (BIC)                             98881.550
+#   Sample-size adjusted Bayesian (SABIC)      98668.679
+# 
+# Root Mean Square Error of Approximation:
+# 
+#   RMSEA                                          0.090
+#   90 Percent confidence interval - lower         0.087
+#   90 Percent confidence interval - upper         0.094
+#   P-value H_0: RMSEA <= 0.050                    0.000
+#   P-value H_0: RMSEA >= 0.080                    1.000
+#                                                       
+#   Robust RMSEA                                   0.090
+#   90 Percent confidence interval - lower         0.087
+#   90 Percent confidence interval - upper         0.094
+#   P-value H_0: Robust RMSEA <= 0.050             0.000
+#   P-value H_0: Robust RMSEA >= 0.080             1.000
+# 
+# Standardized Root Mean Square Residual:
+# 
+#   SRMR                                           0.099
+# 
+# Parameter Estimates:
+# 
+#   Standard errors                             Standard
+#   Information                                 Observed
+#   Observed information based on                Hessian
+# 
+# Regressions:
+#                    Estimate  Std.Err  z-value  P(>|z|)
+#   C1_Btotal ~                                         
+#     C1_AGtotal        0.092    0.018    4.984    0.000
+#     C1_SCtotal        0.205    0.019   10.695    0.000
+#     C1_LTtotal       -0.141    0.019   -7.547    0.000
+#     C1_Ltotal         0.364    0.020   18.583    0.000
+#     FSM               0.038    0.018    2.119    0.034
+#   C2_Btotal ~                                         
+#     C2_AGtotal        0.073    0.020    3.734    0.000
+#     C2_SCtotal        0.223    0.021   10.626    0.000
+#     C2_LTtotal       -0.078    0.020   -3.846    0.000
+#     C2_Ltotal         0.053    0.021    2.497    0.013
+#     FSM               0.006    0.019    0.303    0.762
+#   C3_Btotal ~                                         
+#     C3_AGtotal        0.046    0.020    2.358    0.018
+#     C3_SCtotal        0.147    0.020    7.308    0.000
+#     C3_LTtotal        0.034    0.020    1.716    0.086
+#     C3_Ltotal         0.173    0.020    8.600    0.000
+#     FSM               0.040    0.018    2.193    0.028
+#   C2_Btotal ~                                         
+#     C1_Btotal         0.244    0.020   12.207    0.000
+#   C3_Btotal ~                                         
+#     C2_Btotal         0.331    0.019   17.469    0.000
+#   C2_AGtotal ~                                        
+#     C1_AGtotal        0.376    0.019   19.449    0.000
+#   C3_AGtotal ~                                        
+#     C2_AGtotal        0.467    0.018   25.330    0.000
+#   C2_SCtotal ~                                        
+#     C1_SCtotal        0.419    0.019   22.129    0.000
+#   C3_SCtotal ~                                        
+#     C2_SCtotal        0.509    0.018   28.312    0.000
+#   C2_LTtotal ~                                        
+#     C1_LTtotal        0.173    0.021    8.428    0.000
+#   C3_LTtotal ~                                        
+#     C2_LTtotal       -0.455    0.019  -24.454    0.000
+#   C2_Ltotal ~                                         
+#     C1_Ltotal         0.296    0.020   14.829    0.000
+#   C3_Ltotal ~                                         
+#     C2_Ltotal         0.439    0.019   23.403    0.000
+# 
+# Covariances:
+#                    Estimate  Std.Err  z-value  P(>|z|)
+#   C1_AGtotal ~~                                       
+#     C1_SCtotal       -0.209    0.021   -9.814    0.000
+#     C1_LTtotal        0.141    0.021    6.682    0.000
+#     C1_Ltotal        -0.214    0.021  -10.018    0.000
+#     FSM              -0.057    0.021   -2.740    0.006
+#   C1_SCtotal ~~                                       
+#     C1_LTtotal       -0.181    0.021   -8.534    0.000
+#     C1_Ltotal         0.332    0.022   15.084    0.000
+#     FSM               0.106    0.021    5.070    0.000
+#   C1_LTtotal ~~                                       
+#     C1_Ltotal        -0.273    0.022  -12.617    0.000
+#     FSM              -0.103    0.021   -4.902    0.000
+#   C1_Ltotal ~~                                        
+#     FSM               0.107    0.021    5.087    0.000
+# 
+# Intercepts:
+#                    Estimate  Std.Err  z-value  P(>|z|)
+#    .C1_Btotal         0.000    0.018    0.000    1.000
+#    .C2_Btotal        -0.000    0.019   -0.000    1.000
+#    .C3_Btotal        -0.000    0.018   -0.000    1.000
+#    .C2_AGtotal       -0.000    0.019   -0.000    1.000
+#    .C3_AGtotal        0.000    0.018    0.000    1.000
+#    .C2_SCtotal       -0.000    0.019   -0.000    1.000
+#    .C3_SCtotal        0.000    0.018    0.000    1.000
+#    .C2_LTtotal        0.000    0.021    0.000    1.000
+#    .C3_LTtotal        0.000    0.019    0.000    1.000
+#    .C2_Ltotal         0.000    0.020    0.000    1.000
+#    .C3_Ltotal         0.000    0.019    0.000    1.000
+#     C1_AGtotal       -0.000    0.021   -0.000    1.000
+#     C1_SCtotal        0.000    0.021    0.000    1.000
+#     C1_LTtotal        0.000    0.021    0.000    1.000
+#     C1_Ltotal         0.000    0.021    0.000    1.000
+#     FSM               0.000    0.021    0.000    1.000
+# 
+# Variances:
+#                    Estimate  Std.Err  z-value  P(>|z|)
+#    .C1_Btotal         0.727    0.021   33.867    0.000
+#    .C2_Btotal         0.829    0.024   33.867    0.000
+#    .C3_Btotal         0.776    0.023   33.867    0.000
+#    .C2_AGtotal        0.858    0.025   33.867    0.000
+#    .C3_AGtotal        0.781    0.023   33.867    0.000
+#    .C2_SCtotal        0.824    0.024   33.867    0.000
+#    .C3_SCtotal        0.741    0.022   33.867    0.000
+#    .C2_LTtotal        0.970    0.029   33.867    0.000
+#    .C3_LTtotal        0.793    0.023   33.867    0.000
+#    .C2_Ltotal         0.912    0.027   33.867    0.000
+#    .C3_Ltotal         0.807    0.024   33.867    0.000
+#     C1_AGtotal        1.000    0.030   33.867    0.000
+#     C1_SCtotal        1.000    0.030   33.867    0.000
+#     C1_LTtotal        1.000    0.030   33.867    0.000
+#     C1_Ltotal         1.000    0.030   33.867    0.000
+#     FSM               1.000    0.030   33.867    0.000
+}
 
+# The SEM model tested relationships among variables over time, focusing on how initial conditions and changes in variables influence subsequent outcomes.
+# The model significantly fits the data better than a baseline model, as indicated by a significant chi-square test (Chi-square = 1680.287, df = 85, p < 0.001). CFI (Comparative Fit Index) and TLI (Tucker-Lewis Index): Both around 0.76, suggesting acceptable fit. RMSEA (Root Mean Square Error of Approximation): Approximately 0.09, indicating mediocre fit but not entirely poor. SRMR (Standardized Root Mean Square Residual): Around 0.099, indicating fair fit.
+
+# The model provided estimates for regression coefficients, covariances, intercepts, and variances. Key findings include:
+# Significant coefficients of C1_AGtotal, C1_SCtotal, C1_LTtotal, C1_Ltotal, and FSM indicate these variables predict C1_Btotal scores.
+# Autoregressive paths (C2_Btotal ~ C1_Btotal, C3_Btotal ~ C2_Btotal) indicate stability in scores over time.
+# Cross-lagged paths (C2_AGtotal ~ C1_AGtotal, C3_AGtotal ~ C2_AGtotal, and similar for other variables) assess how earlier scores of one variable predict subsequent scores of another, indicating directional influences over time.
+# Significant Paths: Variables like SCtotal, LTtotal, and Ltotal show significant relationships with Btotal scores across time points, suggesting these factors influence academic outcomes (Btotal).
+# Free School Meal status (FSM) shows varying influence across time points on academic and psychosocial outcomes.
+#Conclusion: The SEM analysis provides insights into how socio-demographic factors (FSM), psychological variables (AGtotal, SCtotal, LTtotal, Ltotal), and academic outcomes (Btotal) interplay over three time points. The model fits the data adequately, though some relationships could be further explored or refined based on future research or model modifications.
+
+```
+
+
+```{r fit indicies SEModels dataframe}
+# extract fit indices for reg_model
+fit_sum_reg <- summary(reg_fit, fit.measures = TRUE)
+cfi_reg <- fit_sum_reg[["fit"]][["cfi"]]
+tli_reg <- fit_sum_reg[["fit"]][["tli"]]
+rmsea_reg <- fit_sum_reg[["fit"]][["rmsea"]]
+srmr_reg <- fit_sum_reg[["fit"]][["srmr"]]
+
+# extract fit indices for crosslagged_model
+fit_sum_cl <- summary(cl_fit, fit.measures = TRUE)
+cfi_cl <- fit_sum_cl[["fit"]][["cfi"]]
+tli_cl <- fit_sum_cl[["fit"]][["tli"]]
+rmsea_cl <- fit_sum_cl[["fit"]][["srmr"]]
+srmr_cl <- fit_sum_cl[["fit"]][["srmr"]]
+
+# combine into a dataframe
+sem_stats <- data.frame(
+  Model = c("reg_model", "crosslagged_model"),
+  CFI = c(cfi_reg, cfi_cl),
+  TLI = c(tli_reg, tli_cl),
+  RMSEA = c(rmsea_reg, rmsea_cl),
+  SRMR = c(srmr_reg, srmr_cl)
+)
+
+# sem stats checkpoint
+write.csv(sem_stats, file = "../output/sem_stats.csv", row.names = FALSE)
+
+```
+
+
+```{r plotting the SEModels}
 #install.packages("semPlot")
 library(semPlot)
 
-# plotting it all coz let's be real no one understands stats
-node.labs1 <- c("C1 SDQ", "C1 Intelligence", "C1 School Concern", "C1 Liking Teachers", "C1 Lonliness", "FSM", 
-                "C2 SDQ", "C2 Intelligence", "C2 School Concern", "C2 Liking Teachers", "C2 Lonliness", 
-                "C3 SDQ", "C3 Intelligence", "C3 School Concern", "C3 Liking Teachers", "C3 Lonliness")
+# removing the empty string from node names
+param_table <- parameterTable(cl_fit)
+node_names <- unique(c(param_table$lhs, param_table$rhs))
+node_names <- node_names[node_names != ""]
+print(node_names)
 
-figure1 <- semPlot::semPaths(cl_fit, 
-                             nCharNodes = 3, 
+
+# plotting it all coz let's be real no one understands stats
+nlabels <- c("C1_Btotal",  "C2_Btotal",  "C3_Btotal",  "C2_AGtotal", "C3_AGtotal", "C2_SCtotal", "C3_SCtotal", "C2_LTtotal", "C3_LTtotal", "C2_Ltotal",  "C3_Ltotal",  "C1_AGtotal", "C1_SCtotal", "C1_LTtotal", "C1_Ltotal",  "FSM",  "")  
+ 
+
+SEMPlot <- semPlot::semPaths(cl_fit,
                              sizeMan = 5, 
                              residuals = TRUE, 
                              whatLabels = "est", 
-                             width = 16, 
+                             width = 40, 
                              height = 5, 
-                             normalize = FALSE) 
-                             nodeLabels = node.labs1)
+                             normalize = FALSE)
+                             #nodeLabels = nlabels)
 
-(figure1 <- qgraph::qgraph(figure1, title = "Model 1"))
+(SEMPlot <- qgraph::qgraph(SEMPlot, title = "Model 1"))
 
 semPlot::semCors(model1)
 
 
-# note to self: FSM needs to be added to every time point in the cross lagged section
-#               english and maths scores need to be added to the model
+
+
+#install.packages("semptools")
+library(semptools)
+nlabels <- list(list(node = "C1_A", to = "C1_WI"))
+
+SEMPlot2 <- change_node_label(SEMPlot, nlabels)
 ```
 
 
