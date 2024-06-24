@@ -50,8 +50,7 @@ C3_Btotal \<- rowSums(cols_C3B)
 
 Once we had organised all our data like this, we created a tibble & converted into long format.
 
-```         
-`{r Converting to Long Format}
+```{r Converting to Long Format}
 long_data \<- sum_data %\>%
 pivot_longer(
   cols = matches("C[123]"),
@@ -92,6 +91,7 @@ Next, we looked at the crossover between grades and SDQ scores. Interestingly, h
 grades_model <- lmerTest::lmer(Btotal ~ Time * Eng + Time * Mat + (1 | ID), data = long_data)
 summary(grades_model)
 ```
+
 Here's the figure:![](output/grades_plot.jpg)
 
 Finally, we considered the effect of all the above factors on SDQ over time.
