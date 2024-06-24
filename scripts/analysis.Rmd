@@ -20,6 +20,11 @@ library(lmerTest)
 #install.packages("gridExtra")
 library(gridExtra)
 
+#install.packages("lavaan")
+library(lavaan)
+
+#install.packages("semPlot")
+library(semPlot)
 
 ```
 
@@ -196,9 +201,11 @@ write.csv(long_data, file = "../data/long_data.csv", row.names = FALSE)
 ```{r linear-mixed effects models}
 # take 2 on lme models
 # note: random intercepts go after the | and random slopes go after (1 +
-#long_data <- read.csv("../data/long_data.csv")
 #install.packages("lmerTest")
 library(lmerTest)
+
+# call if hasn't already been loaded
+#long_data <- read.csv("../data/long_data.csv")
 
 # Model with random intercept only
 base_model <- lmerTest::lmer(Btotal ~ Time + (1 | ID), data = long_data)
@@ -529,13 +536,6 @@ plot_lon <- ggplot(long_data, aes(x = Ltotal, y = Btotal)) +
 # combine plots into one grid 
 (vars_plot <- grid.arrange(plot_wen, plot_sc, plot_lt, plot_lon, nrow = 4))
 
-install.packages("grid")
-library(grid)
-
-vars_plot$children[[1]]$children[[1]]$children[[2]] <- editGrob(vars_plot$children[[1]]$children[[1]]$children[[2]], 
-                                                            gp = gpar(fontsize = 100))
-
-
 # saving it
 ggsave(filename = "../output/vars_plot.jpg", plot = vars_plot, width = 20, height = 15, units = "in")
 
@@ -597,12 +597,14 @@ write.csv(lme_stats, file = "../output/lme_stats.csv", row.names = FALSE)
 # AIC and BIC values  - lower values = better fitting model
 
 # likelihood ratio test (will include AIC and BIC)
-anova(full_model, base_model) # full is sig better
+anova(full_model, base_model) # full is sig better - expected tbh
 
 ```
 
 ```{r normalising the data}
 # normalising the data for the SEM
+
+# call if hasn't already been loaded
 sum_data <- read.csv("../data/sum_data.csv")
 
 norm_data <- sum_data
@@ -1173,7 +1175,6 @@ write.csv(sem_stats, file = "../output/sem_stats.csv", row.names = FALSE)
 library(semPlot)
 
 
-# NOTE TO ZOE - THERE WILL BE TWO SEM PLOTS: reg_semplot.jpg and cl_semplot.jpg
 
 
 
@@ -1211,167 +1212,4 @@ nlabels <- list(list(node = "C1_A", to = "C1_WI"))
 SEMPlot2 <- change_node_label(SEMPlot, nlabels)
 ```
 
-#### dubbed useless
 
-```{r}
-# note to self: this should work now with he as.factor() argument
-long_data$ID <- as.factor(long_data$ID)
-
-ggplot(data = long_data, aes(x = Time, y = Btotal, colour = ID)) +
-  geom_line() +
-  theme_minimal () +
-  theme(legend.position = "none") +
-  scale_x_continuous(breaks = c(1,2,3))
-```
-
-```{r}
-# the graveyard
-
-T1 <- rep(1,nrow(sum_data))
-T2 <- rep(2,nrow(sum_data))
-T3 <- rep(3,nrow(sum_data))
-
-testsum_data <- cbind(sum_data, T1, T2, T3)
-
-ggplot(data = testsum_data, aes(x = T1, y = C1_Btotal)) + geom_point()
-
-ggplot(data = testsum_data, aes(x = T2, y = C2_Btotal)) + geom_point()
-
-# Reshape the data
-testsum_long <- testsum_data %>%
-  pivot_longer(cols = starts_with("T"), names_to = "Time", values_to = "TimeValue") %>%
-  pivot_longer(cols = starts_with("C"), names_to = "BtotalType", values_to = "BtotalValue")
-
-# Filter to match the correct pairs
-testsum_long <- testsum_long %>%
-  filter((Time == "T1" & BtotalType == "C1_Btotal") | (Time == "T2" & BtotalType == "C2_Btotal") | (Time == "T3" & BtotalType == "C3_Btotal"))
-
-ggplot(data = testsum_long, aes(x = TimeValue, y = BtotalValue, color = Time, group = ID)) +
-  geom_line() +
-  labs(x = "Time", y = "Btotal Scores", color = "Time") +
-  scale_color_manual(values = c("T1" = "blue", "T2" = "red")) +  # Customize line colors
-  theme_minimal()
-```
-
-```{r}
-# the cemetary
-# linear mixed effects models
-#"ID"  
-#"Time"  
-#"FSM" - fixed effect
-#"Eng" - random effect
-#"Mat" - random effect
-#"Btotal" - random effect
-#"AGtotal" - random effect
-#"SCtotal" - random effect
-#"LTtotal" - random effect
-#"Ltotal"- random effect
-# note: random intercepts go after the | and random slopes go after (1 +
-
-#install.packages("lmerTest")
-library(lmerTest)
-model1 <- lmer(Btotal ~ 1 + Time + (Time|ID), data = long_data, REML = FALSE)
-summary(model1)
-{
-#   Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
-#   method [lmerModLmerTest]
-# Formula: Btotal ~ 1 + Time + (Time | ID)
-#    Data: long_data
-# 
-#      AIC      BIC   logLik deviance df.resid 
-#  49672.3  49712.4 -24830.1  49660.3     5895 
-# 
-# Scaled residuals: 
-#     Min      1Q  Median      3Q     Max 
-# -1.8032 -0.8784  0.3137  0.8126  2.4229 
-# 
-# Random effects:
-#  Groups   Name        Variance Std.Dev. Corr 
-#  ID       (Intercept)  64.154   8.010        
-#           Time          8.051   2.837   -0.77
-#  Residual             234.534  15.315        
-# Number of obs: 5901, groups:  ID, 1967
-# 
-# Fixed effects:
-#              Estimate Std. Error        df t value Pr(>|t|)    
-# (Intercept)    6.8051     0.5575 1967.0829   12.21   <2e-16 ***
-# Time           6.6627     0.2524 1967.1486   26.40   <2e-16 ***
-# ---
-# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-# 
-# Correlation of Fixed Effects:
-#      (Intr)
-# Time -0.910
-}
-
-# This LMM indicates that both Time (time) and the individual ID significantly influence Btotal (SDQ score). The negative correlation between random intercepts and slopes suggests that individuals with higher initial Btotal scores tend to have a smaller increase (or even a decrease) in Btotal over time.
-
-# Overall, the model suggests that Btotal scores increase with time (Time), and there is significant variability both in the baseline scores (Intercept) and in how scores change over time (Time) across individuals (ID).
-
-model2 <-  model2 <- lmer(Btotal ~ Time + FSM + 
-               (1 + Time | ID) + 
-               (1 + Time | Eng) + 
-               (1 + Time | Mat) + 
-               (1 + Time | AGtotal) + 
-               (1 + Time | SCtotal) + 
-               (1 + Time | LTtotal) + 
-               (1 + Time | Ltotal), 
-               data = long_data,
-               REML = FALSE)
-summary(model2)
-{
-# Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite's
-#   method [lmerModLmerTest]
-# Formula: Btotal ~ Time + FSM + (1 + Time | ID) + (1 + Time | Eng) + (1 +  
-#     Time | Mat) + (1 + Time | AGtotal) + (1 + Time | SCtotal) +  
-#     (1 + Time | LTtotal) + (1 + Time | Ltotal)
-#    Data: long_data
-# 
-#      AIC      BIC   logLik deviance df.resid 
-#  44895.3  45062.3 -22422.6  44845.3     5876 
-# 
-# Scaled residuals: 
-#     Min      1Q  Median      3Q     Max 
-# -3.4259 -0.1084  0.0627  0.4690  4.0145 
-# 
-# Random effects:
-#  Groups   Name        Variance  Std.Dev. Corr 
-#  ID       (Intercept)   0.42425  0.6513       
-#           Time          3.29886  1.8163  -1.00
-#  SCtotal  (Intercept)  15.37190  3.9207       
-#           Time          2.04860  1.4313  -0.89
-#  Ltotal   (Intercept)   4.19838  2.0490       
-#           Time          0.23786  0.4877  1.00 
-#  LTtotal  (Intercept)   0.17437  0.4176       
-#           Time          0.14576  0.3818  1.00 
-#  AGtotal  (Intercept)  50.82182  7.1289       
-#           Time          2.31825  1.5226  -1.00
-#  Mat      (Intercept)   0.00000  0.0000       
-#           Time          0.21454  0.4632   NaN 
-#  Eng      (Intercept)   0.00000  0.0000       
-#           Time          0.06565  0.2562   NaN 
-#  Residual             102.09846 10.1044       
-# Number of obs: 5901, groups:  
-# ID, 1967; SCtotal, 149; Ltotal, 51; LTtotal, 32; AGtotal, 18; Mat, 9; Eng, 8
-# 
-# Fixed effects:
-#              Estimate Std. Error        df t value Pr(>|t|)    
-# (Intercept)   34.4475     2.0882   26.4729  16.497 1.89e-15 ***
-# Time          -0.7155     0.5997   24.5945  -1.193   0.2442    
-# FSM           -0.6443     0.2802 1526.1509  -2.299   0.0216 *  
-# ---
-# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-# 
-# Correlation of Fixed Effects:
-#      (Intr) Time  
-# Time -0.792       
-# FSM  -0.143  0.012
-# optimizer (nloptwrap) convergence code: 0 (OK)
-# boundary (singular) fit: see help('isSingular')
-}
-
-isSingular(model2) # TRUE
-
-# icba to deal with this now - i have to get rid of some multicollinearity that's begin created by the excessive inclusion fo intercepts and slopes but imma try to wrap my head around this later
-
-```
