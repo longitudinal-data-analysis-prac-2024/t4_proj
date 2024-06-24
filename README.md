@@ -1,4 +1,3 @@
-```{=html}
 <!---
 ---
 title: "our_front_cover"
@@ -13,7 +12,7 @@ output:
     keep_md: false
 ---
 -->
-```
+
 # **Chrysie, Tat and Zoe's LDAP Project**  
 
 <img src="https://media1.tenor.com/m/rtY9m7EokSYAAAAC/cat-loading.gif"/>
