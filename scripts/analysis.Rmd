@@ -402,7 +402,7 @@ library(ggplot2)
 #"hotpink3", "olivedrab3", "maroon4", "gold", "cadetblue3", "mediumorchid3", "darkolivegreen"
 
 # visual for the base model
-long_data %>%
+(base_mod_fig <- long_data %>%
   group_by(Time) %>%
   mutate(tmean = mean(Btotal)) %>%
   ggplot(mapping = aes(x = Time, y = tmean)) +
@@ -410,12 +410,15 @@ long_data %>%
   labs(title = "SQD Score over Time",
        y = "SDQ score") +
   scale_x_continuous(breaks = c(1, 2, 3)) +
-  theme(plot.title = element_text(hjust = 0.4))
+  theme(plot.title = element_text(hjust = 0.4)))
 # okay so overall, the average SDQ goes down from primary to secondary school and that's supported by the model's outcomes
+
+# saving it
+ggsave(filename = "../output/base_mod_fig.jpg", plot = base_mod_fig)
 
 
 # visual for the FSM model
-long_data %>%
+(fsm_mod_fig <- long_data %>%
   group_by(Time, FSM) %>%
   mutate(tmean = mean(Btotal)) %>%
   ggplot(mapping = aes(x = Time, y = tmean, colour = factor(FSM))) +
@@ -427,17 +430,21 @@ long_data %>%
   scale_colour_manual(
     values = c("1" = "cadetblue3", "2" = "mediumorchid3"), 
     name = "FSM Status", 
-    labels = c("Not on FSMs", "On FSMs"))
+    labels = c("Not on FSMs", "On FSMs")))
 # okay so for those with FSM, aka lower SES, the decline in SDQ is much more steep with the transisiton between primary and secondary school
 
-# visual for the grades model
+# saving it
+ggsave(filename = "../output/fsm_mod_fig.jpg", plot = fsm_mod_fig)
 
+
+
+# getting a data frame 
 grades_data <- long_data %>%
   select(ID, Time, Eng, Mat) %>%
   filter(Time == c("1", "3"))
   
-  
-long_data %>%
+# visual for the grades model
+grades_data %>%
   pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
   group_by(Time, Subject) %>%
   summarize(tmean = mean(Grade, na.rm = TRUE), .groups = 'drop') %>%
@@ -446,23 +453,45 @@ long_data %>%
   labs(title = "Grades Over Time for Entire Sample",
        y = "Mean Grade",
        color = "Subject") +
-  scale_x_continuous(breaks = c(1,2,3))
+  scale_x_continuous(breaks = c(1,2,3)) +
+  scale_colour_manual(
+    values = c("Eng" = "maroon4", "Mat" = "olivedrab3"), 
+    name = "Subjects", 
+    labels = c("English", "Maths"))
+
+
+
+# ChatGTP test
+# Prepare the data for plotting
+grades_btotal_data <- long_data %>%
+  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
+  group_by(Time, Subject) %>%
+  summarize(
+    grade_mean = mean(Grade, na.rm = TRUE),
+    .groups = 'drop'
+  ) %>%
+  left_join(long_data %>% group_by(Time) %>% summarize(btotal_mean = mean(Btotal, na.rm = TRUE)), by = "Time")
+
+# Plot the data
+grades_btotal_data %>%
+  ggplot(aes(x = Time)) +
+  geom_boxplot(aes(y = btotal_mean), colour = "steelblue", linewidth = 1.5, linetype = "dashed") +  # Btotal line
+  geom_boxplot(aes(y = grade_mean, colour = Subject, group = Subject), linewidth = 1.5) +  # Grade lines
+  labs(title = "Grades and Btotal Over Time",
+       y = "Mean Score",
+       colour = "Measure") +
+  scale_x_continuous(breaks = c(1, 2, 3)) +
+  scale_colour_manual(
+    values = c("Eng" = "maroon4", "Mat" = "olivedrab3"), 
+    name = "Subjects", 
+    labels = c("English", "Maths")
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
 
 
 
 
-long_data$ID <- as.factor(long_data$ID)
-ggplot(long_data, aes(x = Time, y = Btotal, color = as.factor(ID))) +
-  geom_line(aes(group = AGtotal)) +
-  geom_point() +
-  labs(color = "ID")
 
-
-
-# grades for english and maths
-
-
-# all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
 
 # note to self: this should work now with he as.factor() argument
 long_data$ID <- as.factor(long_data$ID)
