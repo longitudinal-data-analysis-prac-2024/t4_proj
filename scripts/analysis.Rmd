@@ -395,7 +395,7 @@ summary(full_model)
 
 
 ```{r visualsing the lme models}
-# imma visualise a little first coz that's gonna help me ac understand the onlsaught of numbers the lmer have gonna give me
+# imma visualise a little coz that's gonna help me ac understand the onslaught of numbers the lmer have given me
 library(ggplot2)
 
 # colour-blind friendly colour pallet
@@ -406,13 +406,47 @@ long_data %>%
   group_by(Time) %>%
   mutate(tmean = mean(Btotal)) %>%
   ggplot(mapping = aes(x = Time, y = tmean)) +
-  geom_line(color = "cadetblue3", size = 1.5) +  # Change the color and thickness here
+  geom_line(color = "cadetblue3", linewidth = 1.5) +  
   labs(title = "SQD Score over Time",
        y = "SDQ score") +
-  scale_x_continuous(breaks = c(1, 2, 3))
+  scale_x_continuous(breaks = c(1, 2, 3)) +
+  theme(plot.title = element_text(hjust = 0.4))
+# okay so overall, the average SDQ goes down from primary to secondary school and that's supported by the model's outcomes
 
 
+# visual for the FSM model
+long_data %>%
+  group_by(Time, FSM) %>%
+  mutate(tmean = mean(Btotal)) %>%
+  ggplot(mapping = aes(x = Time, y = tmean, colour = factor(FSM))) +
+  geom_line(linewidth = 1.5) +  
+  labs(title = "SDQ Score over Time depending on FSM Status",
+       y = "SDQ score") +
+  scale_x_continuous(breaks = c(1, 2, 3)) +
+  theme(plot.title = element_text(hjust = 0.4)) +
+  scale_colour_manual(
+    values = c("1" = "cadetblue3", "2" = "mediumorchid3"), 
+    name = "FSM Status", 
+    labels = c("Not on FSMs", "On FSMs"))
+# okay so for those with FSM, aka lower SES, the decline in SDQ is much more steep with the transisiton between primary and secondary school
 
+# visual for the grades model
+
+grades_data <- long_data %>%
+  select(ID, Time, Eng, Mat) %>%
+  filter(Time == c("1", "3"))
+  
+  
+long_data %>%
+  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
+  group_by(Time, Subject) %>%
+  summarize(tmean = mean(Grade, na.rm = TRUE), .groups = 'drop') %>%
+  ggplot(aes(x = Time, y = tmean, color = Subject, group = Subject)) +
+  geom_line() +
+  labs(title = "Grades Over Time for Entire Sample",
+       y = "Mean Grade",
+       color = "Subject") +
+  scale_x_continuous(breaks = c(1,2,3))
 
 
 
@@ -424,36 +458,10 @@ ggplot(long_data, aes(x = Time, y = Btotal, color = as.factor(ID))) +
   labs(color = "ID")
 
 
-# imma visualise a little first coz that's gonna help me ac understand the onlsaught of numbers the lmer have gonna give me
-library(ggplot2)
-
-
-
-# okay so overall, the average SDQ goes down from primary to secondary school
-
-# split by FSM status
-long_data %>% 
-  group_by(Time, FSM) %>% 
-  mutate(tmean = mean(Btotal)) %>% 
-  ggplot(mapping = aes(x = Time, y = tmean, colour = factor(FSM))) +
-  geom_line() +
-  labs(title = "SDQ Score Over Time, FSM Status",
-       y = "SDQ score") +
-  scale_x_continuous(breaks = c(1,2,3))
-
-# overall those without FSM (1 - aka higher SES) have a higher SDQ throughout the primary-secondary school transition than those with FSM (2 - aka lower SES); but SDQ increases for both groups - NOTE: 0 indicated people who didn't indicate FSM status
 
 # grades for english and maths
-long_data %>%
-  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
-  group_by(Time, Subject) %>%
-  summarize(tmean = mean(Grade, na.rm = TRUE), .groups = 'drop') %>%
-  ggplot(aes(x = Time, y = tmean, color = Subject, group = Subject)) +
-  geom_line() +
-  labs(title = "Grades Over Time for Entire Sample",
-       y = "Mean Grade",
-       color = "Subject") +
-  scale_x_continuous(breaks = c(1,2,3))
+
+
 # all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
 
 # note to self: this should work now with he as.factor() argument
