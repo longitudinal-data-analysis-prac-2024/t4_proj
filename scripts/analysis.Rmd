@@ -20,7 +20,6 @@ library(lmerTest)
 
 ```
 
-
 ```{r set up}
 # dealing with the NAs with multiple imputation
 our_data <- read.csv("../data/our_data.csv", row.names = 1)
@@ -39,7 +38,6 @@ new_data <- complete(imp)
 write.csv(new_data, file = "../data/new_data.csv", row.names = FALSE)
 
 ```
-
 
 ```{r creating the summed data frame}
 # calling the imputed data into the envrionment
@@ -151,7 +149,6 @@ write.csv(sum_data, file = "../data/sum_data.csv", row.names = FALSE)
 
 ```
 
-
 ```{r detol wipes and antibacterial spray}
 # all objects in the global environment
 all_objects <- ls()
@@ -165,7 +162,6 @@ rm(list = objects_to_remove)
 rm(all_objects, objects_to_keep, objects_to_remove)
 cat("\014")
 ```
-
 
 ```{r getting the data into long format}
 library(tidyverse)
@@ -193,7 +189,6 @@ long_data <- sum_data %>%
 write.csv(long_data, file = "../data/long_data.csv", row.names = FALSE)
 
 ```
-
 
 ```{r linear-mixed effects models}
 # take 2 on lme models
@@ -393,7 +388,6 @@ summary(full_model)
 
 ```
 
-
 ```{r visualsing the lme models}
 # imma visualise a little coz that's gonna help me ac understand the onslaught of numbers the lmer have given me
 library(ggplot2)
@@ -506,7 +500,6 @@ ggplot(data = long_data, aes(x = Time, y = Btotal, colour = ID)) +
 
 ```
 
-
 ```{r lme "reporting-stats" data frame}
 # getting all the reporting stats so they can be put into the read me
 
@@ -556,7 +549,6 @@ write.csv(lme_stats, file = "../output/lme_stats.csv", row.names = FALSE)
 
 ```
 
-
 ```{r comparing the LME models}
 # which model is best
 # anova(model1, model2)
@@ -567,7 +559,6 @@ write.csv(lme_stats, file = "../output/lme_stats.csv", row.names = FALSE)
 anova(full_model, base_model) # full is sig better
 
 ```
-
 
 ```{r normalising the data}
 # normalising the data for the SEM
@@ -588,7 +579,6 @@ norm_data[cols_to_normalize] <- lapply(norm_data[cols_to_normalize], normalize)
 summary(norm_data)
 
 ```
-
 
 ```{r SEM model}
 # SEM models
@@ -1108,7 +1098,6 @@ summary(cl_fit, fit.measures = TRUE)
 
 ```
 
-
 ```{r fit indicies SEModels dataframe}
 # extract fit indices for reg_model
 fit_sum_reg <- summary(reg_fit, fit.measures = TRUE)
@@ -1137,7 +1126,6 @@ sem_stats <- data.frame(
 write.csv(sem_stats, file = "../output/sem_stats.csv", row.names = FALSE)
 
 ```
-
 
 ```{r plotting the SEModels}
 #install.packages("semPlot")
@@ -1177,9 +1165,8 @@ nlabels <- list(list(node = "C1_A", to = "C1_WI"))
 SEMPlot2 <- change_node_label(SEMPlot, nlabels)
 ```
 
-
-
 #### dubbed useless
+
 ```{r}
 # the graveyard
 
@@ -1208,7 +1195,6 @@ ggplot(data = testsum_long, aes(x = TimeValue, y = BtotalValue, color = Time, gr
   scale_color_manual(values = c("T1" = "blue", "T2" = "red")) +  # Customize line colors
   theme_minimal()
 ```
-
 
 ```{r}
 # the cemetary
