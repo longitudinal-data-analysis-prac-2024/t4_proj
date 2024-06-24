@@ -143,13 +143,11 @@ Here's our plots: 1:![](output/reg_semplot.jpg)
 
 2:![](output/cl_semplot.jpg)
 
-Overall: 1. Significant coefficients of C1_AGtotal, C1_SCtotal, C1_LTtotal, C1_Ltotal, and FSM indicate these variables predict C1_Btotal scores. 2. Autoregressive paths (C2_Btotal \~ C1_Btotal, C3_Btotal \~ C2_Btotal) indicate stability in scores over time. 3. Cross-lagged paths (C2_AGtotal \~ C1_AGtotal, C3_AGtotal \~ C2_AGtotal, and similar for other variables) assess how earlier scores of one variable predict subsequent scores of another, indicating directional influences over time. 4. Significant Paths: Variables like SCtotal, LTtotal, and Ltotal show significant relationships with SDQ scores across time points, suggesting these factors influence academic outcomes. 5. Free School Meal status shows varying influence across time points on academic and psychosocial outcomes.
-
-Conclusion: The SEM analysis provides insights into how socio-demographic factors (such as FSM), psychological variables (AGtotal, SCtotal, LTtotal, Ltotal), and academic outcomes (Btotal) interplay over three time points. The model fits the data adequately, though some relationships could be further explored or refined based on future research or model modifications.
+Overall, the SEM analysis provided insights into how various factors such as academic scores (Eng, Mat), socio-emotional factors (AGtotal, SCtotal, LTtotal, Ltotal), and demographic characteristics (FSM) relate to each other and influence SQD scores across different time points. The model showed a good fit to the data, suggesting that the specified relationships adequately explain the observed data patterns.
 
 # Our results: Cross-lagged model
 
-Finally, here is our cross-lagged model:
+Finally, here is our cross-lagged model, to understand how the variables load onto each other at each time point:
 
 ```{r}
 crosslagged_model <- '
@@ -175,3 +173,25 @@ crosslagged_model <- '
 cl_fit <- sem(crosslagged_model, data = norm_data, missing = "fiml", fixed.x = FALSE)
 summary(cl_fit, fit.measures = TRUE)
 ```
+Overall, our cross-lagged model shows:
+1. Significant coefficients of C1_AGtotal, C1_SCtotal, C1_LTtotal, C1_Ltotal, and FSM indicate these variables predict C1_Btotal scores. 2. Autoregressive paths (C2_Btotal \~ C1_Btotal, C3_Btotal \~ C2_Btotal) indicate stability in scores over time. 3. Cross-lagged paths (C2_AGtotal \~ C1_AGtotal, C3_AGtotal \~ C2_AGtotal, and similar for other variables) assess how earlier scores of one variable predict subsequent scores of another, indicating directional influences over time. 4. Significant Paths: Variables like SCtotal, LTtotal, and Ltotal show significant relationships with SDQ scores across time points, suggesting these factors influence academic outcomes. 5. Free School Meal status shows varying influence across time points on academic and psychosocial outcomes.
+
+Conclusion: The analysis provides insights into how socio-demographic factors (such as FSM), psychological variables (AGtotal, SCtotal, LTtotal, Ltotal), and academic outcomes (Btotal) interplay over three time points. The model fits the data adequately, though some relationships could be further explored or refined based on future research or model modifications.
+
+# Conclusions
+Overall, we looked at psychological adjustment in children from primary to secondary school and how it is influenced by a variety of factors. We found that:
+1. Over time, from year 6 to year 7, psychological adjustment worsens
+2. For children with free school meals, psychological adjustment is more difficult
+3. For children with higher grades, psychological adjustment is more difficult
+4. Emotional factors such as school concern, teacher liking and loneliness all affect psychological adjustment
+
+# Impacts
+The impacts of these findings can support:
+1. Parental and teacher education, to be aware of these risk factors
+2. Early intervention, providing deeper support for children on FSM, especially with high grades
+3. Greater understanding of the impacts of socioeconomic difficulties and academic pressure on children
+
+# Limitations
+1. Qualitative data from the children could have helped to contextualise these findings
+2. Cohort effect of schools may impact our results
+3. Missing data!!
