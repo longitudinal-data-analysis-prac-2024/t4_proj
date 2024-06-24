@@ -1,15 +1,17 @@
+<!---
 ---
 title: "our_front_cover"
 author: "chrysie"
 date: "2024-05-16"
 output:
   html_document:
-    theme: cerulean  # Choose a Bootstrap theme
-    highlight: tango  # Choose a syntax highlighting style
-    toc: true        # Table of contents
-    toc_float: true  # Floating table of contents
-    keep_md: false   # Hide the YAML header in the rendered HTML output
+    theme: cerulean
+    highlight: tango
+    toc: true
+    toc_float: true
+    keep_md: false
 ---
+-->
 
 Chrysie, Tat and Zoe's LDAP Project
 
