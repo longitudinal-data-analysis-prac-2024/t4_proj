@@ -5,9 +5,24 @@ date: "2024-06-13"
 output: html_document
 ---
 
-```{r set up}
+```{r packages and libraries}
+# always run this first
+
+#install.packages("tidyverse")
 library(tidyverse)
 
+#install.packages("mice")
+library(mice)
+
+#install.packages("lmerTest")
+library(lmerTest)
+
+
+```
+
+
+```{r set up}
+# dealing with the NAs with multiple imputation
 our_data <- read.csv("../data/our_data.csv", row.names = 1)
 
 # trying to deal with the NAs with multiple imputation
@@ -15,9 +30,9 @@ our_data <- read.csv("../data/our_data.csv", row.names = 1)
 library(mice)
 
 # creating the imputation model
-imp <- mice(our_data, method = rep("pmm", ncol(new_data)))
+imp <- mice(our_data, method = rep("pmm", ncol(our_data)))
 
-# making the imputated dataset
+# making the imputed data set
 new_data <- complete(imp)
 
 # saving the new data frame because the imputation takes a hot minute so there's no need to re run it every time we open this script
@@ -137,6 +152,21 @@ write.csv(sum_data, file = "../data/sum_data.csv", row.names = FALSE)
 ```
 
 
+```{r detol wipes and antibacterial spray}
+# all objects in the global environment
+all_objects <- ls()
+
+# keeping only the two dfs
+objects_to_keep <- c("new_data", "sum_data")
+objects_to_remove <- setdiff(all_objects, objects_to_keep)
+
+# bibbity-bobbity-boop!
+rm(list = objects_to_remove)
+rm(all_objects, objects_to_keep, objects_to_remove)
+cat("\014")
+```
+
+
 ```{r getting the data into long format}
 library(tidyverse)
 
@@ -162,57 +192,6 @@ long_data <- sum_data %>%
 #  long format checkpoint
 write.csv(long_data, file = "../data/long_data.csv", row.names = FALSE)
 
-```
-
-
-```{r visualising the data}
-# imma visualise a little first coz that's gonna help me ac understand the onlsaught of numbers the lmer is gonna give me
-library(ggplot2)
-
-long_data %>% 
-  group_by(Time) %>%
-  mutate(tmean = mean(Btotal)) %>% 
-  ggplot(mapping = aes(x = Time, y = tmean)) +
-  geom_line() +
-  labs(title = "SQD Score Over Time for Entire Sample",
-       y = "SDQ score") +
-  scale_x_continuous(breaks = c(1,2,3))
-
-# okay so overall, the average SDQ goes down from primary to secondary school
-
-# split by FSM status
-long_data %>% 
-  group_by(Time, FSM) %>% 
-  mutate(tmean = mean(Btotal)) %>% 
-  ggplot(mapping = aes(x = Time, y = tmean, colour = factor(FSM))) +
-  geom_line() +
-  labs(title = "SDQ Score Over Time, FSM Status",
-       y = "SDQ score") +
-  scale_x_continuous(breaks = c(1,2,3))
-
-# overall those without FSM (1 - aka higher SES) have a higher SDQ throughout the primary-secondary school transition than those with FSM (2 - aka lower SES); but SDQ increases for both groups - NOTE: 0 indicated people who didn't indicate FSM status
-
-# grades for english and maths
-long_data %>%
-  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
-  group_by(Time, Subject) %>%
-  summarize(tmean = mean(Grade, na.rm = TRUE), .groups = 'drop') %>%
-  ggplot(aes(x = Time, y = tmean, color = Subject, group = Subject)) +
-  geom_line() +
-  labs(title = "Grades Over Time for Entire Sample",
-       y = "Mean Grade",
-       color = "Subject") +
-  scale_x_continuous(breaks = c(1,2,3))
-# all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
-
-# note to self: this should work now with he as.factor() argument
-long_data$ID <- as.factor(long_data$ID)
-
-ggplot(data = long_data, aes(x = Time, y = Btotal, colour = ID)) +
-  geom_line() +
-  theme_minimal () +
-  theme(legend.position = "none") +
-  scale_x_continuous(breaks = c(1,2,3))
 ```
 
 
@@ -416,13 +395,76 @@ summary(full_model)
 
 
 ```{r visualsing the lme models}
+# imma visualise a little first coz that's gonna help me ac understand the onlsaught of numbers the lmer have gonna give me
 library(ggplot2)
+
+# colour-blind friendly colour pallet
+#"hotpink3", "olivedrab3", "maroon4", "gold", "cadetblue3", "mediumorchid3", "darkolivegreen"
+
+# visual for the base model
+long_data %>%
+  group_by(Time) %>%
+  mutate(tmean = mean(Btotal)) %>%
+  ggplot(mapping = aes(x = Time, y = tmean)) +
+  geom_line(color = "cadetblue3", size = 1.5) +  # Change the color and thickness here
+  labs(title = "SQD Score over Time",
+       y = "SDQ score") +
+  scale_x_continuous(breaks = c(1, 2, 3))
+
+
+
+
+
+
 
 long_data$ID <- as.factor(long_data$ID)
 ggplot(long_data, aes(x = Time, y = Btotal, color = as.factor(ID))) +
   geom_line(aes(group = AGtotal)) +
   geom_point() +
   labs(color = "ID")
+
+
+# imma visualise a little first coz that's gonna help me ac understand the onlsaught of numbers the lmer have gonna give me
+library(ggplot2)
+
+
+
+# okay so overall, the average SDQ goes down from primary to secondary school
+
+# split by FSM status
+long_data %>% 
+  group_by(Time, FSM) %>% 
+  mutate(tmean = mean(Btotal)) %>% 
+  ggplot(mapping = aes(x = Time, y = tmean, colour = factor(FSM))) +
+  geom_line() +
+  labs(title = "SDQ Score Over Time, FSM Status",
+       y = "SDQ score") +
+  scale_x_continuous(breaks = c(1,2,3))
+
+# overall those without FSM (1 - aka higher SES) have a higher SDQ throughout the primary-secondary school transition than those with FSM (2 - aka lower SES); but SDQ increases for both groups - NOTE: 0 indicated people who didn't indicate FSM status
+
+# grades for english and maths
+long_data %>%
+  pivot_longer(cols = c(Eng, Mat), names_to = "Subject", values_to = "Grade") %>%
+  group_by(Time, Subject) %>%
+  summarize(tmean = mean(Grade, na.rm = TRUE), .groups = 'drop') %>%
+  ggplot(aes(x = Time, y = tmean, color = Subject, group = Subject)) +
+  geom_line() +
+  labs(title = "Grades Over Time for Entire Sample",
+       y = "Mean Grade",
+       color = "Subject") +
+  scale_x_continuous(breaks = c(1,2,3))
+# all i have to say for this is that it's embarrassing that the mean end of year grade for year 7 is a 4 for both english and math
+
+# note to self: this should work now with he as.factor() argument
+long_data$ID <- as.factor(long_data$ID)
+
+ggplot(data = long_data, aes(x = Time, y = Btotal, colour = ID)) +
+  geom_line() +
+  theme_minimal () +
+  theme(legend.position = "none") +
+  scale_x_continuous(breaks = c(1,2,3))
+
 
 
 ```
