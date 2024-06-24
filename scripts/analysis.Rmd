@@ -535,6 +535,9 @@ plot_lon <- ggplot(long_data, aes(x = Ltotal, y = Btotal)) +
 # combine plots into one grid 
 (vars_plot <- grid.arrange(plot_wen, plot_sc, plot_lt, plot_lon, nrow = 4))
 
+install.packages("grid")
+library(grid)
+
 vars_plot$children[[1]]$children[[1]]$children[[2]] <- editGrob(vars_plot$children[[1]]$children[[1]]$children[[2]], 
                                                             gp = gpar(fontsize = 100))
 
@@ -1180,6 +1183,11 @@ write.csv(sem_stats, file = "../output/sem_stats.csv", row.names = FALSE)
 ```{r plotting the SEModels}
 #install.packages("semPlot")
 library(semPlot)
+
+
+# NOTE TO ZOE - THERE WILL BE TWO SEM PLOTS: reg_semplot.jpg and cl_semplot.jpg
+
+
 
 # removing the empty string from node names
 param_table <- parameterTable(cl_fit)
